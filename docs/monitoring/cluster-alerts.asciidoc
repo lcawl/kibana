@@ -23,8 +23,8 @@ If you do not preserve the data directory when upgrading a {kib} or
 Logstash node, the instance is assigned a new persistent UUID and shows up
 as a new instance
 --
-* {xpack} License Expiration. When the {xpack} license expiration date
-approaches, you will get notifications with a severity level relative to how
+* License Expiration. When your license expiration date
+approaches, you get notifications with a severity level relative to how
 soon the expiration date is:
   ** 60 days: Informational alert
   ** 30 days: Low-level alert

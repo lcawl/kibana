@@ -43,9 +43,9 @@ otherwise Kibana will fail to start.
   don't overwrite the `config` or `data` directories. +
 +
 --
-IMPORTANT: If you use {monitoring}, you must re-use the data directory when you
-upgrade {kib}. Otherwise, the {kib} instance is assigned a new persistent UUID
-and becomes a new instance in the monitoring data.
+IMPORTANT: If you use {stack-monitor-features}, you must re-use the data
+directory when you upgrade {kib}. Otherwise, the {kib} instance is assigned a
+new persistent UUID and becomes a new instance in the monitoring data.
 
 --
 . Copy the files from the `config` directory from your old installation to your

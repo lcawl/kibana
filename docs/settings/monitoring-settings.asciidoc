@@ -1,14 +1,14 @@
 [role="xpack"]
 [[monitoring-settings-kb]]
-=== Monitoring Settings in Kibana
+=== Monitoring settings in Kibana
 ++++
-<titleabbrev>Monitoring Settings</titleabbrev>
+<titleabbrev>Monitoring settings</titleabbrev>
 ++++
 
 By default, the Monitoring application is enabled, but data collection
 is disabled.  When you first start {kib} monitoring, you are prompted to
-enable data collection. If you are using {security}, you must be 
-signed in as a user with the `cluster:manage` privilege to enable
+enable data collection. If you are using the {stack-security-features}, you must
+be signed in as a user with the `cluster:manage` privilege to enable
 data collection. The built-in `superuser` role has this privilege and the
 built-in `elastic` user has this role. 
 
@@ -25,14 +25,14 @@ from Logstash, you configure
 in `logstash.yml`.
 
 For more information, see
-{xpack-ref}/xpack-monitoring.html[Monitoring the Elastic Stack].
+{stack-ov}/xpack-monitoring.html[Monitoring the {stack}].
 
 [float]
 [[monitoring-general-settings]]
-==== General Monitoring Settings
+==== General monitoring settings
 
 `xpack.monitoring.enabled`::
-Set to `true` (default) to enable {monitoring} in {kib}. Unlike the
+Set to `true` (default) to enable {monitor-features} in {kib}. Unlike the
 `xpack.monitoring.ui.enabled` setting, when this setting is `false`, the
 monitoring back-end does not run and {kib} stats are not sent to the monitoring
 cluster.
