@@ -27,7 +27,7 @@ export const Description: FC = memo(({ children }) => {
       description={
         <FormattedMessage
           id="xpack.ml.newJob.wizard.jobDetailsStep.additionalSection.calendarsSelection.description"
-          defaultMessage="Contains a list of scheduled events that you want to ignore, such as planned system outages or public holidays. {learnMoreLink}"
+          defaultMessage="Contains a list of scheduled events that you want to ignore, such as planned system outages or public holidays. {learnMoreLink}."
           values={{
             learnMoreLink: (
               <EuiLink href={docsUrl} target="_blank">

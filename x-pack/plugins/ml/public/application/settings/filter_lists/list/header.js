@@ -83,7 +83,7 @@ function FilterListsHeaderUI({ totalCount, refreshFilterLists, kibana }) {
             <FormattedMessage
               id="xpack.ml.settings.filterLists.listHeader.filterListsContainsNotAllowedValuesDescription"
               defaultMessage="Filter lists contain values that you can use to include or exclude events from the machine learning analysis.
-You can use the same filter list in multiple jobs.{br}{learnMoreLink}"
+You can use the same filter list in multiple jobs.{br}{learnMoreLink}."
               values={{
                 br: <br />,
                 learnMoreLink: (

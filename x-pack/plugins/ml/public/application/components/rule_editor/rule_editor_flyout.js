@@ -593,7 +593,7 @@ class RuleEditorFlyoutUI extends Component {
                   defaultMessage="Rules instruct anomaly detectors to change their behavior
                     based on domain-specific knowledge that you provide.
                     When you create a rule, you can specify conditions, scope, and actions. When the conditions of a rule are
-                    satisfied, its actions are triggered. {learnMoreLink}"
+                    satisfied, its actions are triggered. {learnMoreLink}."
                   values={{
                     learnMoreLink: (
                       <EuiLink href={docsUrl} target="_blank">

@@ -84,7 +84,7 @@ function CalendarsListHeaderUI({ totalCount, refreshCalendars, kibana }) {
             <FormattedMessage
               id="xpack.ml.settings.calendars.listHeader.calendarsDescription"
               defaultMessage="Calendars contain a list of scheduled events for which you do not want to generate anomalies,
-              such as planned system outages or public holidays. The same calendar can be assigned to multiple jobs.{br}{learnMoreLink}"
+              such as planned system outages or public holidays. The same calendar can be assigned to multiple jobs.{br}{learnMoreLink}."
               values={{
                 br: <br />,
                 learnMoreLink: (
