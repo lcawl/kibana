@@ -460,6 +460,8 @@ export interface DocLinksStart {
     // (undocumented)
     readonly ELASTIC_WEBSITE_URL: string;
     // (undocumented)
+    readonly ELASTICSEARCH_DOCS: string;
+    // (undocumented)
     readonly links: {
         readonly dashboard: {
             readonly guide: string;
@@ -555,9 +557,10 @@ export interface DocLinksStart {
         };
         readonly query: {
             readonly eql: string;
-            readonly luceneQuerySyntax: string;
-            readonly queryDsl: string;
             readonly kueryQuerySyntax: string;
+            readonly luceneQuerySyntax: string;
+            readonly percolate: string;
+            readonly queryDsl: string;
         };
         readonly date: {
             readonly dateMath: string;
