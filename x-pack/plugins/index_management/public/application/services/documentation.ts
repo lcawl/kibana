@@ -53,15 +53,9 @@ class DocumentationService {
     }
     return `${this.esDocsBase}${typeDefinition.documentation[docType]}`;
   };
-
-  public getMappingTypesLink() {
-    return this.links.elasticsearch.mappingFieldDataTypes;
-  }
-
   public getDynamicMappingLink() {
     return this.links.elasticsearch.mappingDynamicFields;
   }
-
   public getPercolatorQueryLink() {
     return this.links.query.percolate;
   }
@@ -196,10 +190,6 @@ class DocumentationService {
 
   public getEnabledLink() {
     return this.links.elasticsearch.mappingEnabled;
-  }
-
-  public getRuntimeFields() {
-    return this.links.runtimeFields;
   }
 
   public getWellKnownTextLink() {

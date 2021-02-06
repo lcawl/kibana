@@ -117,6 +117,7 @@ export class DocLinksService {
         addData: `${ELASTIC_WEBSITE_URL}guide/en/kibana/${DOC_LINK_VERSION}/connect-to-elasticsearch.html`,
         kibana: `${ELASTIC_WEBSITE_URL}guide/en/kibana/${DOC_LINK_VERSION}/index.html`,
         elasticsearch: {
+          asyncSearch: `${ELASTICSEARCH_DOCS}async-search-intro.html`,
           dataStreams: `${ELASTICSEARCH_DOCS}data-streams.html`,
           indexSettings: `${ELASTICSEARCH_DOCS}index-modules.html#index-modules-settings`,
           indexTemplates: `${ELASTICSEARCH_DOCS}indices-templates.html`,
