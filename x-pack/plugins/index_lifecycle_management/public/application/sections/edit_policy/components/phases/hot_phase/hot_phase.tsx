@@ -89,7 +89,7 @@ export const HotPhase: FunctionComponent = () => {
                       defaultMessage="Learn more"
                     />
                   }
-                  docPath="ilm-rollover.html"
+                  url="getRolloverLink"
                 />
               </p>
             </EuiTextColor>

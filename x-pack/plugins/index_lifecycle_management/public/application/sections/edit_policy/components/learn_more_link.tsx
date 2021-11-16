@@ -9,21 +9,19 @@ import React, { ReactNode } from 'react';
 import { EuiLink } from '@elastic/eui';
 import { FormattedMessage } from '@kbn/i18n/react';
 
-import { createDocLink } from '../../../services/documentation';
-
 interface Props {
-  docPath: string;
+  url: string;
   text?: ReactNode;
 }
 
-export const LearnMoreLink: React.FunctionComponent<Props> = ({ docPath, text }) => {
+export const LearnMoreLink: React.FunctionComponent<Props> = ({ url, text }) => {
   const content = text ? (
     text
   ) : (
     <FormattedMessage id="xpack.indexLifecycleMgmt.learnMore" defaultMessage="Learn more" />
   );
   return (
-    <EuiLink href={createDocLink(docPath)} target="_blank" external={true}>
+    <EuiLink href={url} target="_blank" external={true}>
       {content}
     </EuiLink>
   );

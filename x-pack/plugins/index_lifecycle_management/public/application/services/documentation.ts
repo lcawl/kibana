@@ -26,3 +26,5 @@ export function init(esDocBasePath: string): void {
 export const createDocLink = (docPath: string): string => `${_esDocBasePath}${docPath}`;
 export const getNodeAllocationMigrationLink = ({ links }: DocLinksStart) =>
   `${links.elasticsearch.migrateIndexAllocationFilters}`;
+export const getRolloverLink = ({ links }: DocLinksStart) =>
+  `${links.elasticsearch.ilmRollover}`;
