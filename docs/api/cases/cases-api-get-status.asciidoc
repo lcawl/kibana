@@ -1,20 +1,18 @@
 [[cases-api-get-status]]
-=== Get status
+== Get case status API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Get case status</titleabbrev>
 ++++
 
 Returns the number of open and closed cases.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
+deprecated::[8.1.0]
 
-WARNING: This endpoint is deprecated and will be removed in a future release.
-
-==== Request URL
+=== Request
 
 `GET <kibana host>:<port>/api/cases/status`
 
-===== URL query parameters
+=== Query parameters
 
 [width="100%",options="header"]
 |==============================================
@@ -24,7 +22,12 @@ WARNING: This endpoint is deprecated and will be removed in a future release.
 
 |==============================================
 
-===== Example request
+=== Response code
+
+`200`::
+   Indicates a successful call.
+
+=== Example
 
 [source,sh]
 --------------------------------------------------
@@ -32,12 +35,7 @@ GET api/cases/status
 --------------------------------------------------
 // KIBANA
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-===== Example response
+The API returns the following type of information:
 
 [source,json]
 --------------------------------------------------

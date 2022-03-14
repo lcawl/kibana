@@ -1,29 +1,33 @@
 [[cases-api-delete-comment]]
-=== Delete comment
+== Delete comment from case API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Delete comment</titleabbrev>
 ++++
 
 Deletes the specified comment.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
+=== Request
 
-==== Request URL
+`DELETE <kibana host>:<port>/api/cases/<case_id>/comments/<comment_id>`
 
-`DELETE <kibana host>:<port>/api/cases/<case ID>/comments/<comment ID>`
+=== Path parameters
 
-===== URL parts
+`case_id`::
+(Required, string) The identifier for the case. To retrieve case IDs, use
+<<cases-api-find-cases>>.
 
-The URL must include:
+`comment_id`::
+(Required, string) The identifier for the comment. To comment IDs, use
+<<cases-api-get-all-case-comments>>.
 
-* the `case ID` of the comment’s associated case (call <<cases-api-find-cases>>
-to retrieve case IDs).
-* the `comment ID` of the comment you are retrieving (call
-<<cases-api-get-all-case-comments>> to retrieve comment IDs).
+=== Response code
 
-===== Example request
+`204`::
+   Indicates a successful call.
 
-Deletes comment ID `71ec1870-725b-11ea-a0b2-c51ea50a58e2` from case ID
+=== Example
+
+Delete comment ID `71ec1870-725b-11ea-a0b2-c51ea50a58e2` from case ID
 `a18b38a0-71b0-11ea-a0b2-c51ea50a58e2`:
 
 [source,sh]
@@ -31,8 +35,3 @@ Deletes comment ID `71ec1870-725b-11ea-a0b2-c51ea50a58e2` from case ID
 DELETE api/cases/a18b38a0-71b0-11ea-a0b2-c51ea50a58e2/comments/71ec1870-725b-11ea-a0b2-c51ea50a58e2
 --------------------------------------------------
 // KIBANA
-
-==== Response code
-
-`204`::
-   Indicates a successful call.

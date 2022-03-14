@@ -6,8 +6,6 @@
 
 Sets the default connector in the {es-sec-ui}.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
-
 Connectors are used to interface with external systems. You can only call this
 method after you have created a connector (see <<register-connector>>). After a
 connector has been created and assigned, call <<cases-actions-api-execute>> to
@@ -16,11 +14,11 @@ send cases to the external system.
 NOTE: You can also set the default connector in the {es-sec-ui} for each case
 individually (see <<cases-api-update>>).
 
-==== Request URL
+=== Request
 
 `POST <kibana host>:<port>/api/cases/configure`
 
-==== Request body
+=== Request body
 
 A JSON object with these fields:
 
@@ -102,7 +100,13 @@ NOTE: Call <<cases-api-find-connectors>> to retrieve connector IDs and names.
 
 NOTE: Fields can be set but are not being used by case configuration. You can set the fields of the connector at <<cases-api-create>>.
 
-==== Example request
+
+=== Response code
+
+`200`::
+   Indicates a successful call.
+
+=== Example
 
 [source,sh]
 --------------------------------------------------
@@ -119,12 +123,7 @@ POST api/cases/configure
 }
 --------------------------------------------------
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-==== Example response
+The API returns the following:
 
 [source,json]
 --------------------------------------------------

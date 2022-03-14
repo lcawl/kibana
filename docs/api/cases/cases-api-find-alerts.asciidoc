@@ -1,24 +1,28 @@
 [[cases-api-find-alert]]
-=== Find All Alerts Attached to a Case
+== Find all alerts attached to a case API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Find all alerts attached to a case</titleabbrev>
 ++++
 
 Retrieves all alerts attached to a case.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
+=== Request
 
-==== Request URL
+`GET <kibana host>:<port>/api/cases/<case_id>/alerts`
 
-`GET <kibana host>:<port>/api/cases/<case ID>/alerts`
+=== Path parameters
 
-===== URL parts
+`case_id`::
+(Required, string) The identifier for the case. To retrieve case IDs, use <<cases-api-find-cases>>.
 
-The URL must include the `case ID` of the case that you are interested in retrieving the associated alerts that are attached to it. Call <<cases-api-find-cases>> to retrieve case IDs.
+=== Response code
 
-===== Example request
+`200`::
+   Indicates a successful call.
 
-Returns all alerts attached to case `293f1bc0-74f6-11ea-b83a-553aecdb28b6`:
+=== Example
+
+Return all alerts attached to case `293f1bc0-74f6-11ea-b83a-553aecdb28b6`:
 
 [source,sh]
 --------------------------------------------------
@@ -26,16 +30,7 @@ GET api/cases/293f1bc0-74f6-11ea-b83a-553aecdb28b6/alerts
 --------------------------------------------------
 // KIBANA
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-==== Response payload
-
-A JSON array listing the retrieved alert comments.
-
-===== Example response
+The API returns a JSON array listing the retrieved alert comments. For example:
 
 [source,json]
 --------------------------------------------------

@@ -1,27 +1,31 @@
 [[cases-api-delete-case]]
-=== Delete case
+== Delete cases API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Delete cases</titleabbrev>
 ++++
 
 Deletes the specified cases and all associated comments.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
-
-==== Request URL
+=== Request
 
 `DELETE <kibana host>:<port>/api/cases?ids=["<case ID1>","<case ID2>"]`
 
-===== URL parts
+=== Query parameters
 
-The URL must include the case IDs of the cases you are deleting. Call
-<<cases-api-find-cases>> to retrieve case IDs.
+`ids`::
+(Required, string) The cases that you want to remove. To retrieve case IDs, use
+<<cases-api-find-cases>>.
++
+NOTE: All non-ASCII characters must be encoded.
 
-NOTE: All non-ascii characters must be encoded.
+==== Response code
 
-===== Example request
+`204`::
+   Indicates a successful call.
 
-Deletes cases with these IDs:
+=== Example
+
+Delete cases with these IDs:
 
 * `2e3a54f0-6754-11ea-a1c2-e3a8bc9f7aca`
 * `40b9a450-66a0-11ea-be1b-2bd3fef48984`
@@ -31,8 +35,3 @@ Deletes cases with these IDs:
 DELETE api/cases?ids=%5B%222e3a54f0-6754-11ea-a1c2-e3a8bc9f7aca%22%2C%2240b9a450-66a0-11ea-be1b-2bd3fef48984%22%5D
 --------------------------------------------------
 // KIBANA
-
-==== Response code
-
-`204`::
-   Indicates a successful call.

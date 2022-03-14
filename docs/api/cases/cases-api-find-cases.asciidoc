@@ -1,23 +1,21 @@
 [[cases-api-find-cases]]
-=== Find cases
+== Find cases API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Find cases</titleabbrev>
 ++++
 
 Retrieves a paginated subset of cases. By default, the first page is returned
 with 20 results per page.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
-
 NOTE: Cases are saved objects. See
-{kibana-ref}/saved-objects-api-find.html[Find objects API] for more query
+<<saved-objects-api-find>> for more query
 parameters.
 
-==== Request URL
+=== Request
 
 `GET <kibana host>:<port>/api/cases/_find`
 
-===== URL query parameters
+=== Query parameters
 
 All parameters are optional:
 
@@ -49,10 +47,15 @@ NOTE: Even though the JSON case object uses `created_at` and `updated_at`
 fields, you must use `createdAt` and `updatedAt` fields in the URL
 query.
 
-===== Example request
+=== Response code
 
-Retrieves the first five cases with the `phishing` tag, in ascending order by
-last update time.
+`200`::
+   Indicates a successful call.
+
+=== Example
+
+Retrieve the first five cases with the `phishing` tag, in ascending order by
+last update time:
 
 [source,sh]
 --------------------------------------------------
@@ -60,16 +63,7 @@ GET api/cases/_find?page=1&perPage=5&sortField=updatedAt&sortOrder=asc&tags=phis
 --------------------------------------------------
 // KIBANA
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-==== Response payload
-
-A JSON object listing the retrieved cases.
-
-===== Response example
+The API returns a JSON object listing the retrieved cases. For example:
 
 [source,json]
 --------------------------------------------------

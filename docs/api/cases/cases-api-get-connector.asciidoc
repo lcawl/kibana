@@ -1,20 +1,16 @@
 [[cases-get-connector]]
-=== Get current connector
+== Get current connector API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Get current connector</titleabbrev>
 ++++
 
-Retrieves the connectors currently used in the {es-sec-ui} that the user has access to read.
+Retrieves the connectors currently used in cases that the user has access to read.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
-
-NOTE: For more information on connectors, see <<actions-api-overview>>.
-
-==== Request URL
+=== Request
 
 `GET <kibana host>:<port>/api/cases/configure`
 
-===== URL query parameters
+=== Query parameters
 
 [width="100%",options="header"]
 |==============================================
@@ -24,7 +20,12 @@ NOTE: For more information on connectors, see <<actions-api-overview>>.
 
 |==============================================
 
-===== Example request
+=== Response code
+
+`200`::
+   Indicates a successful call.
+
+=== Example
 
 [source,sh]
 --------------------------------------------------
@@ -32,12 +33,7 @@ GET api/cases/configure
 --------------------------------------------------
 // KIBANA
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-===== Example response
+The API returns the following type of information:
 
 [source,json]
 --------------------------------------------------

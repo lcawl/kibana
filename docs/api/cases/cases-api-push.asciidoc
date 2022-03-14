@@ -1,29 +1,31 @@
 [[cases-api-push]]
-=== Push case
+== Push case API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Push case</titleabbrev>
 ++++
 
 Push case to an external service.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
+=== Request
 
-==== Request URL
+`POST <kibana host>:<port>/api/cases/<case_id>/connector/<connector_id>/_push`
 
-`POST <kibana host>:<port>/api/cases/<case ID>/connector/<connector ID>/_push`
+=== Path parameters
 
-===== URL parts
+`case_id`::
+(Required, string) The identifier for the case. To retrieve case IDs, use  <<cases-api-find-cases>>.
 
-The URL must include:
+`connector_id`::
+(Required, string) The identifier for the connector. To retrieve connector IDs, use <<cases-api-find-connectors>>.
 
-* the `case ID` of the case (call <<cases-api-find-cases>>
-to retrieve case IDs).
-* the `connector ID` of the connector to use (call
-<<cases-api-find-connectors>> to retrieve connector IDs).
+=== Response code
 
-===== Example request
+`200`::
+   Indicates a successful call.
 
-Push the case to an external service.
+=== Example
+
+Push the case to an external service:
 
 [source,sh]
 --------------------------------------------------
@@ -32,16 +34,7 @@ POST api/cases/7349772f-421a-4de3-b8bb-2d9b22ccee30/connector/abed3a70-71bd-11ea
 --------------------------------------------------
 // KIBANA
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-==== Response payload
-
-A JSON object representing the pushed case.
-
-===== Example response
+The API returns a JSON object representing the pushed case. For example:
 
 [source,json]
 --------------------------------------------------

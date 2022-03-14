@@ -1,24 +1,23 @@
 [[cases-api-find-cases-by-alert]]
-=== Find cases by alert
+== Find cases by alert API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Find cases by alert</titleabbrev>
 ++++
 
 Uses an alert ID (`alert id`) to retrieve the case IDs of any cases the alert is attached to.
 
 TIP: The case ID is identical to the case's saved object ID.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
+=== Request
 
-==== Request URL
+`GET <kibana host>:<port>/api/cases/alerts/<alert_id>`
 
-`GET <kibana host>:<port>/api/cases/alerts/<alert id>`
+=== Path parameters
 
-===== URL parts
+`alert_id`::
+(Required, string) The alert identifier.
 
-The URL must include the alert ID, which is used to retrieve any cases the alert is attached to.
-
-===== URL query parameters
+=== Query parameters
 
 [width="100%",options="header"]
 |==============================================
@@ -28,9 +27,14 @@ The URL must include the alert ID, which is used to retrieve any cases the alert
 
 |==============================================
 
-===== Example request
+=== Response code
 
-Returns case IDs with the alert ID `293f1bc0-74f6-11ea-b83a-553aecdb28b6` attached to them:
+`200`::
+   Indicates a successful call.
+
+=== Example
+
+Return case IDs with the alert ID `293f1bc0-74f6-11ea-b83a-553aecdb28b6` attached to them:
 
 [source,sh]
 --------------------------------------------------
@@ -38,16 +42,7 @@ GET api/cases/alerts/293f1bc0-74f6-11ea-b83a-553aecdb28b6
 --------------------------------------------------
 // KIBANA
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-==== Response payload
-
-A JSON array containing any case IDs associated with the specified alert. Case titles are also retrieved.
-
-===== Example response
+The API returns a JSON array containing any case IDs associated with the specified alert. Case titles are also retrieved. For example:
 
 [source,json]
 --------------------------------------------------

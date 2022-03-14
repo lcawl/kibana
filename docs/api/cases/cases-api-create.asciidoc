@@ -1,18 +1,16 @@
 [[cases-api-create]]
-=== Create case
+== Create case API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Create case</titleabbrev>
 ++++
 
 Creates a new case.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
-
-==== Request URL
+=== Request
 
 `POST <kibana host>:<port>/api/cases`
 
-==== Request body
+=== Request body
 
 A JSON object with these fields:
 
@@ -102,7 +100,12 @@ For {swimlane} connectors:
 |`syncAlerts` |Boolean| Turns alert syncing on or off. | Yes
 |==============================================
 
-===== Example request
+=== Response code
+
+`200`::
+   Indicates a successful call.
+
+=== Example
 
 [source,sh]
 --------------------------------------------------
@@ -159,19 +162,10 @@ POST api/cases
 --------------------------------------------------
 // KIBANA
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-==== Response payload
-
-A JSON object that includes the user who created the case and the case's ID,
-version, and creation time. The case's ID is also its saved object ID
-(`savedObjectId`), used when pushing cases to
-<<cases-actions-api-execute, external systems>>.
-
-===== Example response
+The API returns an JSON object that includes the user who created the case and
+the case's ID, version, and creation time. The case's ID is also its saved
+object ID (`savedObjectId`), used when pushing cases to
+<<cases-actions-api-execute, external systems>>. For example:
 
 [source,json]
 --------------------------------------------------

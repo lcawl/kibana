@@ -1,27 +1,30 @@
 [[cases-api-get-case-activity]]
-=== Get all case activity
+== Get all case activity API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Get all case activity</titleabbrev>
 ++++
 
 Returns all user activity for the specified case.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
+deprecated::[8.1.0]
 
-WARNING: This endpoint is deprecated and will be removed in a future release.
+=== Request
 
-==== Request URL
+`GET <kibana host>:<port>/api/cases/<case_id>/user_actions`
 
-`GET <kibana host>:<port>/api/cases/<case ID>/user_actions`
+=== Path parameters
 
-===== URL parts
+`case_id`::
+(Required, string) The identifier for the case. To retrieve case IDs, use <<cases-api-find-cases>>.
 
-The URL must include the `case ID` of the case for which you are retrieving
-activity. Call <<cases-api-find-cases>> to retrieve case IDs.
+=== Response code
 
-===== Example request
+`200`::
+   Indicates a successful call.
 
-Gets all activity for case ID `a18b38a0-71b0-11ea-a0b2-c51ea50a58e2`:
+=== Example
+
+Get all activity for case ID `a18b38a0-71b0-11ea-a0b2-c51ea50a58e2`:
 
 [source,sh]
 --------------------------------------------------
@@ -29,16 +32,7 @@ GET api/cases/a18b38a0-71b0-11ea-a0b2-c51ea50a58e2/user_actions
 --------------------------------------------------
 // KIBANA
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-==== Response payload
-
-A JSON array containing all user activity for the specified case.
-
-===== Response example
+The API returns a JSON array containing all user activity for the specified case. For example:
 
 [source,json]
 --------------------------------------------------

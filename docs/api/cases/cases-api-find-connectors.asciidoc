@@ -1,21 +1,24 @@
 [[cases-api-find-connectors]]
-=== Find connectors
+== Find connectors API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Find connectors</titleabbrev>
 ++++
 
 Retrieves a paginated subset of all connectors.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
-
 NOTE: Only {sn}, {jira}, and {ibm-r} connectors are returned. For more information on
 connectors, see <<actions-api-overview>>.
 
-==== Request URL
+=== Request
 
 `GET <kibana host>:<port>/api/cases/configure/connectors/_find`
 
-===== Example request
+=== Response code
+
+`200`::
+   Indicates a successful call.
+
+=== Example
 
 [source,sh]
 --------------------------------------------------
@@ -23,16 +26,7 @@ GET api/cases/configure/connectors/_find
 --------------------------------------------------
 // KIBANA
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-==== Response payload
-
-A JSON object describing the connectors and their settings.
-
-===== Example response
+The API returns a JSON object describing the connectors and their settings:
 
 [source,json]
 --------------------------------------------------

@@ -6,14 +6,15 @@
 
 Adds a comment to an existing case.
 
-=== Request URL
+=== Request
 
 `POST <kibana host>:<port>/api/cases/<case_id>/comments`
 
 === Path parameters
 
 case_id::
-(Required,string) The identifier for the case.
+(Required,string) The identifier for the case. To retrieve case IDs, use
+<<cases-api-find-cases>>.
 
 === Request body
 

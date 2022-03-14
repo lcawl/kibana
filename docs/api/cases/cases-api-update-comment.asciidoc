@@ -1,23 +1,22 @@
 [[cases-api-update-comment]]
-=== Update comment
+== Update case comment API
 ++++
-<titleabbrev></titleabbrev>
+<titleabbrev>Update case comment</titleabbrev>
 ++++
 
-Updates an existing comment.
+Updates a comment in a case.
 
-NOTE: Console supports only Elasticsearch APIs. Console doesn't allow interactions with {kib} APIs. You must use `curl` or another HTTP tool instead. For more information, refer to {kibana-ref}/console-kibana.html[Run {es} API requests].
+=== Request
 
-==== Request URL
+`PATCH <kibana host>:<port>/api/cases/<case_id>/comments`
 
-`PATCH <kibana host>:<port>/api/cases/<case ID>/comments`
+=== Path parameters
 
-===== URL parts
+`case_id`::
+The identifier for the case. To retrieve case IDs, use
+<<cases-api-find-cases>>.
 
-The URL must include the `case ID` of the comment's associated case. Call
-<<cases-api-find-cases>> to retrieve case IDs.
-
-==== Request body
+=== Request body
 
 A JSON object with the updated comment:
 
@@ -41,9 +40,14 @@ version values.
 
 NOTE: The comment `type` and `owner` fields cannot be updated.
 
-===== Example request
+=== Response code
 
-Updates comment ID `8af6ac20-74f6-11ea-b83a-553aecdb28b6` (associated with case
+`200`::
+   Indicates a successful call.
+
+=== Example
+
+Update comment ID `8af6ac20-74f6-11ea-b83a-553aecdb28b6` (associated with case
 ID `293f1bc0-74f6-11ea-b83a-553aecdb28b6`):
 
 [source,sh]
@@ -61,17 +65,8 @@ PATCH api/cases/293f1bc0-74f6-11ea-b83a-553aecdb28b6/comments
 --------------------------------------------------
 // KIBANA
 
-==== Response code
-
-`200`::
-   Indicates a successful call.
-
-==== Response payload
-
-The updated JSON case object with the updated comment, the user who updated the
-comment, and the comment's ID, version, and update time.
-
-===== Example response
+The API returns the updated JSON case object with the updated comment, the user who updated the
+comment, and the comment's ID, version, and update time. For example: 
 
 [source,json]
 --------------------------------------------------
