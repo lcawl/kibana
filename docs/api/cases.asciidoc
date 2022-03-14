@@ -1,0 +1,67 @@
+[[cases-api]]
+== Cases APIs
+
+You can create, manage, configure, and send cases to external systems with
+these APIs.
+
+NOTE: Cases return a warning header for deprecated endpoints. The value of the warning header is in the form `299 Kibana-{kibana_version} "{warning_text}"`
+
+////
+* Cases API: Used to open and manage security action items.
+
+* Actions API: Used to send cases to external systems. <<register-connector>>
+stores the data required to interface with third-party systems, and
+<<cases-actions-api-execute>> sends {es-sec} cases to external systems.
+////
+////
+* <<spaces-api-post, Create space API>> to create a {kib} space
+
+* <<spaces-api-put, Update space API>> to update an existing {kib} space
+
+* <<spaces-api-get, Get a space API>> to retrieve a specified {kib} space
+
+* <<spaces-api-get-all, Get all {kib} spaces API>> to retrieve all {kib} spaces
+
+* <<spaces-api-delete, Delete space API>> to delete a {kib} space
+
+* <<spaces-api-copy-saved-objects, Copy saved objects to space API>> to copy saved objects between spaces
+
+* <<spaces-api-resolve-copy-saved-objects-conflicts, Resolve copy saved objects to space conflicts API>> to overwrite saved objects returned as errors from the copy saved objects to space API
+
+* <<spaces-api-disable-legacy-url-aliases, Disable legacy URL aliases API>> to disable legacy URL aliases if an error is encountered
+
+//include::spaces-management/post.asciidoc[]
+////
+
+* <<cases-api-add-comment>>
+
+//ADD
+include::cases-api-add-comment.asciidoc[]
+//CREATE
+include::cases-api-create.asciidoc[]
+//DELETE
+include::cases-api-delete-comment.asciidoc[]
+include::cases-api-delete-all-comments.asciidoc[]
+include::cases-api-delete-case.asciidoc[]
+//FIND
+include::cases-api-find-cases.asciidoc[]
+include::cases-api-find-connectors.asciidoc[]
+include::cases-api-find-cases-by-alert.asciidoc[]
+include::cases-api-find-alerts.asciidoc[]
+//GET
+include::cases-api-get-case.asciidoc[]
+include::cases-api-get-case-comments.asciidoc[]
+include::cases-api-get-comment.asciidoc[]
+include::cases-api-get-connector.asciidoc[]
+include::cases-api-get-case-activity.asciidoc[]
+include::cases-api-get-tags.asciidoc[]
+include::cases-api-get-reporters.asciidoc[]
+include::cases-api-get-status.asciidoc[]
+//PUSH
+include::cases-api-push.asciidoc[]
+//SET
+include::cases-api-assign-connector.asciidoc[]
+//UPDATE
+include::cases-api-update.asciidoc[]
+include::cases-api-update-comment.asciidoc[]
+include::cases-api-update-connector.asciidoc[]
