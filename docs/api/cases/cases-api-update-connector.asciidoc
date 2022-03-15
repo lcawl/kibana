@@ -4,12 +4,15 @@
 <titleabbrev>Update case configurations</titleabbrev>
 ++++
 
-Updates the connector's case closure settings.
+Updates the case closure settings for a connector.
 
+////
+//TBD: Fix links
 Connectors are used to interface with external systems. You can only call this
 method after you have created a connector (see <<register-connector>>). After a
 connector has been created and assigned, call <<cases-actions-api-execute>> to
 send cases to the external system.
+////
 
 === Request
 
@@ -22,48 +25,26 @@ The identifier for the configuration. To retrieve the configuration IDs, use <<c
 
 === Request body
 
-A JSON object with these fields:
-
-|==============================================
-|Name |Type |Description |Required
-
-|`connector` |<<update-connector-connector-schema, connector>> |Object containing the connector's
-configuration. |Yes
-|`closure_type` |String a|Determines whether a case is automatically closed in
-{es-sec} when it is pushed to external systems. Valid values are:
-
+`closure_type`::
+(Optional, string) Determines whether a case is automatically closed when it is pushed to external systems. Valid values are:
++
+--
 * `close-by-pushing`: {es-sec} cases are automatically closed when they
 are pushed.
 * `close-by-user`: {es-sec} cases are not automatically closed.
+--
 
-|No
-
-|`version` |String |The connector version. |Yes
-|==============================================
-
-[[update-connector-connector-schema]]
-*`connector` schema*
-
-[width="100%",options="header"]
-|==============================================
-|Name |Type |Description |Required
-
-|`id` |String |The ID of the connector you want to use for sending cases to external systems. |Yes
-|`name` |String a|The connector name. |Yes
-|`type` |String a|The type of the connector.
-
-Must be one of these:
-
-* `.servicenow`
-* `.servicenow-sir`
-* `.jira`
-* `.resilient`
-* `.swimlane`
-* `.none`
-|Yes
-|`fields` |Object a| Object containing connector's fields.
-
-For {sn} connectors:
+`connector`::
+(Required, object) An object that contains the connector configuration.
++
+.Properties of `connector`
+[%collapsible%open]
+====
+`fields`::
+(Required, object) An object that contains the connector fields.
++
+--
+For {sn-itsm} connectors, refer to <<servicenow-action-configuration>>. For example:
 
 * `urgency` (string \| null): The urgency of the incident.
 * `severity` (string \| null): The severity of the incident.
@@ -71,36 +52,51 @@ For {sn} connectors:
 * `category` (string \| null): The category of the incident.
 * `subcategory` (string \| null): The subcategory of the incident.
 
-For {sn-sir} connectors:
+For {sn-sir} connectors, refer to <<servicenow-sir-action-configuration>>. For example:
 
+////
+//TBD: Are these valid? They don't appear in the action docs
 * `destIp` (string \| null): A comma separated list of destination IPs.
 * `malwareHash` (string \| null): A comma separated list of malware hashes.
 * `malwareUrl` (string \| null): A comma separated list of malware URLs.
 * `sourceIp` (string \| null): A comma separated list of source IPs.
+////
 * `priority` (string \| null): The priority of the incident.
 * `category` (string \| null): The category of the incident.
 * `subcategory` (string \| null): The subcategory of the incident.
 
-For {jira} connectors:
+For {jira} connectors, refer to <<jira-action-configuration>>. For example:
 
 * `issueType` (string): The issue type of the issue.
 * `priority` (string \| null): The priority of the issue.
 * `parent` (string \| null): The key of the parent issue (Valid when the issue type is `Sub-task`).
 
-For {ibm-r} connectors:
+For {ibm-r} connectors, refer to <<resilient-action-configuration>>. For example:
 
 * `issueTypes` (number[]): The issue types of the issue.
 * `severityCode` (number): The severity code of the issue.
 
-For {swimlane} connectors:
+For {swimlane} connectors, refer to <<swimlane-action-configuration>>. For example:
 
 * `caseId` (string \| null): The case ID.
+//TBD: Is this correct or should it be comments and severity?
+--
 
-|Yes
-|==============================================
+`id`::
+(Required, string) The identifier for the connector. To retrieve connector IDs, use 
+<<cases-api-find-connectors>>.
 
-NOTE: Call <<cases-get-connector>> to retrieve the version value, and
-<<cases-api-find-connectors>> to retrieve connector IDs.
+`name`::
+(Required, string) The name of the connector.
+
+`type`::
+(Required, string) The type of the connector. Valid values are: `.servicenow`, `.servicenow-sir`, `.jira`, `.resilient`, `.swimlane`, and `.none`.
+====
+
+`version`::
+(Required, string) The version of the connector. To retrieve the version value,
+use <<cases-get-connector>>.
+//TBD: Is the implication that you must increment the existing value?
 
 NOTE: Fields can be set but are not being used by case configuration. You can set the fields of the connector at <<cases-api-create>>.
 

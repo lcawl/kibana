@@ -6,8 +6,9 @@
 
 Retrieves a paginated subset of all connectors.
 
-NOTE: Only {sn}, {jira}, and {ibm-r} connectors are returned. For more information on
-connectors, see <<actions-api-overview>>.
+NOTE: Only {sn}, {jira}, and {ibm-r} connectors are returned.
+
+//For more information on connectors, see <<actions-api-overview>>.
 
 === Request
 

@@ -6,6 +6,7 @@
 
 Sets the default connector in the {es-sec-ui}.
 
+////
 Connectors are used to interface with external systems. You can only call this
 method after you have created a connector (see <<register-connector>>). After a
 connector has been created and assigned, call <<cases-actions-api-execute>> to
@@ -13,6 +14,7 @@ send cases to the external system.
 
 NOTE: You can also set the default connector in the {es-sec-ui} for each case
 individually (see <<cases-api-update>>).
+////
 
 === Request
 

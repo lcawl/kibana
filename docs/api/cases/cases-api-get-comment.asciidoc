@@ -1,5 +1,5 @@
 [[cases-api-get-comment]]
-== Get comment API
+== Get case comment API
 ++++
 <titleabbrev>Get comment</titleabbrev>
 ++++

@@ -4,7 +4,7 @@
 <titleabbrev>Add comment</titleabbrev>
 ++++
 
-Adds a comment to an existing case.
+Adds a comment to a case.
 
 === Request
 
@@ -18,19 +18,19 @@ case_id::
 
 === Request body
 
-A JSON object with a `comment` field:
+`alertId`::
+(Required*, string) The alert identifier. It is required only when `type` is `alert`.
+//NOTE: Only alerts (signals) of {es-sec} are supported.
+//TBD: Does this imply that you must match the type of alert to type of case?
 
-[width="100%",options="header"]
-|==============================================
-|Name |Type |Description |Required
+`comment`::
+(Required*, string) The new comment. It is required only when `type` is `user`.
 
-|`type` |String |The comment type, which can be `user` or `alert`. |Yes
-|`comment` |String |The case's new comment. |Yes, only when type is `user`.
-|`alertId` |String |The alert id. |Yes, only when type is `alert`.
-|`index` |String |The alert index. |Yes, only when type is `alert`.
-|==============================================
+`index`::
+(Required*, string) The alert index. It is required only only when `type` is `alert`.
 
-NOTE: Only alerts (signals) of {es-sec} are supported.
+`type`::
+(Required, string) The comment type, which can be `user` or `alert`.
 
 === Response code
 

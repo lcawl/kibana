@@ -1,7 +1,7 @@
 [[cases-api-get-reporters]]
 == Get case reporters API
 ++++
-<titleabbrev>Get case reporters</titleabbrev>
+<titleabbrev>Get reporters</titleabbrev>
 ++++
 
 Returns all case reporters, which are the users that opened cases.

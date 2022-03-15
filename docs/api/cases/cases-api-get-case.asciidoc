@@ -1,5 +1,5 @@
 [[cases-api-get-case]]
-=== Get case API
+== Get case API
 ++++
 <titleabbrev>Get case</titleabbrev>
 ++++

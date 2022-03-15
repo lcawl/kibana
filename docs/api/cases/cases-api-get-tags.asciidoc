@@ -1,7 +1,7 @@
 [[cases-api-get-tag]]
 == Get case tags API
 ++++
-<titleabbrev>Get case tags</titleabbrev>
+<titleabbrev>Get tags</titleabbrev>
 ++++
 
 Aggregates and returns all unique tags from all cases.
@@ -12,13 +12,13 @@ Aggregates and returns all unique tags from all cases.
 
 === Query parameters
 
-[width="100%",options="header"]
-|==============================================
-|Name |Type |Description |Required
-
-|`owner` |String or String[] |A filter to limit the retrieved tags to a specific set of applications. If this parameter is omitted, the response will contain all tags that the user has access to read. |No
-
-|==============================================
+`owner`::
+(Optional, string or array of strings)
+A filter to limit the retrieved tags to a specific set of applications. Valid
+values are: `generalCases`, `observability`, or `securitySolution`. If this
+parameter is omitted, the response contains all tags that the user has access to
+read.
+//TBD: Does that mean by default you can see tags across all solutions?
 
 === Response code
 

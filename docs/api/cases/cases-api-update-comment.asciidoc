@@ -1,7 +1,7 @@
 [[cases-api-update-comment]]
 == Update case comment API
 ++++
-<titleabbrev>Update case comment</titleabbrev>
+<titleabbrev>Update comment</titleabbrev>
 ++++
 
 Updates a comment in a case.
@@ -18,27 +18,32 @@ The identifier for the case. To retrieve case IDs, use
 
 === Request body
 
-A JSON object with the updated comment:
 
-[width="100%",options="header"]
-|==============================================
-|Name |Type |Description |Required
+`alertId`::
+(Required*, string) The identifier for the alert. It is required only when `type` is `alert`.
 
-|`type` |String |The comment type, which can be `user` or `alert`. |Yes
-|`comment` |String |The updated comment. |Yes, only when type is `user`.
-|`alertId` |String |The updated alert ID. |Yes, only when type is `alert`.
-|`index` |String |The updated alert index. |Yes, only when type is `alert`.
-|`id` |String |The comment's ID. |Yes
-|`owner` |String |The application that owns the case. |Yes
+`comment`::
+(Required*, string) The updated comment. It is required only when `type` is `user`.
 
-Must be a valid application owner that is registered within the case's role-based access control system (i.e. `securitySolution`). The value must also match the `owner` field of the case this comment will be attached to.
-|`version` |String |The current comment version. |Yes
-|==============================================
+`id`::
+(Required, string) The identifier for the comment. To retrieve comment IDs, use <<cases-api-get-all-case-comments>>.
 
-NOTE: Call <<cases-api-get-all-case-comments>> to retrieve comment IDs and
-version values.
+`index`::
+(Required*, string) The updated alert index. It is required only when `type` is `alert`.
 
-NOTE: The comment `type` and `owner` fields cannot be updated.
+`owner`::
+(Required, string) The application that owns the case. It can be `generalCases`,
+`observability`, or `securitySolution`.
++
+NOTE: You cannot change the owner of a comment.
+
+`type`::
+(Required, string) The comment type, which can be `user` or `alert`.
++
+NOTE: You cannot change the comment type.
+
+`version`::
+(Required, string) The current comment version. To retrieve version values, use <<cases-api-get-all-case-comments>>.
 
 === Response code
 

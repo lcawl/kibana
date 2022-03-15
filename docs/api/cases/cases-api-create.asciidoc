@@ -12,93 +12,92 @@ Creates a new case.
 
 === Request body
 
-A JSON object with these fields:
+`connector`::
+(Required, object) An object that contains the connector configuration.
++
+.Properties of `connector`
+[%collapsible%open]
+====
+`fields`::
+(Required, object) An object containing the connector fields.
++
+--
+For {sn-itsm} connectors, refer to <<servicenow-action-configuration>>. For example:
 
-[width="100%",options="header"]
-|==============================================
-|Name |Type |Description |Required
-
-|`title` |String |The case's title. |Yes
-|`description` |String |The case's description. |Yes
-|`tags` |String[] |String array containing words and phrases that help
-categorize cases. |Yes, can be an empty array.
-|`connector` |<<create-case-connector-schema, connector>> |Object containing the connector's
-configuration. |Yes
-|`settings` |<<create-case-settings-schema, settings>> |Object containing the case's
-settings. |Yes
-|`owner` |String |The application that owns the case. |Yes
-
-Must be a valid application owner that is registered within the Cases role-based access control system (`securitySolution`).
-|==============================================
-
-[[create-case-connector-schema]]
-*`connector` schema*
-
-[width="100%",options="header"]
-|==============================================
-|Name |Type |Description |Required
-
-|`id` |String |ID of the <<actions-api-overview, connector>>
-used for pushing case updates to external systems (returned when calling
-<<cases-api-find-connectors>>). |Yes
-|`name` |String a|The connector name. |Yes
-|`type` |String a|The type of the connector.
-
-Must be one of these:
-
-* `.servicenow`
-* `.servicenow-sir`
-* `.jira`
-* `.resilient`
-* `.swimlane`
-* `.none`
-|Yes
-|`fields` |Object a| Object containing the connector's fields.
-
-For {sn-itsm} connectors:
-
-* `urgency` (string \| null): The urgency of the incident.
+* `urgency` (string \| null): The extent to which the incident resolution can delay.
 * `severity` (string \| null): The severity of the incident.
-* `impact` (string \| null): The impact of the incident.
+* `impact` (string \| null): The effect an incident had on business.
 * `category` (string \| null): The category of the incident.
 * `subcategory` (string \| null): The subcategory of the incident.
 
-For {sn-sir} connectors:
+For {sn-sir} connectors, refer to <<servicenow-sir-action-configuration>>. For example:
 
+////
+//TBD: Are these valid? They don't appear in the action docs
 * `destIp` (string \| null): A comma separated list of destination IPs.
 * `malwareHash` (string \| null): A comma separated list of malware hashes.
 * `malwareUrl` (string \| null): A comma separated list of malware URLs.
 * `sourceIp` (string \| null): A comma separated list of source IPs.
+////
 * `priority` (string \| null): The priority of the incident.
 * `category` (string \| null): The category of the incident.
 * `subcategory` (string \| null): The subcategory of the incident.
 
-For {jira} connectors:
+For {jira} connectors, refer to <<jira-action-configuration>>. For example:
 
-* `issueType` (string): The issue type of the issue.
+* `issueType` (string): The type of the issue.
 * `priority` (string \| null): The priority of the issue.
 * `parent` (string \| null): The key of the parent issue (Valid when the issue type is `Sub-task`).
 
-For {ibm-r} connectors:
+For {ibm-r} connectors, refer to <<resilient-action-configuration>>. For example:
 
-* `issueTypes` (number[]): The issue types of the issue.
-* `severityCode` (number): The severity code of the issue.
+* `issueTypes` (number[]): The type of the incident.
+* `severityCode` (number): The severity code of the incident.
 
-For {swimlane} connectors:
+For {swimlane} connectors, refer to <<swimlane-action-configuration>>. For example:
 
 * `caseId` (string \| null): The case ID.
+//TBD: Is this correct or should it be comments and severity?
+--
 
-|Yes
-|==============================================
+`id`::
+(Required, string) The identifier for the connector. To retrieve connector IDs,
+use <<cases-api-find-connectors>>).
 
-[[create-case-settings-schema]]
-*`settings` schema*
+`name`::
+(Required, string) The name of the connector.
 
-[width="100%",options="header"]
-|==============================================
-|Name |Type |Description |Required
-|`syncAlerts` |Boolean| Turns alert syncing on or off. | Yes
-|==============================================
+`type`::
+(Required, string) The type of the connector. Valid values are: `.jira`, `.none`,
+`.resilient`,`.servicenow`, `.servicenow-sir`, and `.swimlane`.
+====
+
+`description`::
+(Required, string) The case's description.
+
+`owner`::
+(Required, string) The application that owns the case. Valid values are:
+`generalCases`, `observability`, or `securitySolution`. This value affects
+whether the case is visible in the {stack-manage-app}, {observability}, or
+{security-app}.
+
+`settings`::
+(Required, object)
+An object that contains the case settings.
++
+.Properties of `settings`
+[%collapsible%open]
+====
+`syncAlerts`:: 
+(Required, boolean) Turns alert syncing on or off.
+====
+
+`tags`::
+(Required, string array) The words and phrases that help
+categorize cases. It can be an empty array.
+
+`title`::
+(Required, string) A title for the case.
 
 === Response code
 
@@ -164,8 +163,8 @@ POST api/cases
 
 The API returns an JSON object that includes the user who created the case and
 the case's ID, version, and creation time. The case's ID is also its saved
-object ID (`savedObjectId`), used when pushing cases to
-<<cases-actions-api-execute, external systems>>. For example:
+object ID (`savedObjectId`), used when pushing cases to external systems. For
+example:
 
 [source,json]
 --------------------------------------------------
@@ -210,6 +209,6 @@ object ID (`savedObjectId`), used when pushing cases to
 --------------------------------------------------
 
 <1> The `external_service` object stores information when the case is pushed to
-external systems. For more information, see <<actions-api-overview>>.
+external systems.
 <2> The default connector ID used to push cases to external services (see
-<<assign-connector>>).
+<<cases-api-assign-connector>>).

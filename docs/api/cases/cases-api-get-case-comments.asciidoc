@@ -1,7 +1,7 @@
 [[cases-api-get-all-case-comments]]
 == Get all case comments API
 ++++
-<titleabbrev>Get all case comments</titleabbrev>
+<titleabbrev>Get all comments</titleabbrev>
 ++++
 
 Returns all comments for the specified case.

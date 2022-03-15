@@ -13,10 +13,12 @@ Push case to an external service.
 === Path parameters
 
 `case_id`::
-(Required, string) The identifier for the case. To retrieve case IDs, use  <<cases-api-find-cases>>.
+(Required, string) The identifier for the case. To retrieve case IDs, use
+<<cases-api-find-cases>>.
 
 `connector_id`::
-(Required, string) The identifier for the connector. To retrieve connector IDs, use <<cases-api-find-connectors>>.
+(Required, string) The identifier for the connector. To retrieve connector IDs,
+use <<cases-api-find-connectors>>.
 
 === Response code
 
