@@ -1,0 +1,52 @@
+[[cases-api-delete-comment]]
+== Delete comment from case API
+++++
+<titleabbrev>Delete comment</titleabbrev>
+++++
+
+Deletes the specified comment.
+
+=== Request
+
+`DELETE <kibana host>:<port>/api/cases/<case_id>/comments/<comment_id>`
+
+`DELETE <kibana host>:<port>/s/<space_id>/api/cases/<case_id>/comments/<comment_id>`
+
+=== Prerequisite
+
+////
+//TBD, for example
+You must have `read` privileges for the *Cases* feature in the *Management*,
+*{observability}*, or *Security* section of the
+<<kibana-feature-privileges,{kib} feature privileges>>, depending on the
+`owner` of the cases you're seeking.
+////
+
+=== Path parameters
+
+`<case_id>`::
+(Required, string) The identifier for the case. To retrieve case IDs, use
+<<cases-api-find-cases>>.
+
+`<comment_id>`::
+(Required, string) The identifier for the comment. To comment IDs, use
+<<cases-api-get-all-case-comments>>.
+
+<space_id>::
+(Optional, string) An identifier for the space. If it is not specified, the default space is used.
+
+=== Response code
+
+`204`::
+   Indicates a successful call.
+
+=== Example
+
+Delete comment ID `71ec1870-725b-11ea-a0b2-c51ea50a58e2` from case ID
+`a18b38a0-71b0-11ea-a0b2-c51ea50a58e2`:
+
+[source,sh]
+--------------------------------------------------
+DELETE api/cases/a18b38a0-71b0-11ea-a0b2-c51ea50a58e2/comments/71ec1870-725b-11ea-a0b2-c51ea50a58e2
+--------------------------------------------------
+// KIBANA

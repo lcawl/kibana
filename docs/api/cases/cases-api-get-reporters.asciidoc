@@ -1,0 +1,67 @@
+[[cases-api-get-reporters]]
+== Get case reporters API
+++++
+<titleabbrev>Get reporters</titleabbrev>
+++++
+
+Returns all case reporters, which are the users that opened cases.
+
+=== Request
+
+`GET <kibana host>:<port>/api/cases/reporters`
+
+`GET <kibana host>:<port>/s/<space_id>/api/cases/reporters`
+
+=== Prerequisite
+
+////
+//TBD, for example
+You must have `read` privileges for the *Cases* feature in the *Management*,
+*{observability}*, or *Security* section of the
+<<kibana-feature-privileges,{kib} feature privileges>>, depending on the
+`owner` of the cases you're seeking.
+////
+
+=== Path parameters
+
+<space_id>::
+(Optional, string) An identifier for the space. If it is not specified, the default space is used.
+
+=== Query parameters
+
+`owner`::
+(Optional, string or array of strings) A filter to limit the retrieved reporters to
+a specific set of applications. Valid values are: `cases`, `observability`,
+and `securitySolution`. If this parameter is omitted, the response contains all
+reporters that the user has access to read.
+
+=== Response code
+
+`200`::
+   Indicates a successful call.
+
+=== Example
+
+[source,sh]
+--------------------------------------------------
+GET api/cases/reporters
+--------------------------------------------------
+// KIBANA
+
+The API returns the following type of information:
+
+[source,json]
+--------------------------------------------------
+[
+  {
+    "full_name": "Alan Hunley",
+    "email": "ahunley@imf.usa.gov",
+    "username": "ahunley"
+  },
+  {
+    "full_name": "Rat Hustler",
+    "email": "jrhustler@aol.com",
+    "username": "rhustler"
+  }
+]
+--------------------------------------------------
