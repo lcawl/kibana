@@ -9,7 +9,14 @@ import * as estypes from '@elastic/elasticsearch/lib/api/typesWithBodyKey';
 import React, { FC } from 'react';
 
 import { FormattedMessage } from '@kbn/i18n-react';
-import { EuiFlyout, EuiFlyoutHeader, EuiTitle, EuiFlyoutBody } from '@elastic/eui';
+import {
+  EuiFlyout,
+  EuiFlyoutHeader,
+  EuiTitle,
+  EuiFlyoutBody,
+  EuiText,
+  EuiSpacer,
+} from '@elastic/eui';
 
 import { SelectedModel } from './selected_model';
 
@@ -32,6 +39,11 @@ export const TestTrainedModelFlyout: FC<Props> = ({ model, onClose }) => {
           </EuiTitle>
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
+          <EuiText>
+            <b>Model:</b> {model.model_id}
+          </EuiText>
+          <EuiSpacer size="m" />
+
           <SelectedModel model={model} />
         </EuiFlyoutBody>
       </EuiFlyout>

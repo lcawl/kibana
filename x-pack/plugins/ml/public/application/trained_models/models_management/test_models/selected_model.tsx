@@ -119,10 +119,7 @@ export const SelectedModel: FC<Props> = ({ model }) => {
   if (model.model_type === TRAINED_MODEL_TYPE.LANG_IDENT) {
     const inferrer = new LangIdentInference(trainedModels, model);
     const intro = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.langIdent.intro', {
-      defaultMessage: 'Try out language identification with {modelId}',
-      values: {
-        modelId: model.model_id,
-      },
+      defaultMessage: 'Test how well the model identifies the language of your text',
     });
     return <InferenceInputForm inferrer={inferrer} intro={intro} />;
   }
