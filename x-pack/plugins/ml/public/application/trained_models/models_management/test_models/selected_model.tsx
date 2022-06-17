@@ -42,7 +42,7 @@ export const SelectedModel: FC<Props> = ({ model }) => {
     if (Object.keys(model.inference_config)[0] === SUPPORTED_PYTORCH_TASKS.NER) {
       const inferrer = new NerInference(trainedModels, model);
       const intro = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.ner.intro', {
-        defaultMessage: 'Try out named entity recognition with {modelId}',
+        defaultMessage: 'Test how well the model identifies named entities in your input text',
         values: {
           modelId: model.model_id,
         },
@@ -55,7 +55,7 @@ export const SelectedModel: FC<Props> = ({ model }) => {
       const intro = i18n.translate(
         'xpack.ml.trainedModels.testModelsFlyout.textClassification.intro',
         {
-          defaultMessage: 'Try out text classification with {modelId}',
+          defaultMessage: 'Test how well the model classifies your input text',
           values: {
             modelId: model.model_id,
           },
@@ -71,7 +71,8 @@ export const SelectedModel: FC<Props> = ({ model }) => {
       const intro = i18n.translate(
         'xpack.ml.trainedModels.testModelsFlyout.zeroShotClassification.intro',
         {
-          defaultMessage: 'Try out zero shot classification with {modelId}',
+          defaultMessage:
+            'Provide a set of labels and test how well the model classifies your input text',
           values: {
             modelId: model.model_id,
           },
@@ -83,7 +84,7 @@ export const SelectedModel: FC<Props> = ({ model }) => {
     if (Object.keys(model.inference_config)[0] === SUPPORTED_PYTORCH_TASKS.TEXT_EMBEDDING) {
       const inferrer = new TextEmbeddingInference(trainedModels, model);
       const intro = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.textEmbedding.intro', {
-        defaultMessage: 'Try out text embedding with {modelId}',
+        defaultMessage: 'Test how well the model generates embeddings for your text',
         values: {
           modelId: model.model_id,
         },
@@ -94,7 +95,7 @@ export const SelectedModel: FC<Props> = ({ model }) => {
     if (Object.keys(model.inference_config)[0] === SUPPORTED_PYTORCH_TASKS.FILL_MASK) {
       const inferrer = new FillMaskInference(trainedModels, model);
       const intro = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.fillMask.intro', {
-        defaultMessage: 'Try out fill mask with {modelId}',
+        defaultMessage: 'Test how well the model predicts a missing word in a phrase',
         values: {
           modelId: model.model_id,
         },
@@ -107,7 +108,8 @@ export const SelectedModel: FC<Props> = ({ model }) => {
       const intro = i18n.translate(
         'xpack.ml.trainedModels.testModelsFlyout.questionAnswering.intro',
         {
-          defaultMessage: 'Try out question answering with {modelId}',
+          defaultMessage:
+            'Provide a question and test how well the model extracts an answer from your input text',
           values: {
             modelId: model.model_id,
           },
