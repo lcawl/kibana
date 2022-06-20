@@ -55,6 +55,7 @@ export const InferenceInputForm: FC<Props> = ({ inferrer, intro, tip }) => {
           iconProps={{
             className: 'eui-alignTop',
           }}
+          position="right"
           size="s"
         />
       </EuiText>
