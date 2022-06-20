@@ -42,12 +42,12 @@ export const SelectedModel: FC<Props> = ({ model }) => {
     if (Object.keys(model.inference_config)[0] === SUPPORTED_PYTORCH_TASKS.NER) {
       const inferrer = new NerInference(trainedModels, model);
       const intro = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.ner.intro', {
-        defaultMessage: 'Test how well the model identifies named entities in your input text',
-        values: {
-          modelId: model.model_id,
-        },
+        defaultMessage: 'Try out named entitiy recognition',
       });
-      return <InferenceInputForm inferrer={inferrer} intro={intro} />;
+      const tip = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.ner.tip', {
+        defaultMessage: 'Test how well the model identifies named entities in your input text',
+      });
+      return <InferenceInputForm inferrer={inferrer} intro={intro} tip={tip} />;
     }
 
     if (Object.keys(model.inference_config)[0] === SUPPORTED_PYTORCH_TASKS.TEXT_CLASSIFICATION) {
@@ -55,13 +55,13 @@ export const SelectedModel: FC<Props> = ({ model }) => {
       const intro = i18n.translate(
         'xpack.ml.trainedModels.testModelsFlyout.textClassification.intro',
         {
-          defaultMessage: 'Test how well the model classifies your input text',
-          values: {
-            modelId: model.model_id,
-          },
+          defaultMessage: 'Try out text classification',
         }
       );
-      return <InferenceInputForm inferrer={inferrer} intro={intro} />;
+      const tip = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.textClassification.tip', {
+        defaultMessage: 'Test how well the model classifies your input text',
+      });
+      return <InferenceInputForm inferrer={inferrer} intro={intro} tip={tip} />;
     }
 
     if (
@@ -71,36 +71,39 @@ export const SelectedModel: FC<Props> = ({ model }) => {
       const intro = i18n.translate(
         'xpack.ml.trainedModels.testModelsFlyout.zeroShotClassification.intro',
         {
-          defaultMessage:
-            'Provide a set of labels and test how well the model classifies your input text',
-          values: {
-            modelId: model.model_id,
-          },
+          defaultMessage: 'Try out zero-shot classification',
         }
       );
-      return <InferenceInputForm inferrer={inferrer} intro={intro} />;
+      const tip = i18n.translate(
+        'xpack.ml.trainedModels.testModelsFlyout.zeroShotClassification.tip',
+        {
+          defaultMessage:
+            'Provide a set of labels and test how well the model classifies your input text',
+        }
+      );
+      return <InferenceInputForm inferrer={inferrer} intro={intro} tip={tip} />;
     }
 
     if (Object.keys(model.inference_config)[0] === SUPPORTED_PYTORCH_TASKS.TEXT_EMBEDDING) {
       const inferrer = new TextEmbeddingInference(trainedModels, model);
       const intro = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.textEmbedding.intro', {
-        defaultMessage: 'Test how well the model generates embeddings for your text',
-        values: {
-          modelId: model.model_id,
-        },
+        defaultMessage: 'Try out text embedding',
       });
-      return <InferenceInputForm inferrer={inferrer} intro={intro} />;
+      const tip = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.textEmbedding.tip', {
+        defaultMessage: 'Test how well the model generates embeddings for your text',
+      });
+      return <InferenceInputForm inferrer={inferrer} intro={intro} tip={tip} />;
     }
 
     if (Object.keys(model.inference_config)[0] === SUPPORTED_PYTORCH_TASKS.FILL_MASK) {
       const inferrer = new FillMaskInference(trainedModels, model);
       const intro = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.fillMask.intro', {
-        defaultMessage: 'Test how well the model predicts a missing word in a phrase',
-        values: {
-          modelId: model.model_id,
-        },
+        defaultMessage: 'Try out a fill-mask',
       });
-      return <InferenceInputForm inferrer={inferrer} intro={intro} />;
+      const tip = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.fillMask.tip', {
+        defaultMessage: 'Test how well the model predicts a missing word in a phrase',
+      });
+      return <InferenceInputForm inferrer={inferrer} intro={intro} tip={tip} />;
     }
 
     if (Object.keys(model.inference_config)[0] === SUPPORTED_PYTORCH_TASKS.QUESTION_ANSWERING) {
@@ -108,22 +111,25 @@ export const SelectedModel: FC<Props> = ({ model }) => {
       const intro = i18n.translate(
         'xpack.ml.trainedModels.testModelsFlyout.questionAnswering.intro',
         {
-          defaultMessage:
-            'Provide a question and test how well the model extracts an answer from your input text',
-          values: {
-            modelId: model.model_id,
-          },
+          defaultMessage: 'Try out question answering',
         }
       );
-      return <InferenceInputForm inferrer={inferrer} intro={intro} />;
+      const tip = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.questionAnswering.tip', {
+        defaultMessage:
+          'Provide a question and test how well the model extracts an answer from your input text',
+      });
+      return <InferenceInputForm inferrer={inferrer} intro={intro} tip={tip} />;
     }
   }
   if (model.model_type === TRAINED_MODEL_TYPE.LANG_IDENT) {
     const inferrer = new LangIdentInference(trainedModels, model);
     const intro = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.langIdent.intro', {
+      defaultMessage: 'Try out language identification',
+    });
+    const tip = i18n.translate('xpack.ml.trainedModels.testModelsFlyout.langIdent.tip', {
       defaultMessage: 'Test how well the model identifies the language of your text',
     });
-    return <InferenceInputForm inferrer={inferrer} intro={intro} />;
+    return <InferenceInputForm inferrer={inferrer} intro={intro} tip={tip} />;
   }
 
   return null;
