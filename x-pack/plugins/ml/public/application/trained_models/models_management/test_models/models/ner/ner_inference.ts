@@ -25,6 +25,11 @@ export type NerResponse = InferResponse<
 
 export class NerInference extends InferenceBase<NerResponse> {
   protected inferenceType = SUPPORTED_PYTORCH_TASKS.NER;
+  protected info = [
+    i18n.translate('xpack.ml.trainedModels.testModelsFlyout.ner.info1', {
+      defaultMessage: 'Test how well the model identifies named entities in your input text',
+    }),
+  ];
 
   public async infer() {
     try {

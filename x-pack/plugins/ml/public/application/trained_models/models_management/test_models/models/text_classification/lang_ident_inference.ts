@@ -14,6 +14,11 @@ import type { TextClassificationResponse, RawTextClassificationResponse } from '
 
 export class LangIdentInference extends InferenceBase<TextClassificationResponse> {
   protected inferenceType: InferenceType = 'classification';
+  protected info = [
+    i18n.translate('xpack.ml.trainedModels.testModelsFlyout.langIdent.info1', {
+      defaultMessage: 'Test how well the model identifies the language of your text',
+    }),
+  ];
 
   public async infer() {
     try {
