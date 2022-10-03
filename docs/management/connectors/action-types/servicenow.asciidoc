@@ -5,7 +5,19 @@
 <titleabbrev>ServiceNow</titleabbrev>
 ++++
 
+<<<<<<< HEAD
 The ServiceNow connector uses the https://developer.servicenow.com/app.do#!/rest_api_doc?v=orlando&id=c_TableAPI[V2 Table API] to create ServiceNow incidents.
+=======
+The {sn} connector uses the https://docs.servicenow.com/bundle/sandiego-application-development/page/integrate/inbound-rest/concept/c_TableAPI.html[V2 Table API] to create ServiceNow incidents. The {sn-itsm} connector can be used for rule actions and cases. The {sn-sir} connector can only be used for cases.
+
+[float]
+[[servicenow-connector-prerequisites]]
+==== Prerequisites
+Create a ServiceNow integration user and assign it the following roles:
+
+* `incident_manager`: Allows the user read, create, and update access to the Incident table.
+* `personalize_choices`: Allows the user to retrieve Choice element options, such as Severity.
+>>>>>>> 42dc95987fb ([Security Solution][DOCS][7.12-7.15] Cases and rules support for SN connectors (#132481))
 
 [float]
 [[servicenow-connector-configuration]]
