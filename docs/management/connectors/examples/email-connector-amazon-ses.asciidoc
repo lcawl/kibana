@@ -1,0 +1,28 @@
+[[email-connector-amazon-ses]]
+== Sending email from Amazon SES (Simple Email Service)
+
+Use the following email connector configuration to send email from the
+http://aws.amazon.com/ses[Amazon Simple Email Service] (SES) SMTP service:
+
+[source,text]
+--------------------------------------------------
+config:
+    service: ses
+    // `host`, `port` and `secure` have the following default values and do not need to set: 
+    // host: email-smtp.us-east-1.amazonaws.com <1>
+    // port: 465
+    // secure: true
+secrets:
+    user: <username>
+    password: <password>
+--------------------------------------------------
+<1> `config.host` varies depending on the region
+
+NOTE: You must use your Amazon SES SMTP credentials to send email through Amazon 
+SES. For more information, see
+http://docs.aws.amazon.com/ses/latest/DeveloperGuide/smtp-credentials.html[Obtaining Your Amazon SES SMTP Credentials]. 
+You might also need to verify
+https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html[your email address]
+or 
+https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-domains.html[your whole domain]
+at AWS.

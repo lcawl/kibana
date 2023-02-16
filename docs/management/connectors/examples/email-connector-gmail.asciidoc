@@ -1,0 +1,28 @@
+[[email-connector-gmail]]
+== Send email alert notifications from Gmail
+
+Use the following email connector configuration to send email from the
+https://mail.google.com[Gmail] SMTP service:
+
+[source,text]
+--------------------------------------------------
+  config:
+    service: gmail
+    // `host`, `port` and `secure` have the following default values and do not need to set: 
+    // host: smtp.gmail.com
+    // port: 465
+    // secure: true
+  secrets:
+    user: <username>
+    password: <password>
+--------------------------------------------------
+
+If you get an authentication error that indicates that you need to continue the
+sign-in process from a web browser when the action attempts to send email, you 
+need to configure Gmail to 
+https://support.google.com/accounts/answer/6010255?hl=en[allow less secure apps to access your account].
+
+If two-step verification is enabled for your account, you must generate and use
+a unique App Password to send email from {kib}. See
+https://support.google.com/accounts/answer/185833?hl=en[Sign in using App Passwords]
+for more information.

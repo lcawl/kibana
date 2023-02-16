@@ -1,0 +1,101 @@
+[[email-connector-microsoft-exchange]]
+== Sending email from Microsoft Exchange with OAuth 2.0
+
+Before you create an email connector for Microsoft Exchange, you must create and 
+register the client integration application on the 
+https://go.microsoft.com/fwlink/?linkid=2083908[Azure portal]:
+
+[role="screenshot"]
+image::management/connectors/images/exchange-register-app.png[Register client application for MS Exchange]
+
+Next, open *Manage > API permissions*, and then define the permissions for the 
+registered application to send emails. Refer to the 
+https://docs.microsoft.com/en-us/graph/api/user-sendmail?view=graph-rest-1.0&tabs=http#permissions[documentation] 
+for the Microsoft Graph API.
+
+[role="screenshot"]
+image::management/connectors/images/exchange-api-permissions.png[MS Exchange API permissions]
+
+Add the "Mail.Send" permission for Microsoft Graph. The permission appears in 
+the list with the status "Not granted for <your Azure active directory>":
+
+[role="screenshot"]
+image::management/connectors/images/exchange-not-granted.png[MS Exchange "Mail.Send" not granted]
+
+Click *Grant admin consent for <your Azure active directory>*.
+
+[role="screenshot"]
+image::management/connectors/images/exchange-grant-confirm.png[MS Exchange grant confirmation]
+
+Confirm that the status for the "Mail.Send" permission is now granted.
+
+[role="screenshot"]
+image::management/connectors/images/exchange-granted.png[MS Exchange grant confirmation]
+
+[float]
+[[exchange-client-secret]]
+=== Configure Microsoft Exchange Client secret
+
+To configure the Client secret , open *Manage > Certificates & secrets*.
+
+[role="screenshot"]
+image::management/connectors/images/exchange-secrets.png[MS Exchange secrets configuration]
+
+Add a new client secret, then copy the value and put it to the proper field in 
+the Microsoft Exchange email connector.
+
+[float]
+[[exchange-client-tenant-id]]
+=== Configure Microsoft Exchange Client ID and Tenant ID
+
+To find the application Client ID, open the *Overview* page.
+
+[role="screenshot"]
+image::management/connectors/images/exchange-client-tenant.png[MS Exchange Client ID and Tenant ID configuration]
+
+Copy and paste this values to the proper fields in the Microsoft Exchange email 
+connector.
+
+Use the following email connector configuration to send email from Microsoft 
+Exchange:
+
+[source,text]
+--------------------------------------------------
+config:
+    service: exchange_server
+    clientId: <The Application (client) ID> <1>
+    tenantId: <The directory tenant ID, in GUID format.>
+    from: <email address of service account> <2>
+secrets:
+    clientSecret: <URL-encoded string>
+--------------------------------------------------
+<1> This application information is on the https://go.microsoft.com/fwlink/?linkid=2083908[Azure portal – App registrations].
+<2> Some organizations configure Exchange to validate that the `from` field is a
+    valid local email account.
+
+[[exchange-basic-auth]]
+=== Sending email from Microsoft Exchange with Basic Authentication
+
+deprecated:[This Microsoft Exchange configuration is deprecated in 7.16.0, and will be removed later, because Microsoft is deprecating https://docs.microsoft.com/en-us/lifecycle/announcements/exchange-online-basic-auth-deprecated [Basic Authentication]:
+
+[source,text]
+--------------------------------------------------
+config:
+    service: other
+    host: <your exchange server>
+    port: 465
+    secure: true
+    from: <email address of service account> <1>
+secrets:
+    user: <email address of service account> <2>
+    password: <password>
+--------------------------------------------------
+<1> Some organizations configure Exchange to validate that the `from` field is a
+    valid local email account.
+<2> Many organizations support use of your email address as your username.
+    Check with your system administrator if you receive
+    authentication-related failures.
+
+To prepare for the removal of Basic Auth, you must update all existing Microsoft 
+Exchange connectors with the new configuration based on the 
+https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow[OAuth 2.0 Client Credentials Authentication].
