@@ -16,8 +16,40 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
   const testSubjects = getService('testSubjects');
   const pageObjects = getPageObjects(['common', 'header']);
   const screenshotDirectories = ['response_ops_docs', 'stack_alerting'];
+  const ruleName = 'kibana sites - high egress';
 
   describe('index threshold rule', function () {
+    let ruleId: string;
+    const indexThresholdSampleRule = {
+      consumer: 'alerts',
+      name: ruleName,
+      notifyWhen: 'onActionGroupChange',
+      params: {
+        index: ['kibana_sample_data_logs'],
+        timeField: '@timestamp',
+        aggType: 'sum',
+        aggField: 'bytes',
+        groupBy: 'top',
+        termField: 'host.keyword',
+        termSize: 4,
+        timeWindowSize: 24,
+        timeWindowUnit: 'h',
+        thresholdComparator: '>',
+        threshold: [420000],
+      },
+      ruleTypeId: '.index-threshold',
+      schedule: { interval: '4h' },
+      tags: ['sample-data'],
+    };
+
+    before(async () => {
+      ({ id: ruleId } = await rules.api.createRule(indexThresholdSampleRule));
+    });
+
+    after(async () => {
+      await rules.api.deleteRule(ruleId);
+    });
+
     it('create rule screenshot', async () => {
       await pageObjects.common.navigateToApp('triggersActions');
       await pageObjects.header.waitUntilLoadingHasFinished();
@@ -136,6 +168,22 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
        */
       const flyOutCancelButton = await testSubjects.find('euiFlyoutCloseButton');
       await flyOutCancelButton.click();
+    });
+
+    it('index threshold rule details', async () => {
+      await pageObjects.common.navigateToApp('triggersActions');
+      await pageObjects.header.waitUntilLoadingHasFinished();
+      await testSubjects.setValue('ruleSearchField', ruleName);
+      const rulesList = await testSubjects.find('rulesList');
+      const alertRule = await rulesList.findByCssSelector(`[title="${ruleName}"]`);
+      await alertRule.click();
+      await pageObjects.header.waitUntilLoadingHasFinished();
+      await commonScreenshots.takeScreenshot(
+        'rule-types-index-threshold-example-alerts',
+        screenshotDirectories,
+        1400,
+        1024
+      );
     });
   });
 }
