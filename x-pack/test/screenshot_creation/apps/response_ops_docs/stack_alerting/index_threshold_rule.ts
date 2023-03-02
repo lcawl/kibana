@@ -9,6 +9,7 @@ import expect from '@kbn/expect';
 import { FtrProviderContext } from '../../../ftr_provider_context';
 
 export default function ({ getService, getPageObjects }: FtrProviderContext) {
+  const actions = getService('actions');
   const comboBox = getService('comboBox');
   const commonScreenshots = getService('commonScreenshots');
   const find = getService('find');
@@ -20,30 +21,36 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
 
   describe('index threshold rule', function () {
     let ruleId: string;
-    const indexThresholdSampleRule = {
-      consumer: 'alerts',
-      name: ruleName,
-      notifyWhen: 'onActionGroupChange',
-      params: {
-        index: ['kibana_sample_data_logs'],
-        timeField: '@timestamp',
-        aggType: 'sum',
-        aggField: 'bytes',
-        groupBy: 'top',
-        termField: 'host.keyword',
-        termSize: 4,
-        timeWindowSize: 24,
-        timeWindowUnit: 'h',
-        thresholdComparator: '>',
-        threshold: [420000],
-      },
-      ruleTypeId: '.index-threshold',
-      schedule: { interval: '4h' },
-      tags: ['sample-data'],
-    };
+    let connectorId: string;
 
     before(async () => {
-      ({ id: ruleId } = await rules.api.createRule(indexThresholdSampleRule));
+      connectorId = await actions.api.createConnector({
+        name: 'my-server-log-connector',
+        config: {},
+        secrets: {},
+        connectorTypeId: '.server-log',
+      });
+      ({ id: ruleId } = await rules.api.createRule({
+        consumer: 'alerts',
+        name: ruleName,
+        notifyWhen: 'onActionGroupChange',
+        params: {
+          index: ['kibana_sample_data_logs'],
+          timeField: '@timestamp',
+          aggType: 'sum',
+          aggField: 'bytes',
+          groupBy: 'top',
+          termField: 'host.keyword',
+          termSize: 4,
+          timeWindowSize: 24,
+          timeWindowUnit: 'h',
+          thresholdComparator: '>',
+          threshold: [420000],
+        },
+        ruleTypeId: '.index-threshold',
+        schedule: { interval: '4h' },
+        actions: [],
+      }));
     });
 
     after(async () => {
