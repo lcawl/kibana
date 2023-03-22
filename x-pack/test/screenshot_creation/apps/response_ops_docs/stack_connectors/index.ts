@@ -11,8 +11,10 @@ export default function ({ loadTestFile, getService }: FtrProviderContext) {
   const browser = getService('browser');
   const actions = getService('actions');
   const rules = getService('rules');
+  const es = getService('es');
+  const testIndex = `test-index`;
 
-  describe('stack alerting', function () {
+  describe('stack connectors', function () {
     before(async () => {
       await browser.setWindowSize(1920, 1080);
       await actions.api.createConnector({
@@ -21,15 +23,37 @@ export default function ({ loadTestFile, getService }: FtrProviderContext) {
         secrets: {},
         connectorTypeId: '.server-log',
       });
+
+      await es.indices.create({
+        index: testIndex,
+        body: {
+          mappings: {
+            properties: {
+              date_updated: {
+                type: 'date',
+                format: 'epoch_millis',
+              },
+            },
+          },
+        },
+      });
+      await actions.api.createConnector({
+        name: 'my-index-connector',
+        config: {
+          index: testIndex,
+        },
+        secrets: {},
+        connectorTypeId: '.index',
+      });
     });
 
     after(async () => {
       await rules.api.deleteAllRules();
       await actions.api.deleteAllConnectors();
+      await es.indices.delete({ index: testIndex });
     });
 
-    loadTestFile(require.resolve('./list_view'));
-    loadTestFile(require.resolve('./index_threshold_rule'));
-    loadTestFile(require.resolve('./tracking_containment_rule'));
+    loadTestFile(require.resolve('./connectors'));
+    loadTestFile(require.resolve('./connector_types'));
   });
 }
