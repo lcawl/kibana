@@ -16,7 +16,7 @@ export const MAINTENANCE_WINDOWS = i18n.translate('xpack.alerting.maintenanceWin
 export const MAINTENANCE_WINDOWS_DESCRIPTION = i18n.translate(
   'xpack.alerting.maintenanceWindows.description',
   {
-    defaultMessage: 'Supress notifications for scheduled periods of time.',
+    defaultMessage: 'Suppress rule notifications for scheduled periods of time.',
   }
 );
 
@@ -44,14 +44,22 @@ export const EMPTY_PROMPT_TITLE = i18n.translate(
 export const EMPTY_PROMPT_DESCRIPTION = i18n.translate(
   'xpack.alerting.maintenanceWindows.emptyPrompt.description',
   {
-    defaultMessage: 'Supress notifications while marking associated alerts as `Under Maintenance`',
+    defaultMessage: 'Schedule a time period in which rule notifications cease.',
   }
 );
 
 export const CREATE_MAINTENANCE_WINDOW_TITLE = i18n.translate(
   'xpack.alerting.maintenanceWindows.create.title',
   {
-    defaultMessage: 'Create Maintenance Window',
+    defaultMessage: 'Create maintenance window',
+  }
+);
+
+export const CREATE_MAINTENANCE_WINDOW_DESCRIPTION = i18n.translate(
+  'xpack.alerting.maintenanceWindows.create.description',
+  {
+    defaultMessage:
+      'Schedule a single or recurring period in which rule notifications cease and alerts temporarily have a maintenance status.',
   }
 );
 
@@ -79,14 +87,14 @@ export const CREATE_FORM_NAME_REQUIRED = i18n.translate(
 export const CREATE_FORM_DESC_TITLE = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.describeTitle',
   {
-    defaultMessage: 'Describe your maintenance window',
+    defaultMessage: 'Name',
   }
 );
 
 export const CREATE_FORM_DESC_DESCRIPTION = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.describeDescription',
   {
-    defaultMessage: 'This will be used to reference the maintenance window.',
+    defaultMessage: 'A unique identifier for your maintenance window.',
   }
 );
 
@@ -100,21 +108,21 @@ export const CREATE_FORM_SCHEDULE_TITLE = i18n.translate(
 export const CREATE_FORM_SCHEDULE_DESCRIPTION = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.scheduleDescription',
   {
-    defaultMessage: 'Define when and how often you would like actions to be snoozed.',
+    defaultMessage: 'Define the period and frequency of the maintenance window.',
   }
 );
 
 export const CREATE_FORM_DATE_AND_TIME = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.dateAndTime',
   {
-    defaultMessage: 'Date & time',
+    defaultMessage: 'Date and time',
   }
 );
 
 export const CREATE_FORM_DATE_AND_TIME_REQUIRED = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.dateAndTimeFieldRequiredError',
   {
-    defaultMessage: 'Date & time is required.',
+    defaultMessage: 'Date and time are required.',
   }
 );
 
@@ -142,7 +150,7 @@ export const CREATE_FORM_DURATION_REQUIRED = i18n.translate(
 export const CREATE_FORM_RECURRING = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.recurring',
   {
-    defaultMessage: 'Make recurring',
+    defaultMessage: 'Repeat',
   }
 );
 
@@ -242,7 +250,7 @@ export const CREATE_FORM_ENDS_NEVER = i18n.translate(
 export const CREATE_FORM_ENDS_ON_DATE = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.ends.onDate',
   {
-    defaultMessage: 'On Date',
+    defaultMessage: 'On date',
   }
 );
 
