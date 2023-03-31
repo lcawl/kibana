@@ -45,7 +45,7 @@ export const schema: FormSchema<FormProps> = {
     ],
   },
   date: {
-    label: i18n.CREATE_FORM_DATE_AND_TIME,
+    label: i18n.CREATE_FORM_SCHEDULE_TITLE,
     defaultValue: moment().toISOString(),
     validations: [],
   },

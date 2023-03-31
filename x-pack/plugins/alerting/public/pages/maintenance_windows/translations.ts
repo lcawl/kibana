@@ -59,7 +59,7 @@ export const CREATE_MAINTENANCE_WINDOW_DESCRIPTION = i18n.translate(
   'xpack.alerting.maintenanceWindows.create.description',
   {
     defaultMessage:
-      'Schedule a single or recurring period in which rule notifications cease. Alerts change from active to maintenance status.',
+      'Schedule a single or recurring period in which rule notifications cease and alerts are in maintenance mode.',
   }
 );
 
@@ -112,13 +112,6 @@ export const CREATE_FORM_SCHEDULE_DESCRIPTION = i18n.translate(
   }
 );
 
-export const CREATE_FORM_DATE_AND_TIME = i18n.translate(
-  'xpack.alerting.maintenanceWindows.createForm.dateAndTime',
-  {
-    defaultMessage: 'Date and time',
-  }
-);
-
 export const CREATE_FORM_DATE_AND_TIME_REQUIRED = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.dateAndTimeFieldRequiredError',
   {
@@ -157,7 +150,7 @@ export const CREATE_FORM_RECURRING = i18n.translate(
 export const CREATE_FORM_REPEAT = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.repeatLabel',
   {
-    defaultMessage: 'Repeat:',
+    defaultMessage: 'Repeat',
   }
 );
 
@@ -236,7 +229,7 @@ export const CREATE_FORM_FREQUENCY_CUSTOM = i18n.translate(
 export const CREATE_FORM_ENDS = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.endsLabel',
   {
-    defaultMessage: 'Ends:',
+    defaultMessage: 'End',
   }
 );
 
