@@ -104,11 +104,7 @@ export const CreateMaintenanceWindowForm = React.memo<CreateMaintenanceWindowFor
       <Form form={form}>
         <EuiFlexGroup gutterSize="l" responsive={false}>
           <EuiFlexItem>
-            <EuiFlexGrid columns={2} alignItems="start">
-              <SectionTitle
-                title={i18n.CREATE_FORM_DESC_TITLE}
-                description={i18n.CREATE_FORM_DESC_DESCRIPTION}
-              />
+            <EuiFlexGrid columns={1} alignItems="start">
               <EuiFlexItem>
                 <UseField
                   path="title"
@@ -121,10 +117,6 @@ export const CreateMaintenanceWindowForm = React.memo<CreateMaintenanceWindowFor
                   }}
                 />
               </EuiFlexItem>
-              <SectionTitle
-                title={i18n.CREATE_FORM_SCHEDULE_TITLE}
-                description={i18n.CREATE_FORM_SCHEDULE_DESCRIPTION}
-              />
               <EuiFlexItem>
                 <EuiFlexGroup direction="column">
                   <EuiFlexItem>
