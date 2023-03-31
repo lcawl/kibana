@@ -108,7 +108,7 @@ export const CREATE_FORM_SCHEDULE_TITLE = i18n.translate(
 export const CREATE_FORM_SCHEDULE_DESCRIPTION = i18n.translate(
   'xpack.alerting.maintenanceWindows.createForm.scheduleDescription',
   {
-    defaultMessage: 'Define the period and frequency of the maintenance window.',
+    defaultMessage: 'The period and frequency of the maintenance window.',
   }
 );
 

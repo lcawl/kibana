@@ -40,47 +40,66 @@ const Title = React.memo<TitleProps>(({ title }) => {
     </EuiFlexGroup>
   );
 });
+
 Title.displayName = 'Title';
+
+interface DescProps {
+  description: string | React.ReactNode;
+}
+const Description = React.memo<DescProps>(({ description }) => {
+  return (
+    <EuiFlexGroup alignItems="baseline" gutterSize="s" responsive={false}>
+      <EuiFlexItem grow={false}>
+        <p>{isString(description) ? <TruncatedText text={description} /> : description}</p>
+      </EuiFlexItem>
+    </EuiFlexGroup>
+  );
+});
+Description.displayName = 'Description';
 
 export interface PageHeaderProps {
   showBackButton?: boolean;
   title: string | React.ReactNode;
+  description: string | React.ReactNode;
 }
 
-export const PageHeader = React.memo<PageHeaderProps>(({ showBackButton = false, title }) => {
-  const { getMaintenanceWindowsUrl, navigateToMaintenanceWindows } =
-    useMaintenanceWindowsNavigation();
+export const PageHeader = React.memo<PageHeaderProps>(
+  ({ showBackButton = false, title, description }) => {
+    const { getMaintenanceWindowsUrl, navigateToMaintenanceWindows } =
+      useMaintenanceWindowsNavigation();
 
-  const navigateToMaintenanceWindowsClick = useCallback(
-    (e) => {
-      if (e) {
-        e.preventDefault();
-      }
-      navigateToMaintenanceWindows();
-    },
-    [navigateToMaintenanceWindows]
-  );
+    const navigateToMaintenanceWindowsClick = useCallback(
+      (e) => {
+        if (e) {
+          e.preventDefault();
+        }
+        navigateToMaintenanceWindows();
+      },
+      [navigateToMaintenanceWindows]
+    );
 
-  return (
-    <>
-      <EuiFlexGroup alignItems="center">
-        <EuiFlexItem grow={false}>
-          {showBackButton && (
-            <LinkBack>
-              <LinkIcon
-                onClick={navigateToMaintenanceWindowsClick}
-                href={getMaintenanceWindowsUrl()}
-                iconType="arrowLeft"
-              >
-                {i18n.MAINTENANCE_WINDOWS_RETURN_LINK}
-              </LinkIcon>
-            </LinkBack>
-          )}
-          <Title title={title} />
-        </EuiFlexItem>
-      </EuiFlexGroup>
-      <EuiSpacer size="xl" />
-    </>
-  );
-});
+    return (
+      <>
+        <EuiFlexGroup alignItems="center">
+          <EuiFlexItem grow={false}>
+            {showBackButton && (
+              <LinkBack>
+                <LinkIcon
+                  onClick={navigateToMaintenanceWindowsClick}
+                  href={getMaintenanceWindowsUrl()}
+                  iconType="arrowLeft"
+                >
+                  {i18n.MAINTENANCE_WINDOWS_RETURN_LINK}
+                </LinkIcon>
+              </LinkBack>
+            )}
+            <Title title={title} />
+            <Description description={description} />
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer size="xl" />
+      </>
+    );
+  }
+);
 PageHeader.displayName = 'PageHeader';
