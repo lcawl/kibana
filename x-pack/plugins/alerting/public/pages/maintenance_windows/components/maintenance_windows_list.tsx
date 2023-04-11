@@ -11,6 +11,8 @@ import {
   EuiInMemoryTable,
   EuiBasicTableColumn,
   EuiButton,
+  EuiIcon,
+  EuiToolTip,
   formatNumber,
   useEuiBackgroundColor,
 } from '@elastic/eui';
@@ -56,7 +58,14 @@ export const MaintenanceWindowsList = React.memo<MaintenanceWindowsListProps>(
       },
       {
         field: 'total',
-        name: 'Alerts',
+        name: (
+          <EuiToolTip content={i18n.TABLE_ALERTS_TIP}>
+            <span>
+              Alerts{' '}
+              <EuiIcon size="s" color="subdued" type="questionInCircle" className="eui-alignTop" />
+            </span>
+          </EuiToolTip>
+        ),
         render: (alerts: number) => formatNumber(alerts, 'integer'),
       },
       {

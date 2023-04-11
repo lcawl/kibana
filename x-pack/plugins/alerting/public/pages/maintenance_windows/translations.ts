@@ -416,3 +416,10 @@ export const TABLE_START_TIME = i18n.translate(
 export const TABLE_END_TIME = i18n.translate('xpack.alerting.maintenanceWindows.table.endTime', {
   defaultMessage: 'End time',
 });
+
+export const TABLE_ALERTS_TIP = i18n.translate(
+  'xpack.alerting.maintenanceWindows.table.alerts.tip',
+  {
+    defaultMessage: 'The total number of alerts created in the maintenance window.',
+  }
+);
