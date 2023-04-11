@@ -61,7 +61,7 @@ export const MaintenanceWindowsList = React.memo<MaintenanceWindowsListProps>(
         name: (
           <EuiToolTip content={i18n.TABLE_ALERTS_TIP}>
             <span>
-              Alerts{' '}
+              {i18n.TABLE_ALERTS}{' '}
               <EuiIcon size="s" color="subdued" type="questionInCircle" className="eui-alignTop" />
             </span>
           </EuiToolTip>
