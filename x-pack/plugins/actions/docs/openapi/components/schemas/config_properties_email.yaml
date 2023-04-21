@@ -1,5 +1,18 @@
 title: Connector request properties for an email connector
+required:
+  - from
+  - host
+  - port
 description: Defines properties for connectors when type is `.email`.
 type: object
 additionalProperties: true
-# TO-DO: Add the properties for this connector.
+properties:
+  from:
+    description: The from address for all emails sent with this connector. It must be specified in `user@host-name` format.
+    type: string
+  host:
+    description: The host name of the service provider. If you are using the `xpack.actions.allowedHosts` setting, this hostname must be added to the list of allowed hosts.
+    type: string
+  port:
+    description: The port to connect to on the service provider.
+    type: integer
