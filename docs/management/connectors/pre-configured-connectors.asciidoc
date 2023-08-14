@@ -67,6 +67,97 @@ Sensitive properties, such as passwords, can also be stored in the
 * <<elasticcloud,`Elastic-Cloud-SMTP` preconfigured email connector>>
 
 [float]
+[[preconfigured-email-configuration]]
+=== Email connector example
+
+To preconfigure an <<email-action-type,email connector>>, use the following settings in your `kibana.yml` file:
+
+[source,text]
+--
+xpack.actions.preconfigured:
+  my-email:
+    name: preconfigured-email-connector-type
+    actionTypeId: .email
+    config:
+      service: other <1>
+      from: testsender@test.com <2>
+      host: validhostname <3>
+      port: 8080 <4>
+      secure: false <5>
+    secrets:
+      user: testuser <6>
+      password: passwordkeystorevalue <7>
+--
+
+<1> The name of the email service. If `service` is `elastic_cloud` (for Elastic 
+Cloud notifications) or one of Nodemailer's well-known email service providers,
+the `host`, `port`, and `secure` properties are ignored. If `service` is `other`,  
+the `host` and `port` properties must be defined. If `service` is `exchange_server`, the `tenantId`, `clientId`, `clientSecret` 
+properties are required instead of `host` and `port`.
+<2> An email address that corresponds to *Sender*.
+<3> A string that corresponds to *Host*.
+<4> A number that corresponds to *Port*.
+<5> A boolean that corresponds to *Secure*.
+<6> A string that corresponds to *Username*. Required if `hasAuth` is set to `true`, which is the default.
+<7> A string that corresponds to *Password*. Should be stored in the 
+<<creating-keystore,{kib} keystore>>. Required if `hasAuth` is set to `true`, which is the default.
+
+////
+[float]
+[[preconfigured-cases-webhook-configuration]]
+=== {webhook-cm} connector example
+
+To preconfigure an {webhook-cm} connector, use the following settings in your `kibana.yml` file:
+
+[source,text]
+--
+xpack.actions.preconfigured:
+  my-case-management-webhook:
+    name: Case Management Webhook Connector
+    actionTypeId: .cases-webhook
+    config:
+      hasAuth: true
+      headers:
+        'content-type': 'application/json'
+      createIncidentUrl: 'https://testing-jira.atlassian.net/rest/api/2/issue'
+      createIncidentMethod: 'post'
+      createIncidentJson: '{"fields":{"summary":{{{case.title}}},"description":{{{case.description}}},"labels":{{{case.tags}}}'
+      getIncidentUrl: 'https://testing-jira.atlassian.net/rest/api/2/issue/{{{external.system.id}}}'
+      getIncidentResponseExternalTitleKey: 'key'
+      viewIncidentUrl: 'https://testing-jira.atlassian.net/browse/{{{external.system.title}}}'
+      updateIncidentUrl: 'https://testing-jira.atlassian.net/rest/api/2/issue/{{{external.system.id}}}'
+      updateIncidentMethod: 'put'
+      updateIncidentJson: '{"fields":{"summary":{{{case.title}}},"description":{{{case.description}}},"labels":{{{case.tags}}}'
+      createCommentMethod: 'post',
+      createCommentUrl: 'https://testing-jira.atlassian.net/rest/api/2/issue/{{{external.system.id}}}/comment',
+      createCommentJson: '{"body": {{{case.comment}}}}',
+    secrets:
+      user: testuser
+      password: passwordvalue
+--
+
+`config`:: Defines information for the connector type.
+`hasAuth`::: A boolean that corresponds to *Requires authentication*. If `true`, this connector will require values for `user` and `password` inside the secrets configuration. Defaults to `true`.
+`headers`::: A `record<string, string>` that corresponds to *Headers*.
+`createIncidentUrl`::: A URL string that corresponds to *Create Case URL*.
+`createIncidentMethod`::: A string that corresponds to *Create Case Method*.
+`createIncidentJson`::: A stringified JSON with Mustache variables that corresponds to *Create Case JSON*.
+`createIncidentResponseKey`::: A string from the response body of the create case method that corresponds to the *External Service Id*.
+`getIncidentUrl`::: A URL string with an *External Service Id* Mustache variable that corresponds to *Get Case URL*.
+`getIncidentResponseExternalTitleKey`::: A string from the response body of the get case method that corresponds to the *External Service Title*.
+`viewIncidentUrl`::: A URL string with either the *External Service Id* or *External Service Title* Mustache variable that corresponds to *View Case URL*.
+`updateIncidentUrl`::: A URL string that corresponds to *Update Case URL*.
+`updateIncidentMethod`::: A string that corresponds to *Update Case Method*.
+`updateIncidentJson`::: A stringified JSON with Mustache variables that corresponds to *Update Case JSON*.
+`createCommentUrl`::: A URL string that corresponds to *Create Comment URL*.
+`createCommentMethod`::: A string that corresponds to *Create Comment Method*.
+`createCommentJson`::: A stringified JSON with Mustache variables that corresponds to *Create Comment JSON*.
+
+`secrets`:: Defines sensitive information for the connector type.
+`user`::: A string that corresponds to *User*. Required if `hasAuth` is set to `true`.
+`password`::: A string that corresponds to *Password*. Required if `hasAuth` is set to `true`.
+////
+[float]
 [[managing-pre-configured-connectors]]
 === View preconfigured connectors
 
