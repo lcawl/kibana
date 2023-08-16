@@ -8,7 +8,6 @@
 import { FtrProviderContext } from '../../../ftr_provider_context';
 
 export default function ({ getService, getPageObjects }: FtrProviderContext) {
-  const browser = getService('browser');
   const commonScreenshots = getService('commonScreenshots');
   const find = getService('find');
   const rules = getService('rules');
@@ -53,8 +52,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       await testSubjects.setValue('ruleNameInput', ruleName);
       await testSubjects.click(`.es-query-SelectOption`);
       await testSubjects.click('queryFormType_esQuery');
-      const indexSelector = await testSubjects.find('selectIndexExpression');
-      await indexSelector.click();
+      await testSubjects.click('selectIndexExpression');
       const indexComboBox = await find.byCssSelector('#indexSelectSearchBox');
       await indexComboBox.type('kibana_sample_data_logs ');
       const filterSelectItem = await find.byCssSelector(`.euiFilterSelectItem`);
