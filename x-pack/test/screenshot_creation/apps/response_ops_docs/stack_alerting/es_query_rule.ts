@@ -6,6 +6,7 @@
  */
 
 import { FtrProviderContext } from '../../../ftr_provider_context';
+import { esQueryRuleName } from '.';
 
 export default function ({ getService, getPageObjects }: FtrProviderContext) {
   const browser = getService('browser');
@@ -134,6 +135,28 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         1500
       );
       await testSubjects.click('cancelSaveRuleButton');
+    });
+
+    it('example elasticsearch query rule conditions and actions', async () => {
+      await pageObjects.common.navigateToApp('triggersActions');
+      await pageObjects.header.waitUntilLoadingHasFinished();
+      await testSubjects.setValue('ruleSearchField', esQueryRuleName);
+      await browser.pressKeys(browser.keys.ENTER);
+      const actionPanel = await testSubjects.find('collapsedItemActions');
+      await actionPanel.click();
+      const editRuleMenu = await testSubjects.find('editRule');
+      await editRuleMenu.click();
+      await pageObjects.header.waitUntilLoadingHasFinished();
+      await commonScreenshots.takeScreenshot(
+        'rule-flyout-rule-conditions2',
+        screenshotDirectories,
+        1400,
+        1700
+      );
+      const cancelEditButton = await testSubjects.find('cancelSaveEditedRuleButton');
+      await cancelEditButton.click();
+      const confirmCancelButton = await testSubjects.find('confirmModalConfirmButton');
+      await confirmCancelButton.click();
     });
   });
 }
