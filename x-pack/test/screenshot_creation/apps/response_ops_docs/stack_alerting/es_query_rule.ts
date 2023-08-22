@@ -9,6 +9,7 @@ import { FtrProviderContext } from '../../../ftr_provider_context';
 import { esQueryRuleName } from '.';
 
 export default function ({ getService, getPageObjects }: FtrProviderContext) {
+  const actions = getService('actions');
   const browser = getService('browser');
   const commonScreenshots = getService('commonScreenshots');
   const find = getService('find');
@@ -17,6 +18,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
   const pageObjects = getPageObjects(['common', 'header']);
   const screenshotDirectories = ['response_ops_docs', 'stack_alerting'];
   const ruleName = 'test query rule';
+  const emailConnectorName = 'Email connector 1';
 
   const validQueryJson = JSON.stringify({
     query: {
@@ -73,6 +75,28 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
   });
 
   describe('elasticsearch query rule', function () {
+    let emailConnectorId: string;
+    before(async () => {
+      ({ id: emailConnectorId } = await actions.api.createConnector({
+        name: emailConnectorName,
+        config: {
+          service: 'other',
+          from: 'bob@example.com',
+          host: 'some.non.existent.com',
+          port: 25,
+        },
+        secrets: {
+          user: 'bob',
+          password: 'supersecret',
+        },
+        connectorTypeId: '.email',
+      }));
+    });
+
+    after(async () => {
+      await actions.api.deleteConnector(emailConnectorId);
+    });
+
     it('create rule screenshot', async () => {
       await pageObjects.common.navigateToApp('triggersActions');
       await pageObjects.header.waitUntilLoadingHasFinished();
@@ -140,6 +164,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
     it('example elasticsearch query rule conditions and actions', async () => {
       await pageObjects.common.navigateToApp('triggersActions');
       await pageObjects.header.waitUntilLoadingHasFinished();
+      // Edit the rule that was created as part of startup
       await testSubjects.setValue('ruleSearchField', esQueryRuleName);
       await browser.pressKeys(browser.keys.ENTER);
       const actionPanel = await testSubjects.find('collapsedItemActions');
@@ -148,10 +173,39 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       await editRuleMenu.click();
       await pageObjects.header.waitUntilLoadingHasFinished();
       await commonScreenshots.takeScreenshot(
-        'rule-flyout-rule-conditions2',
+        'es-query-rule-conditions',
         screenshotDirectories,
         1400,
         1700
+      );
+      await testSubjects.click('.email-alerting-ActionTypeSelectOption');
+      await testSubjects.scrollIntoView('addAlertActionButton');
+      await commonScreenshots.takeScreenshot(
+        'es-query-rule-actions',
+        screenshotDirectories,
+        1400,
+        1024
+      );
+      // const notifyWhen = await testSubjects.find('notifyWhenSelect');
+      // await notifyWhen.click();
+      // const customInterval = await testSubjects.find('onThrottleInterval');
+      // await customInterval.click();
+      // const actionFrequency = await testSubjects.find('summaryOrPerRuleSelect');
+      // await actionFrequency.click();
+      // const actionSummary = await testSubjects.find('actionNotifyWhen-option-summary');
+      // await actionSummary.click();
+      // await commonScreenshots.takeScreenshot(
+      //   'es-query-rule-alert-summary',
+      //   screenshotDirectories,
+      //   1400,
+      //   1024
+      // );
+      await testSubjects.click('messageAddVariableButton');
+      await commonScreenshots.takeScreenshot(
+        'es-query-rule-action-variables',
+        screenshotDirectories,
+        1400,
+        1024
       );
       const cancelEditButton = await testSubjects.find('cancelSaveEditedRuleButton');
       await cancelEditButton.click();
