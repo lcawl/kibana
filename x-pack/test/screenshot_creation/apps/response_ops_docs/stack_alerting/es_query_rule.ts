@@ -47,33 +47,6 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
     },
   });
 
-  const validQueryJson = JSON.stringify({
-    query: {
-      bool: {
-        filter: [
-          {
-            term: {
-              'host.keyword': 'www.elastic.co',
-            },
-          },
-        ],
-      },
-    },
-  });
-  const invalidQueryJson = JSON.stringify({
-    query: {
-      bool: {
-        filter: [
-          {
-            error_clause: {
-              'host.keyword': 'www.elastic.co',
-            },
-          },
-        ],
-      },
-    },
-  });
-
   describe('elasticsearch query rule', function () {
     let emailConnectorId: string;
     before(async () => {
@@ -186,20 +159,20 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         1400,
         1024
       );
-      // const notifyWhen = await testSubjects.find('notifyWhenSelect');
-      // await notifyWhen.click();
-      // const customInterval = await testSubjects.find('onThrottleInterval');
-      // await customInterval.click();
-      // const actionFrequency = await testSubjects.find('summaryOrPerRuleSelect');
-      // await actionFrequency.click();
-      // const actionSummary = await testSubjects.find('actionNotifyWhen-option-summary');
-      // await actionSummary.click();
-      // await commonScreenshots.takeScreenshot(
-      //   'es-query-rule-alert-summary',
-      //   screenshotDirectories,
-      //   1400,
-      //   1024
-      // );
+      const notifyWhen = await testSubjects.find('notifyWhenSelect');
+      await notifyWhen.click();
+      const customInterval = await testSubjects.find('onThrottleInterval');
+      await customInterval.click();
+      const actionFrequency = await testSubjects.find('summaryOrPerRuleSelect');
+      await actionFrequency.click();
+      const actionSummary = await testSubjects.find('actionNotifyWhen-option-summary');
+      await actionSummary.click();
+      await commonScreenshots.takeScreenshot(
+        'es-query-rule-alert-summary',
+        screenshotDirectories,
+        1400,
+        1024
+      );
       await testSubjects.click('messageAddVariableButton');
       await commonScreenshots.takeScreenshot(
         'es-query-rule-action-variables',
