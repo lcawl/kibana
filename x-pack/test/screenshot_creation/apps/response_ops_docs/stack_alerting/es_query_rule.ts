@@ -151,28 +151,28 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         1400,
         1700
       );
-      await testSubjects.click('.email-alerting-ActionTypeSelectOption');
-      await testSubjects.scrollIntoView('addAlertActionButton');
-      await commonScreenshots.takeScreenshot(
-        'es-query-rule-actions',
-        screenshotDirectories,
-        1400,
-        1024
-      );
-      const notifyWhen = await testSubjects.find('notifyWhenSelect');
-      await notifyWhen.click();
-      const customInterval = await testSubjects.find('onThrottleInterval');
-      await customInterval.click();
-      const actionFrequency = await testSubjects.find('summaryOrPerRuleSelect');
-      await actionFrequency.click();
-      const actionSummary = await testSubjects.find('actionNotifyWhen-option-summary');
-      await actionSummary.click();
-      await commonScreenshots.takeScreenshot(
-        'es-query-rule-alert-summary',
-        screenshotDirectories,
-        1400,
-        1024
-      );
+      // await testSubjects.click('.email-alerting-ActionTypeSelectOption');
+      // await testSubjects.scrollIntoView('addAlertActionButton');
+      // await commonScreenshots.takeScreenshot(
+      //   'es-query-rule-actions',
+      //   screenshotDirectories,
+      //   1400,
+      //   1024
+      // );
+      // const notifyWhen = await testSubjects.find('notifyWhenSelect');
+      // await notifyWhen.click();
+      // const customInterval = await testSubjects.find('onThrottleInterval');
+      // await customInterval.click();
+      // const actionFrequency = await testSubjects.find('summaryOrPerRuleSelect');
+      // await actionFrequency.click();
+      // const actionSummary = await testSubjects.find('actionNotifyWhen-option-summary');
+      // await actionSummary.click();
+      // await commonScreenshots.takeScreenshot(
+      //   'es-query-rule-alert-summary',
+      //   screenshotDirectories,
+      //   1400,
+      //   1024
+      // );
       await testSubjects.click('messageAddVariableButton');
       await commonScreenshots.takeScreenshot(
         'es-query-rule-action-variables',

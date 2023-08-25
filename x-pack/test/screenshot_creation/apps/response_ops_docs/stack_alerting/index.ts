@@ -120,6 +120,22 @@ export default function ({ loadTestFile, getService }: FtrProviderContext) {
         },
         ruleTypeId: '.es-query',
         schedule: { interval: '1d' },
+        actions: [
+          {
+            group: 'query matched',
+            id: serverLogConnectorId,
+            frequency: {
+              throttle: '2d',
+              summary: true,
+              notify_when: 'onThrottleInterval',
+            },
+            params: {
+              level: 'info',
+              message:
+                'The system has detected {{alerts.new.count}} new, {{alerts.ongoing.count}} ongoing, and {{alerts.recovered.count}} recovered alerts.',
+            },
+          },
+        ],
       }));
     });
 
