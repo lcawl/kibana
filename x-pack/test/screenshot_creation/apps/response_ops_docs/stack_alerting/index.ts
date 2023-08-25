@@ -135,6 +135,18 @@ export default function ({ loadTestFile, getService }: FtrProviderContext) {
                 'The system has detected {{alerts.new.count}} new, {{alerts.ongoing.count}} ongoing, and {{alerts.recovered.count}} recovered alerts.',
             },
           },
+          {
+            group: 'recovered',
+            id: serverLogConnectorId,
+            frequency: {
+              summary: false,
+              notify_when: 'onActionGroupChange',
+            },
+            params: {
+              level: 'info',
+              message: '{{alert.id}} has recovered.',
+            },
+          },
         ],
       }));
     });
