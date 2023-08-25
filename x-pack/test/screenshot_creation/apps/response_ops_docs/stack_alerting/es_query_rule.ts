@@ -151,14 +151,16 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         1400,
         1700
       );
+      /* Reposition so that the connector details are visible */
+      await testSubjects.scrollIntoView('alertActionAccordion-0');
       // await testSubjects.click('.email-alerting-ActionTypeSelectOption');
       // await testSubjects.scrollIntoView('addAlertActionButton');
-      // await commonScreenshots.takeScreenshot(
-      //   'es-query-rule-actions',
-      //   screenshotDirectories,
-      //   1400,
-      //   1024
-      // );
+      await commonScreenshots.takeScreenshot(
+        'es-query-rule-actions',
+        screenshotDirectories,
+        1400,
+        1024
+      );
       // const notifyWhen = await testSubjects.find('notifyWhenSelect');
       // await notifyWhen.click();
       // const customInterval = await testSubjects.find('onThrottleInterval');
