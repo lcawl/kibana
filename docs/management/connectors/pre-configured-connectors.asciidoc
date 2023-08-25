@@ -81,8 +81,65 @@ Clicking a preconfigured connector shows the description, but not the
 configuration.
 
 [float]
+=== Examples
+
+* <<preconfigured-email-configuration>>
+* <<preconfigured-webhook-configuration>>
+
+[float]
+[[preconfigured-email-configuration]]
+==== Email connectors
+
+The following example creates a <<email-action-type,email connector>>:
+
+[source,text]
+--
+xpack.actions.preconfigured:
+  my-email:
+    name: preconfigured-email-connector-type
+    actionTypeId: .email
+    config:
+      service: other <1>
+      from: testsender@test.com <2>
+      host: validhostname <3>
+      port: 8080 <4>
+      secure: false <5>
+      hasAuth: true <6>
+    secrets:
+      user: testuser <7>
+      password: passwordkeystorevalue <8>
+--
+
+<1> The name of the email service. If `service` is `elastic_cloud` (for Elastic Cloud notifications) or one of Nodemailer's well-known email service providers, the `host`, `port`, and `secure` properties are ignored.
+If `service` is `other`, the `host` and `port` properties must be defined.
+If `service` is `exchange_server`, the `tenantId`, `clientId`, `clientSecret` properties are required instead of `host` and `port`.
+<2> An email address that corresponds to *Sender*.
+<3> A string that corresponds to *Host*.
+<4> A number that corresponds to *Port*.
+<5> A boolean that corresponds to *Secure*.
+<6> A boolean that corresponds to *Requires authentication*.
+If `true`, this connector will require values for `user` and `password` inside the secrets configuration.
+Defaults to `true`.
+<7> A string that corresponds to *Username*. Required if `hasAuth` is set to `true`.
+<8> A string that corresponds to *Password*. Should be stored in the <<creating-keystore,{kib} keystore>>. Required if `hasAuth` is set to `true`.
+
+////
+`tenantId`::
+A GUID format value that corresponds to *Tenant ID*, which is a part of OAuth 
+2.0 Client Credentials Authentication.
+
+`clientId`::
+A GUID format value that corresponds to *Client ID*, which is a part of OAuth 
+2.0 Client Credentials Authentication.
+
+`clientSecret`::
+A string that corresponds to *Client Secret*. Should be stored in the 
+<<creating-keystore,{kib} keystore>>. Required if `service` is set to 
+`exchange_server`, which uses OAuth 2.0 Client Credentials Authentication.
+////
+[float]
 [[preconfigured-webhook-configuration]]
-=== Webhook preconfigured connector example
+==== Webhook connectors
 
 The following example creates a <<webhook-action-type,webhook connector>> with basic authentication:
 
