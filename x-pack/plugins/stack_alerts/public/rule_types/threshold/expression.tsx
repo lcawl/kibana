@@ -167,7 +167,7 @@ export const IndexThresholdRuleTypeExpression: React.FunctionComponent<
         <h5>
           <FormattedMessage
             id="xpack.stackAlerts.threshold.ui.selectIndex"
-            defaultMessage="Select indices"
+            defaultMessage="Indices"
           />
         </h5>
       </EuiTitle>
@@ -208,7 +208,7 @@ export const IndexThresholdRuleTypeExpression: React.FunctionComponent<
         <h5>
           <FormattedMessage
             id="xpack.stackAlerts.threshold.ui.conditionPrompt"
-            defaultMessage="Define the condition"
+            defaultMessage="Conditions"
           />
         </h5>
       </EuiTitle>
@@ -281,7 +281,7 @@ export const IndexThresholdRuleTypeExpression: React.FunctionComponent<
         <h5>
           <FormattedMessage
             id="xpack.stackAlerts.threshold.ui.filterTitle"
-            defaultMessage="Filter (Optional)"
+            defaultMessage="Filter"
           />
         </h5>
       </EuiTitle>

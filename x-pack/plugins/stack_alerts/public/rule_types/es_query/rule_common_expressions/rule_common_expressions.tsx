@@ -98,7 +98,7 @@ export const RuleCommonExpressions: React.FC<RuleCommonExpressionsProps> = ({
         <h4>
           <FormattedMessage
             id="xpack.stackAlerts.esQuery.ui.conditionsPrompt"
-            defaultMessage="Set the group, threshold, and time window"
+            defaultMessage="Conditions"
           />{' '}
           <QueryThresholdHelpPopover />
         </h4>
