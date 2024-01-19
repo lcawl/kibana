@@ -5380,65 +5380,6 @@
           }
         }
       },
-      "run_connector_subaction_closeincident": {
-        "title": "The closeIncident subaction",
-        "type": "object",
-        "required": [
-          "subAction",
-          "subActionParams"
-        ],
-        "description": "The `closeIncident` subaction for ServiceNow ITSM connectors.",
-        "properties": {
-          "subAction": {
-            "type": "string",
-            "description": "The action to test.",
-            "enum": [
-              "closeIncident"
-            ]
-          },
-          "subActionParams": {
-            "type": "object",
-            "required": [
-              "incident"
-            ],
-            "properties": {
-              "incident": {
-                "type": "object",
-                "anyOf": [
-                  {
-                    "required": [
-                      "correlation_id"
-                    ]
-                  },
-                  {
-                    "required": [
-                      "externalId"
-                    ]
-                  }
-                ],
-                "properties": {
-                  "correlation_id": {
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "description": "An identifier that is assigned to the incident when it is created by the connector. NOTE: If you use the default value and the rule generates multiple alerts that use the same alert IDs, the latest open incident for this correlation ID is closed unless you specify the external ID.\n",
-                    "maxLength": 100,
-                    "default": "{{rule.id}}:{{alert.id}}"
-                  },
-                  "externalId": {
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "description": "The unique identifier (`incidentId`) for the incident in ServiceNow."
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "run_connector_subaction_createalert": {
         "title": "The createAlert subaction",
         "type": "object",
@@ -5990,6 +5931,65 @@
           }
         }
       },
+      "run_connector_subaction_closeincident": {
+        "title": "The closeIncident subaction",
+        "type": "object",
+        "required": [
+          "subAction",
+          "subActionParams"
+        ],
+        "description": "The `closeIncident` subaction for ServiceNow ITSM connectors.",
+        "properties": {
+          "subAction": {
+            "type": "string",
+            "description": "The action to test.",
+            "enum": [
+              "closeIncident"
+            ]
+          },
+          "subActionParams": {
+            "type": "object",
+            "required": [
+              "incident"
+            ],
+            "properties": {
+              "incident": {
+                "type": "object",
+                "anyOf": [
+                  {
+                    "required": [
+                      "correlation_id"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "externalId"
+                    ]
+                  }
+                ],
+                "properties": {
+                  "correlation_id": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "An identifier that is assigned to the incident when it is created by the connector. NOTE: If you use the default value and the rule generates multiple alerts that use the same alert IDs, the latest open incident for this correlation ID is closed unless you specify the external ID.\n",
+                    "maxLength": 100,
+                    "default": "{{rule.id}}:{{alert.id}}"
+                  },
+                  "externalId": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "The unique identifier (`incidentId`) for the incident in ServiceNow."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "run_connector_request": {
         "title": "Run connector request body properties",
         "description": "The properties vary depending on the connector type.",
@@ -6061,7 +6061,6 @@
                   "mapping": {
                     "addEvent": "#/components/schemas/run_connector_subaction_addevent",
                     "closeAlert": "#/components/schemas/run_connector_subaction_closealert",
-                    "closeIncident": "#/components/schemas/run_connector_subaction_closeincident",
                     "createAlert": "#/components/schemas/run_connector_subaction_createalert",
                     "fieldsByIssueType": "#/components/schemas/run_connector_subaction_fieldsbyissuetype",
                     "getChoices": "#/components/schemas/run_connector_subaction_getchoices",
