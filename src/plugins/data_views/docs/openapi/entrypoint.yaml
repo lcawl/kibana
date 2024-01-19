@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Data views
+  title: Data_views
   description: OpenAPI schema for data view endpoints
   version: '0.1'
   contact:
