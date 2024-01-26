@@ -1,0 +1,26 @@
+openapi: 3.0.3
+info:
+  title: Security_serverless
+  description: OpenAPI schema for Security Serverless APIs
+  version: "2024-01-25"
+  license:
+    name: Elastic License 2.0
+    url: https://www.elastic.co/licensing/elastic-license
+  contact: 
+    name: Security Solution Team
+security:
+  - basicAuth: []
+  - apiKeyAuth: []
+servers:
+  - url: /
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'e.g. Authorization: ApiKey base64AccessApiKey'
+  

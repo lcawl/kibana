@@ -1,0 +1,2907 @@
+openapi: 3.0.3
+info:
+  title: Security_serverless
+  description: OpenAPI schema for Security Serverless APIs
+  version: '2024-01-25'
+  license:
+    name: Elastic License 2.0
+    url: https://www.elastic.co/licensing/elastic-license
+  contact:
+    name: Security Solution Team
+servers:
+  - url: /
+  - url: http://{kibana_host}:{port}
+    variables:
+      kibana_host:
+        default: localhost
+      port:
+        default: '5601'
+tags:
+  - name: Prebuilt Rules API
+    x-displayName: Prebuilt Rules API
+  - name: access:securitySolution
+    x-displayName: access:securitySolution
+  - name: Tags API
+    x-displayName: Tags API
+  - name: Import/Export API
+    x-displayName: Import/Export API
+externalDocs:
+  url: https://www.elastic.co/guide/en/security/current/timeline-api-create.html
+  description: Documentation
+paths:
+  /api/detection_engine/rules/prepackaged/_status:
+    get:
+      operationId: GetPrebuiltRulesAndTimelinesStatus
+      x-codegen-enabled: true
+      summary: Get the status of Elastic prebuilt rules
+      tags:
+        - Prebuilt Rules API
+      responses:
+        '200':
+          description: Indicates a successful call
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  rules_custom_installed:
+                    type: integer
+                    description: The total number of custom rules
+                    minimum: 0
+                  rules_installed:
+                    type: integer
+                    description: The total number of installed prebuilt rules
+                    minimum: 0
+                  rules_not_installed:
+                    type: integer
+                    description: >-
+                      The total number of available prebuilt rules that are not
+                      installed
+                    minimum: 0
+                  rules_not_updated:
+                    type: integer
+                    description: The total number of outdated prebuilt rules
+                    minimum: 0
+                  timelines_installed:
+                    type: integer
+                    description: The total number of installed prebuilt timelines
+                    minimum: 0
+                  timelines_not_installed:
+                    type: integer
+                    description: >-
+                      The total number of available prebuilt timelines that are
+                      not installed
+                    minimum: 0
+                  timelines_not_updated:
+                    type: integer
+                    description: The total number of outdated prebuilt timelines
+                    minimum: 0
+                required:
+                  - rules_custom_installed
+                  - rules_installed
+                  - rules_not_installed
+                  - rules_not_updated
+                  - timelines_installed
+                  - timelines_not_installed
+                  - timelines_not_updated
+  /api/detection_engine/rules/prepackaged:
+    put:
+      operationId: InstallPrebuiltRulesAndTimelines
+      x-codegen-enabled: true
+      summary: Installs all Elastic prebuilt rules and timelines
+      tags:
+        - Prebuilt Rules API
+      responses:
+        '200':
+          description: Indicates a successful call
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  rules_installed:
+                    type: integer
+                    description: The number of rules installed
+                    minimum: 0
+                  rules_updated:
+                    type: integer
+                    description: The number of rules updated
+                    minimum: 0
+                  timelines_installed:
+                    type: integer
+                    description: The number of timelines installed
+                    minimum: 0
+                  timelines_updated:
+                    type: integer
+                    description: The number of timelines updated
+                    minimum: 0
+                required:
+                  - rules_installed
+                  - rules_updated
+                  - timelines_installed
+                  - timelines_updated
+  /api/timeline/_draft:
+    post:
+      operationId: cleanDraftTimelines
+      summary: Retrieves a draft timeline or timeline template.
+      description: >
+        Retrieves a clean draft timeline. If a draft timeline does not exist, it
+        is created and returned.
+      tags:
+        - access:securitySolution
+      requestBody:
+        description: >-
+          The type of timeline to create. Valid values are `default` and
+          `template`.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timelineType:
+                  $ref: >-
+                    #/components/schemas/Elastic Security - Timeline - Draft
+                    Timeline API_TimelineType
+      responses:
+        '200':
+          description: >-
+            Indicates that the draft timeline was successfully created. In the
+            event the user already has a draft timeline, the existing draft
+            timeline is cleared and returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      persistTimeline:
+                        type: object
+                        properties:
+                          timeline:
+                            $ref: >-
+                              #/components/schemas/Elastic Security - Timeline -
+                              Draft Timeline API_TimelineResponse
+                required:
+                  - data
+        '403':
+          description: >-
+            Indicates that the user does not have the required permissions to
+            create a draft timeline.
+          content:
+            application:json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: number
+        '409':
+          description: >-
+            Indicates that there is already a draft timeline with the given
+            timelineId.
+          content:
+            application:json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: number
+  /api/timeline:
+    post:
+      operationId: createTimelines
+      description: Creates a new timeline.
+      tags:
+        - access:securitySolution
+      requestBody:
+        description: >-
+          The required timeline fields used to create a new timeline along with
+          optional fields that will be created if not provided.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - timeline
+              properties:
+                status:
+                  allOf:
+                    - $ref: >-
+                        #/components/schemas/Elastic Security - Timeline -
+                        Create Timelines API_TimelineStatus
+                    - nullable: true
+                timelineId:
+                  type: string
+                  nullable: true
+                templateTimelineId:
+                  type: string
+                  nullable: true
+                templateTimelineVersion:
+                  type: number
+                  nullable: true
+                timelineType:
+                  allOf:
+                    - $ref: >-
+                        #/components/schemas/Elastic Security - Timeline -
+                        Create Timelines API_TimelineType
+                    - nullable: true
+                version:
+                  type: string
+                  nullable: true
+                timeline:
+                  $ref: >-
+                    #/components/schemas/Elastic Security - Timeline - Create
+                    Timelines API_SavedTimeline
+      responses:
+        '200':
+          description: Indicates the timeline was successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      persistTimeline:
+                        type: object
+                        properties:
+                          timeline:
+                            $ref: >-
+                              #/components/schemas/Elastic Security - Timeline -
+                              Create Timelines API_TimelineResponse
+                required:
+                  - data
+        '405':
+          description: Indicates that there was an error in the timeline creation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: string
+                  statusCode:
+                    type: number
+    delete:
+      operationId: deleteTimelines
+      description: Deletes one or more timelines or timeline templates.
+      tags:
+        - access:securitySolution
+      requestBody:
+        description: The ids of the timelines or timeline templates to delete.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - savedObjectIds
+              properties:
+                savedObjectIds:
+                  type: array
+                  items:
+                    type: string
+                searchId:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Indicates the timeline was successfully deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      deleteTimeline:
+                        type: boolean
+                required:
+                  - data
+    get:
+      operationId: getTimeline
+      description: >-
+        Get an existing saved timeline or timeline template. This API is used to
+        retrieve an existing saved timeline or timeline template.
+      tags:
+        - access:securitySolution
+      parameters:
+        - in: query
+          name: template_timeline_id
+          schema:
+            type: string
+          description: The ID of the template timeline to retrieve
+        - in: query
+          name: id
+          schema:
+            type: string
+          description: The ID of the timeline to retrieve
+      responses:
+        '200':
+          description: >-
+            Indicates that the draft timeline was successfully created. In the
+            event the user already has a draft timeline, the existing draft
+            timeline is cleared and returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      getOneTimeline:
+                        oneOf:
+                          - $ref: >-
+                              #/components/schemas/Elastic Security - Timeline -
+                              Get Timeline API_TimelineResponse
+                          - nullable: true
+                required:
+                  - data
+    patch:
+      operationId: patchTimeline
+      summary: Updates an existing timeline.
+      description: >-
+        Updates an existing timeline. This API is used to update the title,
+        description, date range, pinned events, pinned queries, and/or pinned
+        saved queries of an existing timeline.
+      tags:
+        - access:securitySolution
+      requestBody:
+        description: The timeline updates along with the timeline ID and version.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timelineId:
+                  type: string
+                version:
+                  type: string
+                timeline:
+                  $ref: >-
+                    #/components/schemas/Elastic Security - Timeline - Patch
+                    Timeline API_SavedTimeline
+      responses:
+        '200':
+          description: >-
+            Indicates that the draft timeline was successfully created. In the
+            event the user already has a draft timeline, the existing draft
+            timeline is cleared and returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      persistTimeline:
+                        type: object
+                        properties:
+                          timeline:
+                            $ref: >-
+                              #/components/schemas/Elastic Security - Timeline -
+                              Patch Timeline API_TimelineResponse
+                required:
+                  - data
+        '405':
+          description: >-
+            Indicates that the user does not have the required access to create
+            a draft timeline.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: string
+                  statusCode:
+                    type: number
+  /api/note:
+    delete:
+      operationId: deleteNote
+      description: Deletes a note from a timeline.
+      tags:
+        - access:securitySolution
+      requestBody:
+        description: The id of the note to delete.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                noteId:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Indicates the note was successfully deleted.
+    patch:
+      operationId: persistNoteroute
+      description: Persists a note to a timeline.
+      tags:
+        - access:securitySolution
+      requestBody:
+        description: The note to persist or update along with additional metadata.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - note
+              properties:
+                note:
+                  $ref: >-
+                    #/components/schemas/Elastic Security - Timeline - Notes
+                    API_BareNote
+                overrideOwner:
+                  type: boolean
+                  nullable: true
+                noteId:
+                  type: string
+                  nullable: true
+                version:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Indicates the favorite status was successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      persistNote:
+                        type: object
+                        properties:
+                          code:
+                            type: number
+                          message:
+                            type: string
+                          note:
+                            $ref: >-
+                              #/components/schemas/Elastic Security - Timeline -
+                              Notes API_Note
+                required:
+                  - data
+  /api/timeline/_export:
+    post:
+      operationId: exportTimelines
+      description: Exports timelines as an NDJSON file
+      tags:
+        - access:securitySolution
+      parameters:
+        - in: query
+          name: file_name
+          schema:
+            type: string
+          description: The name of the file to export
+      requestBody:
+        description: The id of the timelines to export
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  nullable: true
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Indicates the timelines were successfully exported
+          content:
+            application/ndjson:
+              schema:
+                type: string
+                description: NDJSON of the exported timelines
+        '400':
+          description: Indicates that the export size limit was exceeded
+          content:
+            application/ndjson:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: string
+                  statusCode:
+                    type: number
+  /api/timelines:
+    get:
+      operationId: getTimelines
+      description: >-
+        This API is used to retrieve a list of existing saved timelines or
+        timeline templates.
+      tags:
+        - access:securitySolution
+      parameters:
+        - in: query
+          name: only_user_favorite
+          schema:
+            nullable: true
+            type: string
+            enum:
+              - 'true'
+              - 'false'
+          description: >-
+            If true, only timelines that are marked as favorites by the user are
+            returned.
+        - in: query
+          name: timeline_type
+          schema:
+            allOf:
+              - $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Get
+                  Timelines API_TimelineType
+              - nullable: true
+        - in: query
+          name: sort_field
+          schema:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timelines
+              API_SortFieldTimeline
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - in: query
+          name: page_size
+          schema:
+            nullable: true
+            type: string
+        - in: query
+          name: page_index
+          schema:
+            nullable: true
+            type: string
+        - in: query
+          name: search
+          schema:
+            nullable: true
+            type: string
+        - in: query
+          name: status
+          schema:
+            allOf:
+              - $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Get
+                  Timelines API_TimelineStatus
+              - nullable: true
+      responses:
+        '200':
+          description: >-
+            Indicates that the draft timeline was successfully created. In the
+            event the user already has a draft timeline, the existing draft
+            timeline is cleared and returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      timelines:
+                        type: array
+                        items:
+                          $ref: >-
+                            #/components/schemas/Elastic Security - Timeline -
+                            Get Timelines API_TimelineResponse
+                      totalCount:
+                        type: number
+                      defaultTimelineCount:
+                        type: number
+                      templateTimelineCount:
+                        type: number
+                      favoriteCount:
+                        type: number
+                      elasticTemplateTimelineCount:
+                        type: number
+                      customTemplateTimelineCount:
+                        type: number
+                required:
+                  - data
+        '400':
+          description: Bad request. The user supplied invalid data.
+          content:
+            application:json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: string
+                  statusCode:
+                    type: number
+  /api/detection_engine/tags:
+    summary: Aggregates and returns rule tags
+    get:
+      operationId: ReadTags
+      x-codegen-enabled: true
+      summary: Aggregates and returns all unique tags from all rules
+      tags:
+        - Tags API
+      responses:
+        '200':
+          description: Indicates a successful call
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tags API endpoint_RuleTagArray'
+  /api/detection_engine/rules/_export:
+    summary: Exports rules to an `.ndjson` file
+    post:
+      operationId: ExportRules
+      x-codegen-enabled: true
+      summary: Export rules
+      description: >-
+        Exports rules to an `.ndjson` file. The following configuration items
+        are also included in the `.ndjson` file - Actions, Exception lists.
+        Prebuilt rules cannot be exported.
+      tags:
+        - Import/Export API
+      parameters:
+        - name: exclude_export_details
+          in: query
+          required: false
+          description: Determines whether a summary of the exported rules is returned.
+          schema:
+            type: boolean
+            default: false
+        - name: file_name
+          in: query
+          required: false
+          description: File name for saving the exported rules.
+          schema:
+            type: string
+            default: export.ndjson
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - objects
+              nullable: true
+              properties:
+                objects:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - rule_id
+                    properties:
+                      rule_id:
+                        $ref: >-
+                          #/components/schemas/Export Rules API
+                          endpoint_RuleSignatureId
+                  description: >-
+                    Array of `rule_id` fields. Exports all rules when
+                    unspecified.
+      responses:
+        '200':
+          description: Indicates a successful call.
+          content:
+            application/ndjson:
+              schema:
+                type: string
+                format: binary
+                description: An `.ndjson` file containing the returned rules.
+  /api/detection_engine/rules/_import:
+    summary: Imports rules from an `.ndjson` file
+    post:
+      operationId: ImportRules
+      x-codegen-enabled: true
+      summary: Import rules
+      description: >-
+        Imports rules from an `.ndjson` file, including actions and exception
+        lists.
+      tags:
+        - Import/Export API
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The `.ndjson` file containing the rules.
+      parameters:
+        - name: overwrite
+          in: query
+          required: false
+          description: >-
+            Determines whether existing rules with the same `rule_id` are
+            overwritten.
+          schema:
+            type: boolean
+            default: false
+        - name: overwrite_exceptions
+          in: query
+          required: false
+          description: >-
+            Determines whether existing exception lists with the same `list_id`
+            are overwritten.
+          schema:
+            type: boolean
+            default: false
+        - name: overwrite_action_connectors
+          in: query
+          required: false
+          description: >-
+            Determines whether existing actions with the same
+            `kibana.alert.rule.actions.id` are overwritten.
+          schema:
+            type: boolean
+            default: false
+        - name: as_new_list
+          in: query
+          required: false
+          description: Generates a new list ID for each imported exception list.
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Indicates a successful call.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - exceptions_success
+                  - exceptions_success_count
+                  - exceptions_errors
+                  - rules_count
+                  - success
+                  - success_count
+                  - errors
+                  - action_connectors_errors
+                  - action_connectors_warnings
+                  - action_connectors_success
+                  - action_connectors_success_count
+                properties:
+                  exceptions_success:
+                    type: boolean
+                  exceptions_success_count:
+                    type: integer
+                    minimum: 0
+                  exceptions_errors:
+                    type: array
+                    items:
+                      $ref: >-
+                        #/components/schemas/Import Rules API
+                        endpoint_ErrorSchema
+                  rules_count:
+                    type: integer
+                    minimum: 0
+                  success:
+                    type: boolean
+                  success_count:
+                    type: integer
+                    minimum: 0
+                  errors:
+                    type: array
+                    items:
+                      $ref: >-
+                        #/components/schemas/Import Rules API
+                        endpoint_ErrorSchema
+                  action_connectors_errors:
+                    type: array
+                    items:
+                      $ref: >-
+                        #/components/schemas/Import Rules API
+                        endpoint_ErrorSchema
+                  action_connectors_warnings:
+                    type: array
+                    items:
+                      $ref: >-
+                        #/components/schemas/Import Rules API
+                        endpoint_WarningSchema
+                  action_connectors_success:
+                    type: boolean
+                  action_connectors_success_count:
+                    type: integer
+                    minimum: 0
+components:
+  securitySchemes:
+    Security_serverless_basicAuth:
+      type: http
+      scheme: basic
+    Security_serverless_apiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'e.g. Authorization: ApiKey base64AccessApiKey'
+  schemas:
+    Elastic Security - Timeline - Draft Timeline API_TimelineType:
+      type: string
+      enum:
+        - default
+        - template
+      default: default
+      description: >-
+        The type of timeline to create. Valid values are `default` and
+        `template`.
+    Elastic Security - Timeline - Draft Timeline API_ColumnHeaderResult:
+      type: object
+      properties:
+        aggregatable:
+          type: boolean
+        category:
+          type: string
+        columnHeaderType:
+          type: string
+        description:
+          type: string
+        example:
+          oneOf:
+            - type: string
+            - type: number
+        indexes:
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+        name:
+          type: string
+        placeholder:
+          type: string
+        searchable:
+          type: boolean
+        type:
+          type: string
+    Elastic Security - Timeline - Draft Timeline API_QueryMatchResult:
+      type: object
+      properties:
+        field:
+          type: string
+        displayField:
+          type: string
+        value:
+          type: string
+        displayValue:
+          type: string
+        operator:
+          type: string
+    Elastic Security - Timeline - Draft Timeline API_DataProviderResult:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        enabled:
+          type: boolean
+        excluded:
+          type: boolean
+        kqlQuery:
+          type: string
+        queryMatch:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Draft Timeline
+            API_QueryMatchResult
+        and:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Draft Timeline
+              API_DataProviderResult
+        type:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Draft Timeline
+            API_DataProviderType
+    Elastic Security - Timeline - Draft Timeline API_DataProviderType:
+      type: string
+      enum:
+        - default
+        - template
+      default: default
+      description: >-
+        The type of data provider to create. Valid values are `default` and
+        `template`.
+    Elastic Security - Timeline - Draft Timeline API_RowRendererId:
+      type: string
+      enum:
+        - alert
+        - alerts
+        - auditd
+        - auditd_file
+        - library
+        - netflow
+        - plain
+        - registry
+        - suricata
+        - system
+        - system_dns
+        - system_endgame_process
+        - system_file
+        - system_fim
+        - system_security_event
+        - system_socket
+        - threat_match
+        - zeek
+    Elastic Security - Timeline - Draft Timeline API_FavoriteTimelineResult:
+      type: object
+      properties:
+        fullName:
+          type: string
+        userName:
+          type: string
+        favoriteDate:
+          type: number
+    Elastic Security - Timeline - Draft Timeline API_FilterTimelineResult:
+      type: object
+      properties:
+        exists:
+          type: boolean
+        meta:
+          type: object
+          properties:
+            alias:
+              type: string
+            controlledBy:
+              type: string
+            disabled:
+              type: boolean
+            field:
+              type: string
+            formattedValue:
+              type: string
+            index:
+              type: string
+            key:
+              type: string
+            negate:
+              type: boolean
+            params:
+              type: string
+            type:
+              type: string
+            value:
+              type: string
+        match_all:
+          type: string
+        missing:
+          type: string
+        query:
+          type: string
+        range:
+          type: string
+        script:
+          type: string
+    Elastic Security - Timeline - Draft Timeline API_SerializedFilterQueryResult:
+      type: object
+      properties:
+        filterQuery:
+          type: object
+          properties:
+            kuery:
+              type: object
+              properties:
+                kind:
+                  type: string
+                expression:
+                  type: string
+            serializedQuery:
+              type: string
+    Elastic Security - Timeline - Draft Timeline API_Sort:
+      type: object
+      properties:
+        columnId:
+          type: string
+        sortDirection:
+          type: string
+    Elastic Security - Timeline - Draft Timeline API_SavedTimeline:
+      type: object
+      properties:
+        columns:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Draft Timeline
+            API_ColumnHeaderResult
+        created:
+          type: number
+        createdBy:
+          type: string
+        dataProviders:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Draft Timeline
+              API_DataProviderResult
+        dataViewId:
+          type: string
+        dateRange:
+          type: object
+          properties:
+            end:
+              oneOf:
+                - type: string
+                - type: number
+            start:
+              oneOf:
+                - type: string
+                - type: number
+        description:
+          type: string
+        eqlOptions:
+          type: object
+          properties:
+            eventCategoryField:
+              type: string
+            tiebreakerField:
+              type: string
+            timestampField:
+              type: string
+        eventType:
+          type: string
+        excludedRowRendererIds:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Draft Timeline
+              API_RowRendererId
+        favorite:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Draft Timeline
+              API_FavoriteTimelineResult
+        filters:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Draft Timeline
+              API_FilterTimelineResult
+        kqlMode:
+          type: string
+        kqlQuery:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Draft Timeline
+            API_SerializedFilterQueryResult
+        indexNames:
+          type: array
+          items:
+            type: string
+        savedQueryId:
+          type: string
+        sort:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Draft Timeline
+            API_Sort
+        status:
+          type: string
+          enum:
+            - active
+            - draft
+            - immutable
+        title:
+          type: string
+        templateTimelineId:
+          type: string
+        templateTimelineVersion:
+          type: number
+        timelineType:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Draft Timeline
+            API_TimelineType
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Draft Timeline API_BareNote:
+      type: object
+      properties:
+        eventId:
+          type: string
+        note:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Draft Timeline API_Note:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Draft Timeline
+            API_BareNote
+        - type: object
+          properties:
+            noteId:
+              type: string
+            version:
+              type: string
+            timelineVersion:
+              nullable: true
+              type: string
+    Elastic Security - Timeline - Draft Timeline API_PinnedEvent:
+      type: object
+      properties:
+        pinnedEventId:
+          type: string
+        eventId:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+        version:
+          type: string
+        timelineVersion:
+          type: string
+    Elastic Security - Timeline - Draft Timeline API_TimelineResponse:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Draft Timeline
+            API_SavedTimeline
+        - type: object
+          required:
+            - savedObjectId
+            - version
+          properties:
+            eventIdToNoteIds:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Draft
+                  Timeline API_Note
+            notes:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Draft
+                  Timeline API_Note
+            noteIds:
+              type: array
+              items:
+                type: string
+            pinnedEventIds:
+              type: array
+              items:
+                type: string
+            pinnedEventsSaveObject:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Draft
+                  Timeline API_PinnedEvent
+            savedObjectId:
+              type: string
+            version:
+              type: string
+    Elastic Security - Timeline - Create Timelines API_TimelineStatus:
+      type: string
+      enum:
+        - active
+        - draft
+        - immutable
+      default: draft
+      description: >-
+        The status of the timeline. Valid values are `active`, `draft`, and
+        `immutable`.
+    Elastic Security - Timeline - Create Timelines API_TimelineType:
+      type: string
+      enum:
+        - default
+        - template
+      default: default
+      description: >-
+        The type of timeline to create. Valid values are `default` and
+        `template`.
+    Elastic Security - Timeline - Create Timelines API_ColumnHeaderResult:
+      type: object
+      properties:
+        aggregatable:
+          type: boolean
+        category:
+          type: string
+        columnHeaderType:
+          type: string
+        description:
+          type: string
+        example:
+          oneOf:
+            - type: string
+            - type: number
+        indexes:
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+        name:
+          type: string
+        placeholder:
+          type: string
+        searchable:
+          type: boolean
+        type:
+          type: string
+    Elastic Security - Timeline - Create Timelines API_QueryMatchResult:
+      type: object
+      properties:
+        field:
+          type: string
+        displayField:
+          type: string
+        value:
+          type: string
+        displayValue:
+          type: string
+        operator:
+          type: string
+    Elastic Security - Timeline - Create Timelines API_DataProviderResult:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        enabled:
+          type: boolean
+        excluded:
+          type: boolean
+        kqlQuery:
+          type: string
+        queryMatch:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Create Timelines
+            API_QueryMatchResult
+        and:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Create
+              Timelines API_DataProviderResult
+        type:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Create Timelines
+            API_DataProviderType
+    Elastic Security - Timeline - Create Timelines API_DataProviderType:
+      type: string
+      enum:
+        - default
+        - template
+      default: default
+      description: >-
+        The type of data provider to create. Valid values are `default` and
+        `template`.
+    Elastic Security - Timeline - Create Timelines API_RowRendererId:
+      type: string
+      enum:
+        - alert
+        - alerts
+        - auditd
+        - auditd_file
+        - library
+        - netflow
+        - plain
+        - registry
+        - suricata
+        - system
+        - system_dns
+        - system_endgame_process
+        - system_file
+        - system_fim
+        - system_security_event
+        - system_socket
+        - threat_match
+        - zeek
+    Elastic Security - Timeline - Create Timelines API_FavoriteTimelineResult:
+      type: object
+      properties:
+        fullName:
+          type: string
+        userName:
+          type: string
+        favoriteDate:
+          type: number
+    Elastic Security - Timeline - Create Timelines API_FilterTimelineResult:
+      type: object
+      properties:
+        exists:
+          type: boolean
+        meta:
+          type: object
+          properties:
+            alias:
+              type: string
+            controlledBy:
+              type: string
+            disabled:
+              type: boolean
+            field:
+              type: string
+            formattedValue:
+              type: string
+            index:
+              type: string
+            key:
+              type: string
+            negate:
+              type: boolean
+            params:
+              type: string
+            type:
+              type: string
+            value:
+              type: string
+        match_all:
+          type: string
+        missing:
+          type: string
+        query:
+          type: string
+        range:
+          type: string
+        script:
+          type: string
+    Elastic Security - Timeline - Create Timelines API_SerializedFilterQueryResult:
+      type: object
+      properties:
+        filterQuery:
+          type: object
+          properties:
+            kuery:
+              type: object
+              properties:
+                kind:
+                  type: string
+                expression:
+                  type: string
+            serializedQuery:
+              type: string
+    Elastic Security - Timeline - Create Timelines API_Sort:
+      type: object
+      properties:
+        columnId:
+          type: string
+        sortDirection:
+          type: string
+    Elastic Security - Timeline - Create Timelines API_SavedTimeline:
+      type: object
+      properties:
+        columns:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Create Timelines
+            API_ColumnHeaderResult
+        created:
+          type: number
+        createdBy:
+          type: string
+        dataProviders:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Create
+              Timelines API_DataProviderResult
+        dataViewId:
+          type: string
+        dateRange:
+          type: object
+          properties:
+            end:
+              oneOf:
+                - type: string
+                - type: number
+            start:
+              oneOf:
+                - type: string
+                - type: number
+        description:
+          type: string
+        eqlOptions:
+          type: object
+          properties:
+            eventCategoryField:
+              type: string
+            tiebreakerField:
+              type: string
+            timestampField:
+              type: string
+        eventType:
+          type: string
+        excludedRowRendererIds:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Create
+              Timelines API_RowRendererId
+        favorite:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Create
+              Timelines API_FavoriteTimelineResult
+        filters:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Create
+              Timelines API_FilterTimelineResult
+        kqlMode:
+          type: string
+        kqlQuery:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Create Timelines
+            API_SerializedFilterQueryResult
+        indexNames:
+          type: array
+          items:
+            type: string
+        savedQueryId:
+          type: string
+        sort:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Create Timelines
+            API_Sort
+        status:
+          type: string
+          enum:
+            - active
+            - draft
+            - immutable
+        title:
+          type: string
+        templateTimelineId:
+          type: string
+        templateTimelineVersion:
+          type: number
+        timelineType:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Create Timelines
+            API_TimelineType
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Create Timelines API_BareNote:
+      type: object
+      properties:
+        eventId:
+          type: string
+        note:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Create Timelines API_Note:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Create Timelines
+            API_BareNote
+        - type: object
+          properties:
+            noteId:
+              type: string
+            version:
+              type: string
+            timelineVersion:
+              nullable: true
+              type: string
+    Elastic Security - Timeline - Create Timelines API_PinnedEvent:
+      type: object
+      properties:
+        pinnedEventId:
+          type: string
+        eventId:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+        version:
+          type: string
+        timelineVersion:
+          type: string
+    Elastic Security - Timeline - Create Timelines API_TimelineResponse:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Create Timelines
+            API_SavedTimeline
+        - type: object
+          required:
+            - savedObjectId
+            - version
+          properties:
+            eventIdToNoteIds:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Create
+                  Timelines API_Note
+            notes:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Create
+                  Timelines API_Note
+            noteIds:
+              type: array
+              items:
+                type: string
+            pinnedEventIds:
+              type: array
+              items:
+                type: string
+            pinnedEventsSaveObject:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Create
+                  Timelines API_PinnedEvent
+            savedObjectId:
+              type: string
+            version:
+              type: string
+    Elastic Security - Timeline - Get Timeline API_ColumnHeaderResult:
+      type: object
+      properties:
+        aggregatable:
+          type: boolean
+        category:
+          type: string
+        columnHeaderType:
+          type: string
+        description:
+          type: string
+        example:
+          oneOf:
+            - type: string
+            - type: number
+        indexes:
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+        name:
+          type: string
+        placeholder:
+          type: string
+        searchable:
+          type: boolean
+        type:
+          type: string
+    Elastic Security - Timeline - Get Timeline API_QueryMatchResult:
+      type: object
+      properties:
+        field:
+          type: string
+        displayField:
+          type: string
+        value:
+          type: string
+        displayValue:
+          type: string
+        operator:
+          type: string
+    Elastic Security - Timeline - Get Timeline API_DataProviderResult:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        enabled:
+          type: boolean
+        excluded:
+          type: boolean
+        kqlQuery:
+          type: string
+        queryMatch:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timeline
+            API_QueryMatchResult
+        and:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timeline
+              API_DataProviderResult
+        type:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timeline
+            API_DataProviderType
+    Elastic Security - Timeline - Get Timeline API_DataProviderType:
+      type: string
+      enum:
+        - default
+        - template
+      default: default
+      description: >-
+        The type of data provider to create. Valid values are `default` and
+        `template`.
+    Elastic Security - Timeline - Get Timeline API_RowRendererId:
+      type: string
+      enum:
+        - alert
+        - alerts
+        - auditd
+        - auditd_file
+        - library
+        - netflow
+        - plain
+        - registry
+        - suricata
+        - system
+        - system_dns
+        - system_endgame_process
+        - system_file
+        - system_fim
+        - system_security_event
+        - system_socket
+        - threat_match
+        - zeek
+    Elastic Security - Timeline - Get Timeline API_FavoriteTimelineResult:
+      type: object
+      properties:
+        fullName:
+          type: string
+        userName:
+          type: string
+        favoriteDate:
+          type: number
+    Elastic Security - Timeline - Get Timeline API_FilterTimelineResult:
+      type: object
+      properties:
+        exists:
+          type: boolean
+        meta:
+          type: object
+          properties:
+            alias:
+              type: string
+            controlledBy:
+              type: string
+            disabled:
+              type: boolean
+            field:
+              type: string
+            formattedValue:
+              type: string
+            index:
+              type: string
+            key:
+              type: string
+            negate:
+              type: boolean
+            params:
+              type: string
+            type:
+              type: string
+            value:
+              type: string
+        match_all:
+          type: string
+        missing:
+          type: string
+        query:
+          type: string
+        range:
+          type: string
+        script:
+          type: string
+    Elastic Security - Timeline - Get Timeline API_SerializedFilterQueryResult:
+      type: object
+      properties:
+        filterQuery:
+          type: object
+          properties:
+            kuery:
+              type: object
+              properties:
+                kind:
+                  type: string
+                expression:
+                  type: string
+            serializedQuery:
+              type: string
+    Elastic Security - Timeline - Get Timeline API_Sort:
+      type: object
+      properties:
+        columnId:
+          type: string
+        sortDirection:
+          type: string
+    Elastic Security - Timeline - Get Timeline API_TimelineType:
+      type: string
+      enum:
+        - default
+        - template
+      default: default
+      description: >-
+        The type of timeline to create. Valid values are `default` and
+        `template`.
+    Elastic Security - Timeline - Get Timeline API_SavedTimeline:
+      type: object
+      properties:
+        columns:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timeline
+            API_ColumnHeaderResult
+        created:
+          type: number
+        createdBy:
+          type: string
+        dataProviders:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timeline
+              API_DataProviderResult
+        dataViewId:
+          type: string
+        dateRange:
+          type: object
+          properties:
+            end:
+              oneOf:
+                - type: string
+                - type: number
+            start:
+              oneOf:
+                - type: string
+                - type: number
+        description:
+          type: string
+        eqlOptions:
+          type: object
+          properties:
+            eventCategoryField:
+              type: string
+            tiebreakerField:
+              type: string
+            timestampField:
+              type: string
+        eventType:
+          type: string
+        excludedRowRendererIds:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timeline
+              API_RowRendererId
+        favorite:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timeline
+              API_FavoriteTimelineResult
+        filters:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timeline
+              API_FilterTimelineResult
+        kqlMode:
+          type: string
+        kqlQuery:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timeline
+            API_SerializedFilterQueryResult
+        indexNames:
+          type: array
+          items:
+            type: string
+        savedQueryId:
+          type: string
+        sort:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timeline
+            API_Sort
+        status:
+          type: string
+          enum:
+            - active
+            - draft
+            - immutable
+        title:
+          type: string
+        templateTimelineId:
+          type: string
+        templateTimelineVersion:
+          type: number
+        timelineType:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timeline
+            API_TimelineType
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Get Timeline API_BareNote:
+      type: object
+      properties:
+        eventId:
+          type: string
+        note:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Get Timeline API_Note:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timeline
+            API_BareNote
+        - type: object
+          properties:
+            noteId:
+              type: string
+            version:
+              type: string
+            timelineVersion:
+              nullable: true
+              type: string
+    Elastic Security - Timeline - Get Timeline API_PinnedEvent:
+      type: object
+      properties:
+        pinnedEventId:
+          type: string
+        eventId:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+        version:
+          type: string
+        timelineVersion:
+          type: string
+    Elastic Security - Timeline - Get Timeline API_TimelineResponse:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timeline
+            API_SavedTimeline
+        - type: object
+          required:
+            - savedObjectId
+            - version
+          properties:
+            eventIdToNoteIds:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Get
+                  Timeline API_Note
+            notes:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Get
+                  Timeline API_Note
+            noteIds:
+              type: array
+              items:
+                type: string
+            pinnedEventIds:
+              type: array
+              items:
+                type: string
+            pinnedEventsSaveObject:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Get
+                  Timeline API_PinnedEvent
+            savedObjectId:
+              type: string
+            version:
+              type: string
+    Elastic Security - Timeline - Get Timelines API_TimelineType:
+      type: string
+      enum:
+        - default
+        - template
+      default: default
+      description: >-
+        The type of timeline to create. Valid values are `default` and
+        `template`.
+    Elastic Security - Timeline - Get Timelines API_SortFieldTimeline:
+      type: object
+      description: The field to sort the timelines by.
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        updated:
+          type: string
+        created:
+          type: string
+    Elastic Security - Timeline - Get Timelines API_TimelineStatus:
+      type: string
+      enum:
+        - active
+        - draft
+        - immutable
+      default: draft
+      description: >-
+        The status of the timeline. Valid values are `active`, `draft`, and
+        `immutable`.
+    Elastic Security - Timeline - Get Timelines API_ColumnHeaderResult:
+      type: object
+      properties:
+        aggregatable:
+          type: boolean
+        category:
+          type: string
+        columnHeaderType:
+          type: string
+        description:
+          type: string
+        example:
+          oneOf:
+            - type: string
+            - type: number
+        indexes:
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+        name:
+          type: string
+        placeholder:
+          type: string
+        searchable:
+          type: boolean
+        type:
+          type: string
+    Elastic Security - Timeline - Get Timelines API_QueryMatchResult:
+      type: object
+      properties:
+        field:
+          type: string
+        displayField:
+          type: string
+        value:
+          type: string
+        displayValue:
+          type: string
+        operator:
+          type: string
+    Elastic Security - Timeline - Get Timelines API_DataProviderResult:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        enabled:
+          type: boolean
+        excluded:
+          type: boolean
+        kqlQuery:
+          type: string
+        queryMatch:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timelines
+            API_QueryMatchResult
+        and:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timelines
+              API_DataProviderResult
+        type:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timelines
+            API_DataProviderType
+    Elastic Security - Timeline - Get Timelines API_DataProviderType:
+      type: string
+      enum:
+        - default
+        - template
+      default: default
+      description: >-
+        The type of data provider to create. Valid values are `default` and
+        `template`.
+    Elastic Security - Timeline - Get Timelines API_RowRendererId:
+      type: string
+      enum:
+        - alert
+        - alerts
+        - auditd
+        - auditd_file
+        - library
+        - netflow
+        - plain
+        - registry
+        - suricata
+        - system
+        - system_dns
+        - system_endgame_process
+        - system_file
+        - system_fim
+        - system_security_event
+        - system_socket
+        - threat_match
+        - zeek
+    Elastic Security - Timeline - Get Timelines API_FavoriteTimelineResult:
+      type: object
+      properties:
+        fullName:
+          type: string
+        userName:
+          type: string
+        favoriteDate:
+          type: number
+    Elastic Security - Timeline - Get Timelines API_FilterTimelineResult:
+      type: object
+      properties:
+        exists:
+          type: boolean
+        meta:
+          type: object
+          properties:
+            alias:
+              type: string
+            controlledBy:
+              type: string
+            disabled:
+              type: boolean
+            field:
+              type: string
+            formattedValue:
+              type: string
+            index:
+              type: string
+            key:
+              type: string
+            negate:
+              type: boolean
+            params:
+              type: string
+            type:
+              type: string
+            value:
+              type: string
+        match_all:
+          type: string
+        missing:
+          type: string
+        query:
+          type: string
+        range:
+          type: string
+        script:
+          type: string
+    Elastic Security - Timeline - Get Timelines API_SerializedFilterQueryResult:
+      type: object
+      properties:
+        filterQuery:
+          type: object
+          properties:
+            kuery:
+              type: object
+              properties:
+                kind:
+                  type: string
+                expression:
+                  type: string
+            serializedQuery:
+              type: string
+    Elastic Security - Timeline - Get Timelines API_Sort:
+      type: object
+      properties:
+        columnId:
+          type: string
+        sortDirection:
+          type: string
+    Elastic Security - Timeline - Get Timelines API_SavedTimeline:
+      type: object
+      properties:
+        columns:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timelines
+            API_ColumnHeaderResult
+        created:
+          type: number
+        createdBy:
+          type: string
+        dataProviders:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timelines
+              API_DataProviderResult
+        dataViewId:
+          type: string
+        dateRange:
+          type: object
+          properties:
+            end:
+              oneOf:
+                - type: string
+                - type: number
+            start:
+              oneOf:
+                - type: string
+                - type: number
+        description:
+          type: string
+        eqlOptions:
+          type: object
+          properties:
+            eventCategoryField:
+              type: string
+            tiebreakerField:
+              type: string
+            timestampField:
+              type: string
+        eventType:
+          type: string
+        excludedRowRendererIds:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timelines
+              API_RowRendererId
+        favorite:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timelines
+              API_FavoriteTimelineResult
+        filters:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Get Timelines
+              API_FilterTimelineResult
+        kqlMode:
+          type: string
+        kqlQuery:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timelines
+            API_SerializedFilterQueryResult
+        indexNames:
+          type: array
+          items:
+            type: string
+        savedQueryId:
+          type: string
+        sort:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timelines
+            API_Sort
+        status:
+          type: string
+          enum:
+            - active
+            - draft
+            - immutable
+        title:
+          type: string
+        templateTimelineId:
+          type: string
+        templateTimelineVersion:
+          type: number
+        timelineType:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timelines
+            API_TimelineType
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Get Timelines API_BareNote:
+      type: object
+      properties:
+        eventId:
+          type: string
+        note:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Get Timelines API_Note:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timelines
+            API_BareNote
+        - type: object
+          properties:
+            noteId:
+              type: string
+            version:
+              type: string
+            timelineVersion:
+              nullable: true
+              type: string
+    Elastic Security - Timeline - Get Timelines API_PinnedEvent:
+      type: object
+      properties:
+        pinnedEventId:
+          type: string
+        eventId:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+        version:
+          type: string
+        timelineVersion:
+          type: string
+    Elastic Security - Timeline - Get Timelines API_TimelineResponse:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Get Timelines
+            API_SavedTimeline
+        - type: object
+          required:
+            - savedObjectId
+            - version
+          properties:
+            eventIdToNoteIds:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Get
+                  Timelines API_Note
+            notes:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Get
+                  Timelines API_Note
+            noteIds:
+              type: array
+              items:
+                type: string
+            pinnedEventIds:
+              type: array
+              items:
+                type: string
+            pinnedEventsSaveObject:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Get
+                  Timelines API_PinnedEvent
+            savedObjectId:
+              type: string
+            version:
+              type: string
+    Elastic Security - Timeline - Patch Timeline API_ColumnHeaderResult:
+      type: object
+      properties:
+        aggregatable:
+          type: boolean
+        category:
+          type: string
+        columnHeaderType:
+          type: string
+        description:
+          type: string
+        example:
+          oneOf:
+            - type: string
+            - type: number
+        indexes:
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+        name:
+          type: string
+        placeholder:
+          type: string
+        searchable:
+          type: boolean
+        type:
+          type: string
+    Elastic Security - Timeline - Patch Timeline API_QueryMatchResult:
+      type: object
+      properties:
+        field:
+          type: string
+        displayField:
+          type: string
+        value:
+          type: string
+        displayValue:
+          type: string
+        operator:
+          type: string
+    Elastic Security - Timeline - Patch Timeline API_DataProviderResult:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        enabled:
+          type: boolean
+        excluded:
+          type: boolean
+        kqlQuery:
+          type: string
+        queryMatch:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Patch Timeline
+            API_QueryMatchResult
+        and:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Patch Timeline
+              API_DataProviderResult
+        type:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Patch Timeline
+            API_DataProviderType
+    Elastic Security - Timeline - Patch Timeline API_DataProviderType:
+      type: string
+      enum:
+        - default
+        - template
+      default: default
+      description: >-
+        The type of data provider to create. Valid values are `default` and
+        `template`.
+    Elastic Security - Timeline - Patch Timeline API_RowRendererId:
+      type: string
+      enum:
+        - alert
+        - alerts
+        - auditd
+        - auditd_file
+        - library
+        - netflow
+        - plain
+        - registry
+        - suricata
+        - system
+        - system_dns
+        - system_endgame_process
+        - system_file
+        - system_fim
+        - system_security_event
+        - system_socket
+        - threat_match
+        - zeek
+    Elastic Security - Timeline - Patch Timeline API_FavoriteTimelineResult:
+      type: object
+      properties:
+        fullName:
+          type: string
+        userName:
+          type: string
+        favoriteDate:
+          type: number
+    Elastic Security - Timeline - Patch Timeline API_FilterTimelineResult:
+      type: object
+      properties:
+        exists:
+          type: boolean
+        meta:
+          type: object
+          properties:
+            alias:
+              type: string
+            controlledBy:
+              type: string
+            disabled:
+              type: boolean
+            field:
+              type: string
+            formattedValue:
+              type: string
+            index:
+              type: string
+            key:
+              type: string
+            negate:
+              type: boolean
+            params:
+              type: string
+            type:
+              type: string
+            value:
+              type: string
+        match_all:
+          type: string
+        missing:
+          type: string
+        query:
+          type: string
+        range:
+          type: string
+        script:
+          type: string
+    Elastic Security - Timeline - Patch Timeline API_SerializedFilterQueryResult:
+      type: object
+      properties:
+        filterQuery:
+          type: object
+          properties:
+            kuery:
+              type: object
+              properties:
+                kind:
+                  type: string
+                expression:
+                  type: string
+            serializedQuery:
+              type: string
+    Elastic Security - Timeline - Patch Timeline API_Sort:
+      type: object
+      properties:
+        columnId:
+          type: string
+        sortDirection:
+          type: string
+    Elastic Security - Timeline - Patch Timeline API_TimelineType:
+      type: string
+      enum:
+        - default
+        - template
+      default: default
+      description: >-
+        The type of timeline to create. Valid values are `default` and
+        `template`.
+    Elastic Security - Timeline - Patch Timeline API_SavedTimeline:
+      type: object
+      properties:
+        columns:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Patch Timeline
+            API_ColumnHeaderResult
+        created:
+          type: number
+        createdBy:
+          type: string
+        dataProviders:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Patch Timeline
+              API_DataProviderResult
+        dataViewId:
+          type: string
+        dateRange:
+          type: object
+          properties:
+            end:
+              oneOf:
+                - type: string
+                - type: number
+            start:
+              oneOf:
+                - type: string
+                - type: number
+        description:
+          type: string
+        eqlOptions:
+          type: object
+          properties:
+            eventCategoryField:
+              type: string
+            tiebreakerField:
+              type: string
+            timestampField:
+              type: string
+        eventType:
+          type: string
+        excludedRowRendererIds:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Patch Timeline
+              API_RowRendererId
+        favorite:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Patch Timeline
+              API_FavoriteTimelineResult
+        filters:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/Elastic Security - Timeline - Patch Timeline
+              API_FilterTimelineResult
+        kqlMode:
+          type: string
+        kqlQuery:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Patch Timeline
+            API_SerializedFilterQueryResult
+        indexNames:
+          type: array
+          items:
+            type: string
+        savedQueryId:
+          type: string
+        sort:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Patch Timeline
+            API_Sort
+        status:
+          type: string
+          enum:
+            - active
+            - draft
+            - immutable
+        title:
+          type: string
+        templateTimelineId:
+          type: string
+        templateTimelineVersion:
+          type: number
+        timelineType:
+          $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Patch Timeline
+            API_TimelineType
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Patch Timeline API_BareNote:
+      type: object
+      properties:
+        eventId:
+          type: string
+        note:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Patch Timeline API_Note:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Patch Timeline
+            API_BareNote
+        - type: object
+          properties:
+            noteId:
+              type: string
+            version:
+              type: string
+            timelineVersion:
+              nullable: true
+              type: string
+    Elastic Security - Timeline - Patch Timeline API_PinnedEvent:
+      type: object
+      properties:
+        pinnedEventId:
+          type: string
+        eventId:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+        version:
+          type: string
+        timelineVersion:
+          type: string
+    Elastic Security - Timeline - Patch Timeline API_TimelineResponse:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Patch Timeline
+            API_SavedTimeline
+        - type: object
+          required:
+            - savedObjectId
+            - version
+          properties:
+            eventIdToNoteIds:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Patch
+                  Timeline API_Note
+            notes:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Patch
+                  Timeline API_Note
+            noteIds:
+              type: array
+              items:
+                type: string
+            pinnedEventIds:
+              type: array
+              items:
+                type: string
+            pinnedEventsSaveObject:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/Elastic Security - Timeline - Patch
+                  Timeline API_PinnedEvent
+            savedObjectId:
+              type: string
+            version:
+              type: string
+    Elastic Security - Timeline - Notes API_BareNote:
+      type: object
+      properties:
+        eventId:
+          type: string
+        note:
+          type: string
+        timelineId:
+          type: string
+        created:
+          type: number
+        createdBy:
+          type: string
+        updated:
+          type: number
+        updatedBy:
+          type: string
+    Elastic Security - Timeline - Notes API_Note:
+      allOf:
+        - $ref: >-
+            #/components/schemas/Elastic Security - Timeline - Notes
+            API_BareNote
+        - type: object
+          properties:
+            noteId:
+              type: string
+            version:
+              type: string
+            timelineVersion:
+              nullable: true
+              type: string
+    Execution Metrics Schema_RuleExecutionMetrics:
+      type: object
+      properties:
+        total_search_duration_ms:
+          description: >-
+            Total time spent performing ES searches as measured by Kibana;
+            includes network latency and time spent serializing/deserializing
+            request/response
+          type: integer
+          minimum: 0
+        total_indexing_duration_ms:
+          description: >-
+            Total time spent indexing documents during current rule execution
+            cycle
+          type: integer
+          minimum: 0
+        total_enrichment_duration_ms:
+          description: >-
+            Total time spent enriching documents during current rule execution
+            cycle
+          type: integer
+          minimum: 0
+        execution_gap_duration_s:
+          description: Duration in seconds of execution gap
+          type: integer
+          minimum: 0
+    Execution Result Schema_RuleExecutionResult:
+      type: object
+      description: >-
+        Rule execution result is an aggregate that groups plain rule execution
+        events by execution UUID. It contains such information as execution
+        UUID, date, status and metrics.
+      properties:
+        execution_uuid:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        duration_ms:
+          type: integer
+        status:
+          type: string
+        message:
+          type: string
+        num_active_alerts:
+          type: integer
+        num_new_alerts:
+          type: integer
+        num_recovered_alerts:
+          type: integer
+        num_triggered_actions:
+          type: integer
+        num_succeeded_actions:
+          type: integer
+        num_errored_actions:
+          type: integer
+        total_search_duration_ms:
+          type: integer
+        es_search_duration_ms:
+          type: integer
+        schedule_delay_ms:
+          type: integer
+        timed_out:
+          type: boolean
+        indexing_duration_ms:
+          type: integer
+        search_duration_ms:
+          type: integer
+        gap_duration_s:
+          type: integer
+        security_status:
+          type: string
+        security_message:
+          type: string
+      required:
+        - execution_uuid
+        - timestamp
+        - duration_ms
+        - status
+        - message
+        - num_active_alerts
+        - num_new_alerts
+        - num_recovered_alerts
+        - num_triggered_actions
+        - num_succeeded_actions
+        - num_errored_actions
+        - total_search_duration_ms
+        - es_search_duration_ms
+        - schedule_delay_ms
+        - timed_out
+        - indexing_duration_ms
+        - search_duration_ms
+        - gap_duration_s
+        - security_status
+        - security_message
+    Execution Result Schema_SortFieldOfRuleExecutionResult:
+      type: string
+      description: We support sorting rule execution results by these fields.
+      enum:
+        - timestamp
+        - duration_ms
+        - gap_duration_s
+        - indexing_duration_ms
+        - search_duration_ms
+        - schedule_delay_ms
+    Tags API endpoint_RuleTagArray:
+      type: array
+      items:
+        type: string
+      description: >-
+        String array containing words and phrases to help categorize, filter,
+        and search rules. Defaults to an empty array.
+    Export Rules API endpoint_RuleSignatureId:
+      type: string
+      description: Could be any string, not necessarily a UUID
+    Import Rules API endpoint_RuleSignatureId:
+      type: string
+      description: Could be any string, not necessarily a UUID
+    Import Rules API endpoint_ErrorSchema:
+      type: object
+      required:
+        - error
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        rule_id:
+          $ref: '#/components/schemas/Import Rules API endpoint_RuleSignatureId'
+        list_id:
+          type: string
+          minLength: 1
+        item_id:
+          type: string
+          minLength: 1
+        error:
+          type: object
+          required:
+            - status_code
+            - message
+          properties:
+            status_code:
+              type: integer
+              minimum: 400
+            message:
+              type: string
+    Import Rules API endpoint_WarningSchema:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+        actionPath:
+          type: string
+        buttonLabel:
+          type: string
+      required:
+        - type
+        - message
+        - actionPath
+  x-codegen-enabled: {}
