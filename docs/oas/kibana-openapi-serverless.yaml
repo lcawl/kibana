@@ -16,21 +16,30 @@ servers:
         default: localhost:5601
 tags:
   - name: connectors
-    description: Connector APIs enable you to create and manage connectors.
-    x-displayName: connectors
-  - name: saved objects
-    description: >-
-      Manage Kibana saved objects, including dashboards, visualizations, and
-      more.
-    x-displayName: saved objects
+    description: Create and manage Kibana connectors
+    x-displayName: Connectors
+    externalDocs:
+      description: More details about connectors
+      url: https://www.elastic.co/guide/en/kibana/current/action-types.html
   - name: data views
-    description: >-
-      Data view APIs enable you to manage data views, formerly known as Kibana
-      index patterns.
-    x-displayName: data views
+    x-displayName: Data views
+    description: Create and manage data Kibana data views, formerly known as index patterns.
+    externalDocs:
+      description: More details about data views
+      url: https://www.elastic.co/guide/en/kibana/current/managing-data-views.html
   - name: ml
-    description: Machine learning
-    x-displayName: ml
+    x-displayName: Machine learning
+    description: Synchonize machine learning saved objects
+    externalDocs:
+      description: More details about machine learning in Kibana
+      url: https://www.elastic.co/guide/en/kibana/current/xpack-ml.html
+  - name: saved objects
+    x-displayName: Saved objects
+    description: Manage Kibana saved objects, including dashboards, visualizations, and more.
+    externalDocs:
+      description: More details about saved objects
+      url: https://www.elastic.co/guide/en/kibana/current/managing-saved-objects.html
+
 paths:
   /api/actions/connector:
     post:
@@ -2083,6 +2092,34 @@ components:
             - my-connector
         secrets:
           $ref: '#/components/schemas/Connectors_secrets_properties_email'
+    Connectors_create_connector_request_genai:
+      title: Create OpenAI connector request
+      description: >
+        The OpenAI connector uses axios to send a POST request to either OpenAI
+        or Azure OpenAPI.
+      type: object
+      required:
+        - config
+        - connector_type_id
+        - name
+        - secrets
+      properties:
+        config:
+          $ref: '#/components/schemas/Connectors_config_properties_genai'
+        connector_type_id:
+          type: string
+          description: The type of connector.
+          enum:
+            - .gen-ai
+          examples:
+            - .gen-ai
+        name:
+          type: string
+          description: The display name for the connector.
+          examples:
+            - my-connector
+        secrets:
+          $ref: '#/components/schemas/Connectors_secrets_properties_genai'
     Connectors_create_connector_request_index:
       title: Create index connector request
       description: The index connector indexes a document into Elasticsearch.
@@ -2606,8 +2643,7 @@ components:
             URL. If you are using the `xpack.actions.allowedHosts setting`, add
             the hostname to the allowed hosts.
           examples:
-            - >-
-              https://testing-jira.atlassian.net/rest/api/2/issue/{{{external.system.id}}}/comment
+            - https://example.com/issue/{{{external.system.id}}}/comment
         createIncidentJson:
           type: string
           description: >
@@ -2641,7 +2677,7 @@ components:
         createIncidentResponseKey:
           type: string
           description: >-
-            The JSON key in the create case response that contains the external
+            The JSON key in the create external case response that contains the
             case ID.
         createIncidentUrl:
           type: string
@@ -2652,7 +2688,7 @@ components:
         getIncidentResponseExternalTitleKey:
           type: string
           description: >-
-            The JSON key in get case response that contains the external case
+            The JSON key in get external case response that contains the case
             title.
         getIncidentUrl:
           type: string
@@ -2668,8 +2704,7 @@ components:
             valid, disregarding the Mustache variables, so the later validation
             will pass.
           examples:
-            - >-
-              https://testing-jira.atlassian.net/rest/api/2/issue/{{{external.system.id}}}
+            - https://example.com/issue/{{{external.system.id}}}
         hasAuth:
           type: boolean
           description: >-
@@ -2719,8 +2754,7 @@ components:
             you are using the `xpack.actions.allowedHosts` setting, add the
             hostname to the allowed hosts.
           examples:
-            - >-
-              https://testing-jira.atlassian.net/rest/api/2/issue/{{{external.system.ID}}}
+            - https://example.com/issue/{{{external.system.ID}}}
         viewIncidentUrl:
           type: string
           description: >
@@ -2918,34 +2952,6 @@ components:
         apiKey:
           type: string
           description: The OpenAI API key.
-    Connectors_create_connector_request_genai:
-      title: Create OpenAI connector request
-      description: >
-        The OpenAI connector uses axios to send a POST request to either OpenAI
-        or Azure OpenAPI.
-      type: object
-      required:
-        - config
-        - connector_type_id
-        - name
-        - secrets
-      properties:
-        config:
-          $ref: '#/components/schemas/Connectors_config_properties_genai'
-        connector_type_id:
-          type: string
-          description: The type of connector.
-          enum:
-            - .gen-ai
-          examples:
-            - .gen-ai
-        name:
-          type: string
-          description: The display name for the connector.
-          examples:
-            - my-connector
-        secrets:
-          $ref: '#/components/schemas/Connectors_secrets_properties_genai'
     Connectors_config_properties_index:
       title: Connector request properties for an index connector
       required:
@@ -3635,6 +3641,7 @@ components:
             #/components/schemas/Connectors_create_connector_request_cases_webhook
           .d3security: '#/components/schemas/Connectors_create_connector_request_d3security'
           .email: '#/components/schemas/Connectors_create_connector_request_email'
+          .gen-ai: '#/components/schemas/Connectors_create_connector_request_genai'
           .index: '#/components/schemas/Connectors_create_connector_request_index'
           .jira: '#/components/schemas/Connectors_create_connector_request_jira'
           .opsgenie: '#/components/schemas/Connectors_create_connector_request_opsgenie'
@@ -3770,6 +3777,39 @@ components:
           description: The type of connector.
           enum:
             - .email
+        id:
+          type: string
+          description: The identifier for the connector.
+        is_deprecated:
+          $ref: '#/components/schemas/Connectors_is_deprecated'
+        is_missing_secrets:
+          $ref: '#/components/schemas/Connectors_is_missing_secrets'
+        is_preconfigured:
+          $ref: '#/components/schemas/Connectors_is_preconfigured'
+        is_system_action:
+          $ref: '#/components/schemas/Connectors_is_system_action'
+        name:
+          type: string
+          description: The display name for the connector.
+        referenced_by_count:
+          $ref: '#/components/schemas/Connectors_referenced_by_count'
+    Connectors_connector_response_properties_genai:
+      title: Connector response properties for an OpenAI connector
+      type: object
+      required:
+        - connector_type_id
+        - id
+        - is_deprecated
+        - is_preconfigured
+        - name
+      properties:
+        config:
+          $ref: '#/components/schemas/Connectors_config_properties_genai'
+        connector_type_id:
+          type: string
+          description: The type of connector.
+          enum:
+            - .gen-ai
         id:
           type: string
           description: The identifier for the connector.
@@ -4388,6 +4428,7 @@ components:
         - $ref: >-
             #/components/schemas/Connectors_connector_response_properties_d3security
         - $ref: '#/components/schemas/Connectors_connector_response_properties_email'
+        - $ref: '#/components/schemas/Connectors_connector_response_properties_genai'
         - $ref: '#/components/schemas/Connectors_connector_response_properties_index'
         - $ref: '#/components/schemas/Connectors_connector_response_properties_jira'
         - $ref: >-
@@ -4427,6 +4468,7 @@ components:
           .d3security: >-
             #/components/schemas/Connectors_connector_response_properties_d3security
           .email: '#/components/schemas/Connectors_connector_response_properties_email'
+          .gen-ai: '#/components/schemas/Connectors_connector_response_properties_genai'
           .index: '#/components/schemas/Connectors_connector_response_properties_index'
           .jira: '#/components/schemas/Connectors_connector_response_properties_jira'
           .opsgenie: >-

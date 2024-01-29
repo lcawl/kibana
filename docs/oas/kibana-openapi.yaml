@@ -12,17 +12,30 @@ servers:
   - url: /
 tags:
   - name: alerting
-    description: Alerting APIs enable you to create and manage rules and alerts.
-    x-displayName: alerting
+    x-displayName: Alerting
+    description: Create and manage rules and alerts in Kibana
+    externalDocs:
+      description: More details about alerting in Kibana
+      url: https://www.elastic.co/guide/en/kibana/current/alerting-getting-started.html
   - name: connectors
-    description: Connector APIs enable you to create and manage connectors.
-    x-displayName: connectors
+    x-displayName: Connectors
+    description: Create and manage Kibana connectors
+    externalDocs:
+      description: More details about connectors
+      url: https://www.elastic.co/guide/en/kibana/current/action-types.html
   - name: cases
-    description: Case APIs enable you to open and track issues.
-    x-displayName: cases
+    x-displayName: Cases
+    description: Open and track issues in Kibana cases
+    externalDocs:
+      description: More details about cases
+      url: https://www.elastic.co/guide/en/kibana/current/cases.html
   - name: ml
-    description: Machine learning
-    x-displayName: ml
+    x-displayName: Machine learning
+    description: Synchonize machine learning saved objects
+    externalDocs:
+      description: More details about machine learning in Kibana
+      url: https://www.elastic.co/guide/en/kibana/current/xpack-ml.html
+
 paths:
   /s/{spaceId}/api/alerting/rule:
     post:
@@ -719,6 +732,71 @@ paths:
                                 type: string
                     alerts:
                       type: object
+                      description: >
+                        Details for writing alerts as data documents for this
+                        rule type.
+                      properties:
+                        context:
+                          type: string
+                          description: |
+                            The namespace for this rule type.
+                          enum:
+                            - ml.anomaly-detection
+                            - observability.apm
+                            - observability.logs
+                            - observability.metrics
+                            - observability.slo
+                            - observability.threshold
+                            - observability.uptime
+                            - security
+                            - stack
+                        dynamic:
+                          type: string
+                          description: Indicates whether new fields are added dynamically.
+                          enum:
+                            - 'false'
+                            - runtime
+                            - strict
+                            - 'true'
+                        isSpaceAware:
+                          type: boolean
+                          description: >
+                            Indicates whether the alerts are space-aware. If
+                            true, space-specific alert indices are used.
+                        mappings:
+                          type: object
+                          properties:
+                            fieldMap:
+                              type: object
+                              description: >
+                                Mapping information for each field supported in
+                                alerts as data documents for this rule type. For
+                                more information about mapping parameters, refer
+                                to the Elasticsearch documentation.
+                              additionalProperties:
+                                $ref: >-
+                                  #/components/schemas/Alerting_fieldmap_properties
+                        secondaryAlias:
+                          type: string
+                          description: >
+                            A secondary alias. It is typically used to support
+                            the signals alias for detection rules.
+                        shouldWrite:
+                          type: boolean
+                          description: >
+                            Indicates whether the rule should write out alerts
+                            as data.
+                        useEcs:
+                          type: boolean
+                          description: >
+                            Indicates whether to include the ECS component
+                            template for the alerts.
+                        useLegacyAlerts:
+                          type: boolean
+                          default: false
+                          description: >
+                            Indicates whether to include the legacy component
+                            template for the alerts.
                     authorized_consumers:
                       description: >-
                         The list of the plugins IDs that have access to the rule
@@ -826,6 +904,9 @@ paths:
                       type: boolean
                     has_alerts_mappings:
                       type: boolean
+                      description: >-
+                        Indicates whether the rule type has custom mappings for
+                        the alert data.
                     has_fields_for_a_a_d:
                       type: boolean
                     id:
@@ -2097,6 +2178,9 @@ paths:
             schema:
               $ref: '#/components/schemas/Connectors_run_connector_request'
             examples:
+              runCasesWebhookConnectorRequest:
+                $ref: >-
+                  #/components/examples/Connectors_run_cases_webhook_connector_request
               runEmailConnectorRequest:
                 $ref: '#/components/examples/Connectors_run_email_connector_request'
               runIndexConnectorRequest:
@@ -2145,6 +2229,9 @@ paths:
                       - error
                       - ok
               examples:
+                runCasesWebhookConnectorResponse:
+                  $ref: >-
+                    #/components/examples/Connectors_run_cases_webhook_connector_response
                 runEmailConnectorResponse:
                   $ref: >-
                     #/components/examples/Connectors_run_email_connector_response
@@ -6365,249 +6452,6 @@ components:
         examples:
           - true
   schemas:
-    Alerting_filter:
-      type: object
-      description: >-
-        A filter written in Elasticsearch Query Domain Specific Language (DSL)
-        as defined in the `kbn-es-query` package.
-      properties:
-        meta:
-          type: object
-          properties:
-            alias:
-              type:
-                - string
-                - 'null'
-            controlledBy:
-              type: string
-            disabled:
-              type: boolean
-            field:
-              type: string
-            group:
-              type: string
-            index:
-              type: string
-            isMultiIndex:
-              type: boolean
-            key:
-              type: string
-            negate:
-              type: boolean
-            params:
-              type: object
-            type:
-              type: string
-            value:
-              type: string
-        query:
-          type: object
-        $state:
-          type: object
-    Alerting_notify_when:
-      type: string
-      description: >
-        Indicates how often alerts generate actions. Valid values include:
-        `onActionGroupChange`: Actions run when the alert status changes;
-        `onActiveAlert`: Actions run when the alert becomes active and at each
-        check interval while the rule conditions are met; `onThrottleInterval`:
-        Actions run when the alert becomes active and at the interval specified
-        in the throttle property while the rule conditions are met. NOTE: You
-        cannot specify `notify_when` at both the rule and action level. The
-        recommended method is to set it for each action. If you set it at the
-        rule level then update the rule in Kibana, it is automatically changed
-        to use action-specific values.
-      enum:
-        - onActionGroupChange
-        - onActiveAlert
-        - onThrottleInterval
-      examples:
-        - onActiveAlert
-    Alerting_throttle:
-      type:
-        - string
-        - 'null'
-      description: >
-        The throttle interval, which defines how often an alert generates
-        repeated actions. It is specified in seconds, minutes, hours, or days
-        and is applicable only if `notify_when` is set to `onThrottleInterval`.
-        NOTE: You cannot specify the throttle interval at both the rule and
-        action level. The recommended method is to set it for each action. If
-        you set it at the rule level then update the rule in Kibana, it is
-        automatically changed to use action-specific values.
-      default: null
-      examples:
-        - 10m
-    Alerting_actions:
-      type:
-        - array
-        - 'null'
-      default: []
-      items:
-        type: object
-        required:
-          - group
-          - id
-          - params
-        description: |
-          An action that runs under defined conditions.
-        properties:
-          alerts_filter:
-            type: object
-            description: >
-              Conditions that affect whether the action runs. If you specify
-              multiple conditions, all conditions must be met for the action to
-              run. For example, if an alert occurs within the specified time
-              frame and matches the query, the action runs.
-            properties:
-              query:
-                type: object
-                description: >-
-                  Defines a query filter that determines whether the action
-                  runs.
-                properties:
-                  kql:
-                    type: string
-                    description: A filter written in Kibana Query Language (KQL).
-                  filters:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Alerting_filter'
-              timeframe:
-                type: object
-                description: Defines a period that limits whether the action runs.
-                properties:
-                  days:
-                    type: array
-                    description: >-
-                      Defines the days of the week that the action can run,
-                      represented as an array of numbers. For example, `1`
-                      represents Monday. An empty array is equivalent to
-                      specifying all the days of the week.
-                    items:
-                      type: integer
-                    examples:
-                      - - 1
-                        - 2
-                        - 3
-                        - 4
-                        - 5
-                  hours:
-                    type: object
-                    description: >
-                      Defines the range of time in a day that the action can
-                      run. If the `start` value is `00:00` and the `end` value
-                      is `24:00`, actions be generated all day.
-                    properties:
-                      end:
-                        type: string
-                        description: >-
-                          The end of the time frame in 24-hour notation
-                          (`hh:mm`).
-                        examples:
-                          - '17:00'
-                      start:
-                        type: string
-                        description: >-
-                          The start of the time frame in 24-hour notation
-                          (`hh:mm`).
-                        examples:
-                          - '08:00'
-                  timezone:
-                    type: string
-                    description: >
-                      The ISO time zone for the `hours` values. Values such as
-                      `UTC` and `UTC+1` also work but lack built-in daylight
-                      savings time support and are not recommended.
-                    examples:
-                      - Europe/Madrid
-          connector_type_id:
-            type: string
-            description: >-
-              The type of connector. This property appears in responses but
-              cannot be set in requests.
-            examples:
-              - .server-log
-            readOnly: true
-          frequency:
-            type: object
-            description: >
-              The properties that affect how often actions are generated. If the
-              rule type supports setting `summary` to `true`, the action can be
-              a summary of alerts at the specified notification interval.
-              Otherwise, an action runs for each alert at the specified
-              notification interval. NOTE: You cannot specify these parameters
-              when `notify_when` or `throttle` are defined at the rule level.
-            required:
-              - notify_when
-              - summary
-            properties:
-              notify_when:
-                $ref: '#/components/schemas/Alerting_notify_when'
-              summary:
-                type: boolean
-                description: Indicates whether the action is a summary.
-              throttle:
-                $ref: '#/components/schemas/Alerting_throttle'
-          group:
-            type: string
-            description: >
-              The group name, which affects when the action runs (for example,
-              when the threshold is met or when the alert is recovered). Each
-              rule type has a list of valid action group names. If you don't
-              need to group actions, set to `default`.
-            examples:
-              - default
-          id:
-            type: string
-            description: The identifier for the connector saved object.
-            examples:
-              - 9dca3e00-74f5-11ed-9801-35303b735aef
-          params:
-            type: object
-            description: >-
-              The parameters for the action, which are sent to the connector.
-              The `params` are handled as Mustache templates and passed a
-              default set of context.
-            additionalProperties: true
-          uuid:
-            type: string
-            description: A universally unique identifier (UUID) for the action.
-            examples:
-              - 1c7a1280-f28c-4e06-96b2-e4e5f05d1d61
-    Alerting_consumer:
-      type: string
-      description: >
-        The name of the application or feature that owns the rule. For example:
-        `alerts`, `apm`, `discover`, `infrastructure`, `logs`, `metrics`, `ml`,
-        `monitoring`, `securitySolution`, `siem`, `stackAlerts`, or `uptime`.
-    Alerting_enabled_rule:
-      type: boolean
-      description: >-
-        Indicates whether you want to run the rule on an interval basis after it
-        is created.
-    Alerting_name_rule:
-      type: string
-      description: >
-        The name of the rule. While this name does not have to be unique, a
-        distinctive name can help you identify a rule.
-    Alerting_schedule:
-      type: object
-      description: >-
-        The check interval, which specifies how frequently the rule conditions
-        are checked. The interval is specified in seconds, minutes, hours, or
-        days.
-      properties:
-        interval:
-          type: string
-          examples:
-            - 1m
-    Alerting_tags:
-      type: array
-      description: The tags for the rule.
-      items:
-        type: string
-      default: []
     Alerting_create_anomaly_detection_alert_rule_request:
       title: Create anomaly detection rule request
       description: >
@@ -6688,41 +6532,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_params_property_apm_anomaly:
-      required:
-        - windowSize
-        - windowUnit
-        - environment
-        - anomalySeverityType
-      properties:
-        serviceName:
-          type: string
-          description: The service name from APM
-        transactionType:
-          type: string
-          description: The transaction type from APM
-        windowSize:
-          type: number
-          example: 6
-          description: The window size
-        windowUnit:
-          type: string
-          description: The window size unit
-          enum:
-            - m
-            - h
-            - d
-        environment:
-          type: string
-          description: The environment from APM
-        anomalySeverityType:
-          type: string
-          description: The anomaly threshold value
-          enum:
-            - critical
-            - major
-            - minor
-            - warning
     Alerting_create_apm_anomaly_rule_request:
       title: Create APM anomaly rule rule request
       description: >-
@@ -6761,48 +6570,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_params_property_apm_error_count:
-      required:
-        - windowSize
-        - windowUnit
-        - threshold
-        - environment
-      properties:
-        serviceName:
-          type: string
-          description: The service name from APM
-        windowSize:
-          type: number
-          description: The window size
-          example: 6
-        windowUnit:
-          type: string
-          description: The window size unit
-          enum:
-            - m
-            - h
-            - d
-        environment:
-          type: string
-          description: The environment from APM
-        threshold:
-          type: number
-          description: The error count threshold value
-        groupBy:
-          type: array
-          default:
-            - service.name
-            - service.environment
-          uniqueItems: true
-          items:
-            type: string
-            enum:
-              - service.name
-              - service.environment
-              - transaction.name
-              - error.grouping_key
-        errorGroupingKey:
-          type: string
     Alerting_create_apm_error_count_rule_request:
       title: Create APM error count rule request
       description: >-
@@ -6841,59 +6608,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_params_property_apm_transaction_duration:
-      required:
-        - windowSize
-        - windowUnit
-        - threshold
-        - environment
-        - aggregationType
-      properties:
-        serviceName:
-          type: string
-          description: The service name from APM
-        transactionType:
-          type: string
-          description: The transaction type from APM
-        transactionName:
-          type: string
-          description: The transaction name from APM
-        windowSize:
-          type: number
-          description: The window size
-          example: 6
-        windowUnit:
-          type: string
-          description: ç
-          enum:
-            - m
-            - h
-            - d
-        environment:
-          type: string
-        threshold:
-          type: number
-          description: The latency threshold value
-        groupBy:
-          type: array
-          default:
-            - service.name
-            - service.environment
-            - transaction.type
-          uniqueItems: true
-          items:
-            type: string
-            enum:
-              - service.name
-              - service.environment
-              - transaction.type
-              - transaction.name
-        aggregationType:
-          type: string
-          enum:
-            - avg
-            - 95th
-            - 99th
     Alerting_create_apm_transaction_duration_rule_request:
       title: Create latency threshold rule request
       description: >-
@@ -6933,53 +6647,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_params_property_apm_transaction_error_rate:
-      required:
-        - windowSize
-        - windowUnit
-        - threshold
-        - environment
-      properties:
-        serviceName:
-          type: string
-          description: The service name from APM
-        transactionType:
-          type: string
-          description: The transaction type from APM
-        transactionName:
-          type: string
-          description: The transaction name from APM
-        windowSize:
-          type: number
-          description: The window size
-          example: 6
-        windowUnit:
-          type: string
-          description: The window size unit
-          enum:
-            - m
-            - h
-            - d
-        environment:
-          type: string
-          description: The environment from APM
-        threshold:
-          type: number
-          description: The error rate threshold value
-        groupBy:
-          type: array
-          default:
-            - service.name
-            - service.environment
-            - transaction.type
-          uniqueItems: true
-          items:
-            type: string
-            enum:
-              - service.name
-              - service.environment
-              - transaction.type
-              - transaction.name
     Alerting_create_apm_transaction_error_rate_rule_request:
       title: Create APM transaction error rate rule request
       description: >-
@@ -7019,318 +6686,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_aggfield:
-      description: >
-        The name of the numeric field that is used in the aggregation. This
-        property is required when `aggType` is `avg`, `max`, `min` or `sum`.
-      type: string
-    Alerting_aggtype:
-      description: The type of aggregation to perform.
-      type: string
-      enum:
-        - avg
-        - count
-        - max
-        - min
-        - sum
-      default: count
-    Alerting_excludehitsfrompreviousrun:
-      description: >
-        Indicates whether to exclude matches from previous runs. If `true`, you
-        can avoid alert duplication by excluding documents that have already
-        been detected by the previous rule run. This option is not available
-        when a grouping field is specified.
-      type: boolean
-    Alerting_groupby:
-      description: >
-        Indicates whether the aggregation is applied over all documents (`all`)
-        or split into groups (`top`) using a grouping field (`termField`). If
-        grouping is used, an alert will be created for each group when it
-        exceeds the threshold; only the top groups (up to `termSize` number of
-        groups) are checked.
-      type: string
-      enum:
-        - all
-        - top
-      default: all
-    Alerting_termsize:
-      description: >
-        This property is required when `groupBy` is `top`. It specifies the
-        number of groups to check against the threshold and therefore limits the
-        number of alerts on high cardinality fields.
-      type: integer
-    Alerting_timefield:
-      description: The field that is used to calculate the time window.
-      type: string
-    Alerting_timewindowsize:
-      description: >
-        The size of the time window (in `timeWindowUnit` units), which
-        determines how far back to search for documents. Generally it should be
-        a value higher than the rule check interval to avoid gaps in detection.
-      type: integer
-      examples:
-        - 5
-    Alerting_timewindowunit:
-      description: |
-        The type of units for the time window: seconds, minutes, hours, or days.
-      type: string
-      enum:
-        - s
-        - m
-        - h
-        - d
-      examples:
-        - m
-    Alerting_size:
-      description: >
-        The number of documents to pass to the configured actions when the
-        threshold condition is met.
-      type: integer
-    Alerting_termfield:
-      description: >
-        The names of up to four fields that are used for grouping the
-        aggregation. This property is required when `groupBy` is `top`.
-      oneOf:
-        - type: string
-        - type: array
-          items:
-            type: string
-          maxItems: 4
-    Alerting_threshold:
-      description: >
-        The threshold value that is used with the `thresholdComparator`. If the
-        `thresholdComparator` is `between` or `notBetween`, you must specify the
-        boundary values.
-      type: array
-      items:
-        type: integer
-        examples:
-          - 4000
-    Alerting_thresholdcomparator:
-      description: >-
-        The comparison function for the threshold. For example, "is above", "is
-        above or equals", "is below", "is below or equals", "is between", and
-        "is not between".
-      type: string
-      enum:
-        - '>'
-        - '>='
-        - <
-        - <=
-        - between
-        - notBetween
-      examples:
-        - '>'
-    Alerting_params_es_query_rule:
-      oneOf:
-        - type: object
-          x-technical-preview: true
-          description: >
-            The parameters for an Elasticsearch query rule that uses ES|QL to
-            define the query. This functionality is in technical pre view and
-            may be changed or removed in a future release. Elastic will work to
-            fix any issues, but features in technical preview are not subject to
-            the support SLA of official GA features.
-          required:
-            - esqlQuery
-            - searchType
-            - size
-            - threshold
-            - thresholdComparator
-            - timeWindowSize
-            - timeWindowUnit
-          properties:
-            aggField:
-              $ref: '#/components/schemas/Alerting_aggfield'
-            aggType:
-              $ref: '#/components/schemas/Alerting_aggtype'
-            esqlQuery:
-              type: object
-              required:
-                - esql
-              properties:
-                esql:
-                  description: >-
-                    The query definition, which uses Elasticsearch Query
-                    Language.
-                  type: string
-            excludeHitsFromPreviousRun:
-              $ref: '#/components/schemas/Alerting_excludehitsfrompreviousrun'
-            groupBy:
-              $ref: '#/components/schemas/Alerting_groupby'
-            searchType:
-              description: >-
-                The type of query, in this case a query that uses Elasticsearch
-                Query Language (ES|QL).
-              type: string
-              enum:
-                - esqlQuery
-              examples:
-                - esqlQuery
-            size:
-              type: integer
-              description: >
-                When `searchType` is `esqlQuery`, this property is required but
-                it does not affect the rule behavior.
-              examples:
-                - 0
-            termSize:
-              $ref: '#/components/schemas/Alerting_termsize'
-            threshold:
-              type: array
-              items:
-                type: integer
-                minimum: 0
-                maximum: 0
-              description: >
-                The threshold value that is used with the `thresholdComparator`.
-                When `searchType` is `esqlQuery`, this property is required and
-                must be set to zero.
-            thresholdComparator:
-              type: string
-              description: >
-                The comparison function for the threshold. When `searchType` is
-                `esqlQuery`, this property is required and must be set to ">".
-                Since the `threshold` value must be `0`, the result is that an
-                alert occurs whenever the query returns results.
-              enum:
-                - '>'
-              examples:
-                - '>'
-            timeField:
-              $ref: '#/components/schemas/Alerting_timefield'
-            timeWindowSize:
-              $ref: '#/components/schemas/Alerting_timewindowsize'
-            timeWindowUnit:
-              $ref: '#/components/schemas/Alerting_timewindowunit'
-        - type: object
-          description: >-
-            The parameters for an Elasticsearch query rule that uses KQL or
-            Lucene to define the query.
-          required:
-            - searchType
-            - size
-            - threshold
-            - thresholdComparator
-            - timeWindowSize
-            - timeWindowUnit
-          properties:
-            aggField:
-              $ref: '#/components/schemas/Alerting_aggfield'
-            aggType:
-              $ref: '#/components/schemas/Alerting_aggtype'
-            excludeHitsFromPreviousRun:
-              $ref: '#/components/schemas/Alerting_excludehitsfrompreviousrun'
-            groupBy:
-              $ref: '#/components/schemas/Alerting_groupby'
-            searchConfiguration:
-              description: >-
-                The query definition, which uses KQL or Lucene to fetch the
-                documents from Elasticsearch.
-              type: object
-              properties:
-                filter:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Alerting_filter'
-                index:
-                  description: The indices to query.
-                  oneOf:
-                    - type: string
-                    - type: array
-                      items:
-                        type: string
-                query:
-                  type: object
-                  properties:
-                    language:
-                      type: string
-                      examples:
-                        - kuery
-                    query:
-                      type: string
-            searchType:
-              description: >-
-                The type of query, in this case a text-based query that uses KQL
-                or Lucene.
-              type: string
-              enum:
-                - searchSource
-              examples:
-                - searchSource
-            size:
-              $ref: '#/components/schemas/Alerting_size'
-            termField:
-              $ref: '#/components/schemas/Alerting_termfield'
-            termSize:
-              $ref: '#/components/schemas/Alerting_termsize'
-            threshold:
-              $ref: '#/components/schemas/Alerting_threshold'
-            thresholdComparator:
-              $ref: '#/components/schemas/Alerting_thresholdcomparator'
-            timeField:
-              $ref: '#/components/schemas/Alerting_timefield'
-            timeWindowSize:
-              $ref: '#/components/schemas/Alerting_timewindowsize'
-            timeWindowUnit:
-              $ref: '#/components/schemas/Alerting_timewindowunit'
-        - type: object
-          description: >-
-            The parameters for an Elasticsearch query rule that uses
-            Elasticsearch Query DSL to define the query.
-          required:
-            - esQuery
-            - index
-            - threshold
-            - thresholdComparator
-            - timeField
-            - timeWindowSize
-            - timeWindowUnit
-          properties:
-            aggField:
-              $ref: '#/components/schemas/Alerting_aggfield'
-            aggType:
-              $ref: '#/components/schemas/Alerting_aggtype'
-            esQuery:
-              description: The query definition, which uses Elasticsearch Query DSL.
-              type: string
-            excludeHitsFromPreviousRun:
-              $ref: '#/components/schemas/Alerting_excludehitsfrompreviousrun'
-            groupBy:
-              $ref: '#/components/schemas/Alerting_groupby'
-            index:
-              description: The indices to query.
-              oneOf:
-                - type: array
-                  items:
-                    type: string
-                - type: string
-            searchType:
-              description: >-
-                The type of query, in this case a query that uses Elasticsearch
-                Query DSL.
-              type: string
-              enum:
-                - esQuery
-              default: esQuery
-              examples:
-                - esQuery
-            size:
-              $ref: '#/components/schemas/Alerting_size'
-            termField:
-              $ref: '#/components/schemas/Alerting_termfield'
-            termSize:
-              $ref: '#/components/schemas/Alerting_termsize'
-            threshold:
-              $ref: '#/components/schemas/Alerting_threshold'
-            thresholdComparator:
-              $ref: '#/components/schemas/Alerting_thresholdcomparator'
-            timeField:
-              $ref: '#/components/schemas/Alerting_timefield'
-            timeWindowSize:
-              $ref: '#/components/schemas/Alerting_timewindowsize'
-            timeWindowUnit:
-              $ref: '#/components/schemas/Alerting_timewindowunit'
     Alerting_create_es_query_rule_request:
       title: Create Elasticsearch query rule request
       description: >
@@ -7371,7 +6726,7 @@ components:
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
     Alerting_create_geo_containment_rule_request:
-      title: Create traacking containment rule request
+      title: Create tracking containment rule request
       description: >
         A rule that runs an Elasticsearch query over indices to determine
         whether any documents are currently contained within any boundaries from
@@ -7412,45 +6767,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_params_index_threshold_rule:
-      type: object
-      description: The parameters for an index threshold rule.
-      required:
-        - index
-        - threshold
-        - thresholdComparator
-        - timeField
-        - timeWindowSize
-        - timeWindowUnit
-      properties:
-        aggField:
-          $ref: '#/components/schemas/Alerting_aggfield'
-        aggType:
-          $ref: '#/components/schemas/Alerting_aggtype'
-        filterKuery:
-          description: A KQL expression thats limits the scope of alerts.
-          type: string
-        groupBy:
-          $ref: '#/components/schemas/Alerting_groupby'
-        index:
-          description: The indices to query.
-          type: array
-          items:
-            type: string
-        termField:
-          $ref: '#/components/schemas/Alerting_termfield'
-        termSize:
-          $ref: '#/components/schemas/Alerting_termsize'
-        threshold:
-          $ref: '#/components/schemas/Alerting_threshold'
-        thresholdComparator:
-          $ref: '#/components/schemas/Alerting_thresholdcomparator'
-        timeField:
-          $ref: '#/components/schemas/Alerting_timefield'
-        timeWindowSize:
-          $ref: '#/components/schemas/Alerting_timewindowsize'
-        timeWindowUnit:
-          $ref: '#/components/schemas/Alerting_timewindowunit'
     Alerting_create_index_threshold_rule_request:
       title: Create index threshold rule request
       description: >-
@@ -7490,117 +6806,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_params_property_infra_inventory:
-      properties:
-        criteria:
-          type: array
-          items:
-            type: object
-            properties:
-              metric:
-                type: string
-                enum:
-                  - count
-                  - cpu
-                  - diskLatency
-                  - load
-                  - memory
-                  - memoryTotal
-                  - tx
-                  - rx
-                  - logRate
-                  - diskIOReadBytes
-                  - diskIOWriteBytes
-                  - s3TotalRequests
-                  - s3NumberOfObjects
-                  - s3BucketSize
-                  - s3DownloadBytes
-                  - s3UploadBytes
-                  - rdsConnections
-                  - rdsQueriesExecuted
-                  - rdsActiveTransactions
-                  - rdsLatency
-                  - sqsMessagesVisible
-                  - sqsMessagesDelayed
-                  - sqsMessagesSent
-                  - sqsMessagesEmpty
-                  - sqsOldestMessage
-                  - custom
-              timeSize:
-                type: number
-              timeUnit:
-                type: string
-                enum:
-                  - s
-                  - m
-                  - h
-                  - d
-              sourceId:
-                type: string
-              threshold:
-                type: array
-                items:
-                  type: number
-              comparator:
-                type: string
-                enum:
-                  - <
-                  - <=
-                  - '>'
-                  - '>='
-                  - between
-                  - outside
-              customMetric:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    enum:
-                      - custom
-                  field:
-                    type: string
-                  aggregation:
-                    type: string
-                    enum:
-                      - avg
-                      - max
-                      - min
-                      - rate
-                  id:
-                    type: string
-                  label:
-                    type: string
-              warningThreshold:
-                type: array
-                items:
-                  type: number
-              warningComparator:
-                type: string
-                enum:
-                  - <
-                  - <=
-                  - '>'
-                  - '>='
-                  - between
-                  - outside
-        filterQuery:
-          type: string
-        filterQueryText:
-          type: string
-        nodeType:
-          type: string
-          enum:
-            - host
-            - pod
-            - container
-            - awsEC2
-            - awsS3
-            - awsSQS
-            - awsRDS
-        sourceId:
-          type: string
-        alertOnNoData:
-          type: boolean
     Alerting_create_infra_inventory_rule_request:
       title: Create infra inventory rule request
       description: >
@@ -7677,180 +6882,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_params_property_infra_metric_threshold:
-      properties:
-        criteria:
-          type: array
-          items:
-            oneOf:
-              - title: non count criterion
-                type: object
-                properties:
-                  threshold:
-                    type: array
-                    items:
-                      type: number
-                  comparator:
-                    type: string
-                    enum:
-                      - <
-                      - <=
-                      - '>'
-                      - '>='
-                      - between
-                      - outside
-                  timeUnit:
-                    type: string
-                  timeSize:
-                    type: number
-                  warningThreshold:
-                    type: array
-                    items:
-                      type: number
-                  warningComparator:
-                    type: string
-                    enum:
-                      - <
-                      - <=
-                      - '>'
-                      - '>='
-                      - between
-                      - outside
-                  metric:
-                    type: string
-                  aggType:
-                    type: string
-                    enum:
-                      - avg
-                      - max
-                      - min
-                      - cardinality
-                      - rate
-                      - count
-                      - sum
-                      - p95
-                      - p99
-                      - custom
-              - title: count criterion
-                type: object
-                properties:
-                  threshold:
-                    type: array
-                    items:
-                      type: number
-                  comparator:
-                    type: string
-                    enum:
-                      - <
-                      - <=
-                      - '>'
-                      - '>='
-                      - between
-                      - outside
-                  timeUnit:
-                    type: string
-                  timeSize:
-                    type: number
-                  warningThreshold:
-                    type: array
-                    items:
-                      type: number
-                  warningComparator:
-                    type: string
-                    enum:
-                      - <
-                      - <=
-                      - '>'
-                      - '>='
-                      - between
-                      - outside
-                  aggType:
-                    type: string
-                    enum:
-                      - count
-              - title: custom criterion
-                type: object
-                properties:
-                  threshold:
-                    type: array
-                    items:
-                      type: number
-                  comparator:
-                    type: string
-                    enum:
-                      - <
-                      - <=
-                      - '>'
-                      - '>='
-                      - between
-                      - outside
-                  timeUnit:
-                    type: string
-                  timeSize:
-                    type: number
-                  warningThreshold:
-                    type: array
-                    items:
-                      type: number
-                  warningComparator:
-                    type: string
-                    enum:
-                      - <
-                      - <=
-                      - '>'
-                      - '>='
-                      - between
-                      - outside
-                  aggType:
-                    type: string
-                    enum:
-                      - custom
-                  customMetric:
-                    type: array
-                    items:
-                      oneOf:
-                        - type: object
-                          properties:
-                            name:
-                              type: string
-                            aggType:
-                              type: string
-                              enum:
-                                - avg
-                                - sum
-                                - max
-                                - min
-                                - cardinality
-                            field:
-                              type: string
-                        - type: object
-                          properties:
-                            name:
-                              type: string
-                            aggType:
-                              type: string
-                              enum:
-                                - count
-                            filter:
-                              type: string
-                  equation:
-                    type: string
-                  label:
-                    type: string
-        groupBy:
-          oneOf:
-            - type: string
-            - type: array
-              items:
-                type: string
-        filterQuery:
-          type: string
-        sourceId:
-          type: string
-        alertOnNoData:
-          type: boolean
-        alertOnGroupDisappear:
-          type: boolean
     Alerting_create_infra_metric_threshold_rule_request:
       title: Create infra metric threshold rule request
       description: >
@@ -7927,168 +6958,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_params_property_log_threshold:
-      oneOf:
-        - title: Count
-          type: object
-          required:
-            - count
-            - timeSize
-            - timeUnit
-            - logView
-          properties:
-            criteria:
-              type: array
-              items:
-                type: object
-                properties:
-                  field:
-                    type: string
-                    example: my.field
-                  comparator:
-                    type: string
-                    enum:
-                      - more than
-                      - more than or equals
-                      - less than
-                      - less than or equals
-                      - equals
-                      - does not equal
-                      - matches
-                      - does not match
-                      - matches phrase
-                      - does not match phrase
-                  value:
-                    oneOf:
-                      - type: number
-                        example: 42
-                      - type: string
-                        example: value
-            count:
-              type: object
-              properties:
-                comparator:
-                  type: string
-                  enum:
-                    - more than
-                    - more than or equals
-                    - less than
-                    - less than or equals
-                    - equals
-                    - does not equal
-                    - matches
-                    - does not match
-                    - matches phrase
-                    - does not match phrase
-                value:
-                  type: number
-                  example: 100
-            timeSize:
-              type: number
-              example: 6
-            timeUnit:
-              type: string
-              enum:
-                - s
-                - m
-                - h
-                - d
-            logView:
-              type: object
-              properties:
-                logViewId:
-                  type: string
-                type:
-                  type: string
-                  enum:
-                    - log-view-reference
-                  example: log-view-reference
-            groupBy:
-              type: array
-              items:
-                type: string
-        - title: Ratio
-          type: object
-          required:
-            - count
-            - timeSize
-            - timeUnit
-            - logView
-          properties:
-            criteria:
-              type: array
-              items:
-                minItems: 2
-                maxItems: 2
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      example: my.field
-                    comparator:
-                      type: string
-                      enum:
-                        - more than
-                        - more than or equals
-                        - less than
-                        - less than or equals
-                        - equals
-                        - does not equal
-                        - matches
-                        - does not match
-                        - matches phrase
-                        - does not match phrase
-                    value:
-                      oneOf:
-                        - type: number
-                          example: 42
-                        - type: string
-                          example: value
-            count:
-              type: object
-              properties:
-                comparator:
-                  type: string
-                  enum:
-                    - more than
-                    - more than or equals
-                    - less than
-                    - less than or equals
-                    - equals
-                    - does not equal
-                    - matches
-                    - does not match
-                    - matches phrase
-                    - does not match phrase
-                value:
-                  type: number
-                  example: 100
-            timeSize:
-              type: number
-              example: 6
-            timeUnit:
-              type: string
-              enum:
-                - s
-                - m
-                - h
-                - d
-            logView:
-              type: object
-              properties:
-                logViewId:
-                  type: string
-                type:
-                  type: string
-                  enum:
-                    - log-view-reference
-                  example: log-view-reference
-            groupBy:
-              type: array
-              items:
-                type: string
     Alerting_create_log_threshold_rule_request:
       title: Create log threshold rule request
       description: A rule that detects when a log aggregation exceeds a threshold.
@@ -8941,46 +7810,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_params_property_slo_burn_rate:
-      properties:
-        sloId:
-          description: The SLO identifier used by the rule
-          type: string
-          example: 8853df00-ae2e-11ed-90af-09bb6422b258
-        burnRateThreshold:
-          description: The burn rate threshold used to trigger the alert
-          type: number
-          example: 14.4
-        maxBurnRateThreshold:
-          description: >-
-            The maximum burn rate threshold value defined by the SLO error
-            budget
-          type: number
-          example: 168
-        longWindow:
-          description: The duration of the long window used to compute the burn rate
-          type: object
-          properties:
-            value:
-              description: The duration value
-              type: number
-              example: 6
-            unit:
-              description: The duration unit
-              type: string
-              example: h
-        shortWindow:
-          description: The duration of the short window used to compute the burn rate
-          type: object
-          properties:
-            value:
-              description: The duration value
-              type: number
-              example: 30
-            unit:
-              description: The duration unit
-              type: string
-              example: m
     Alerting_create_slo_burn_rate_rule_request:
       title: Create slo burn rate rule request
       description: >
@@ -9104,14 +7933,6 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
-    Alerting_params_property_synthetics_uptime_tls:
-      properties:
-        search:
-          type: string
-        certExpirationThreshold:
-          type: number
-        certAgeThreshold:
-          type: number
     Alerting_create_synthetics_uptime_tls_rule_request:
       title: Create synthetics uptime TLS rule request
       type: object
@@ -9227,6 +8048,1309 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
+    Alerting_create_uptime_monitor_status_rule_request:
+      title: Create uptime monitor status rule request
+      description: A rule that detects monitor errors and outages.
+      type: object
+      required:
+        - consumer
+        - name
+        - params
+        - rule_type_id
+        - schedule
+      properties:
+        actions:
+          $ref: '#/components/schemas/Alerting_actions'
+        consumer:
+          $ref: '#/components/schemas/Alerting_consumer'
+        enabled:
+          $ref: '#/components/schemas/Alerting_enabled_rule'
+        name:
+          $ref: '#/components/schemas/Alerting_name_rule'
+        notify_when:
+          $ref: '#/components/schemas/Alerting_notify_when'
+        params:
+          $ref: >-
+            #/components/schemas/Alerting_params_property_synthetics_monitor_status
+        rule_type_id:
+          type: string
+          description: >-
+            The ID of the rule type that you want to call when the rule is
+            scheduled to run.
+          enum:
+            - xpack.uptime.alerts.monitorStatus
+        schedule:
+          $ref: '#/components/schemas/Alerting_schedule'
+        tags:
+          $ref: '#/components/schemas/Alerting_tags'
+        throttle:
+          $ref: '#/components/schemas/Alerting_throttle'
+    Alerting_filter:
+      type: object
+      description: >-
+        A filter written in Elasticsearch Query Domain Specific Language (DSL)
+        as defined in the `kbn-es-query` package.
+      properties:
+        meta:
+          type: object
+          properties:
+            alias:
+              type:
+                - string
+                - 'null'
+            controlledBy:
+              type: string
+            disabled:
+              type: boolean
+            field:
+              type: string
+            group:
+              type: string
+            index:
+              type: string
+            isMultiIndex:
+              type: boolean
+            key:
+              type: string
+            negate:
+              type: boolean
+            params:
+              type: object
+            type:
+              type: string
+            value:
+              type: string
+        query:
+          type: object
+        $state:
+          type: object
+    Alerting_notify_when:
+      type: string
+      description: >
+        Indicates how often alerts generate actions. Valid values include:
+        `onActionGroupChange`: Actions run when the alert status changes;
+        `onActiveAlert`: Actions run when the alert becomes active and at each
+        check interval while the rule conditions are met; `onThrottleInterval`:
+        Actions run when the alert becomes active and at the interval specified
+        in the throttle property while the rule conditions are met. NOTE: You
+        cannot specify `notify_when` at both the rule and action level. The
+        recommended method is to set it for each action. If you set it at the
+        rule level then update the rule in Kibana, it is automatically changed
+        to use action-specific values.
+      enum:
+        - onActionGroupChange
+        - onActiveAlert
+        - onThrottleInterval
+      examples:
+        - onActiveAlert
+    Alerting_throttle:
+      type:
+        - string
+        - 'null'
+      description: >
+        The throttle interval, which defines how often an alert generates
+        repeated actions. It is specified in seconds, minutes, hours, or days
+        and is applicable only if `notify_when` is set to `onThrottleInterval`.
+        NOTE: You cannot specify the throttle interval at both the rule and
+        action level. The recommended method is to set it for each action. If
+        you set it at the rule level then update the rule in Kibana, it is
+        automatically changed to use action-specific values.
+      default: null
+      examples:
+        - 10m
+    Alerting_actions:
+      type:
+        - array
+        - 'null'
+      default: []
+      items:
+        type: object
+        required:
+          - group
+          - id
+          - params
+        description: |
+          An action that runs under defined conditions.
+        properties:
+          alerts_filter:
+            type: object
+            description: >
+              Conditions that affect whether the action runs. If you specify
+              multiple conditions, all conditions must be met for the action to
+              run. For example, if an alert occurs within the specified time
+              frame and matches the query, the action runs.
+            properties:
+              query:
+                type: object
+                description: >-
+                  Defines a query filter that determines whether the action
+                  runs.
+                properties:
+                  kql:
+                    type: string
+                    description: A filter written in Kibana Query Language (KQL).
+                  filters:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Alerting_filter'
+              timeframe:
+                type: object
+                description: Defines a period that limits whether the action runs.
+                properties:
+                  days:
+                    type: array
+                    description: >-
+                      Defines the days of the week that the action can run,
+                      represented as an array of numbers. For example, `1`
+                      represents Monday. An empty array is equivalent to
+                      specifying all the days of the week.
+                    items:
+                      type: integer
+                    examples:
+                      - - 1
+                        - 2
+                        - 3
+                        - 4
+                        - 5
+                  hours:
+                    type: object
+                    description: >
+                      Defines the range of time in a day that the action can
+                      run. If the `start` value is `00:00` and the `end` value
+                      is `24:00`, actions be generated all day.
+                    properties:
+                      end:
+                        type: string
+                        description: >-
+                          The end of the time frame in 24-hour notation
+                          (`hh:mm`).
+                        examples:
+                          - '17:00'
+                      start:
+                        type: string
+                        description: >-
+                          The start of the time frame in 24-hour notation
+                          (`hh:mm`).
+                        examples:
+                          - '08:00'
+                  timezone:
+                    type: string
+                    description: >
+                      The ISO time zone for the `hours` values. Values such as
+                      `UTC` and `UTC+1` also work but lack built-in daylight
+                      savings time support and are not recommended.
+                    examples:
+                      - Europe/Madrid
+          connector_type_id:
+            type: string
+            description: >-
+              The type of connector. This property appears in responses but
+              cannot be set in requests.
+            examples:
+              - .server-log
+            readOnly: true
+          frequency:
+            type: object
+            description: >
+              The properties that affect how often actions are generated. If the
+              rule type supports setting `summary` to `true`, the action can be
+              a summary of alerts at the specified notification interval.
+              Otherwise, an action runs for each alert at the specified
+              notification interval. NOTE: You cannot specify these parameters
+              when `notify_when` or `throttle` are defined at the rule level.
+            required:
+              - notify_when
+              - summary
+            properties:
+              notify_when:
+                $ref: '#/components/schemas/Alerting_notify_when'
+              summary:
+                type: boolean
+                description: Indicates whether the action is a summary.
+              throttle:
+                $ref: '#/components/schemas/Alerting_throttle'
+          group:
+            type: string
+            description: >
+              The group name, which affects when the action runs (for example,
+              when the threshold is met or when the alert is recovered). Each
+              rule type has a list of valid action group names. If you don't
+              need to group actions, set to `default`.
+            examples:
+              - default
+          id:
+            type: string
+            description: The identifier for the connector saved object.
+            examples:
+              - 9dca3e00-74f5-11ed-9801-35303b735aef
+          params:
+            type: object
+            description: >-
+              The parameters for the action, which are sent to the connector.
+              The `params` are handled as Mustache templates and passed a
+              default set of context.
+            additionalProperties: true
+          uuid:
+            type: string
+            description: A universally unique identifier (UUID) for the action.
+            examples:
+              - 1c7a1280-f28c-4e06-96b2-e4e5f05d1d61
+    Alerting_consumer:
+      type: string
+      description: >
+        The name of the application or feature that owns the rule. For example:
+        `alerts`, `apm`, `discover`, `infrastructure`, `logs`, `metrics`, `ml`,
+        `monitoring`, `securitySolution`, `siem`, `stackAlerts`, or `uptime`.
+    Alerting_enabled_rule:
+      type: boolean
+      description: >-
+        Indicates whether you want to run the rule on an interval basis after it
+        is created.
+    Alerting_name_rule:
+      type: string
+      description: >
+        The name of the rule. While this name does not have to be unique, a
+        distinctive name can help you identify a rule.
+    Alerting_schedule:
+      type: object
+      description: >-
+        The check interval, which specifies how frequently the rule conditions
+        are checked. The interval is specified in seconds, minutes, hours, or
+        days.
+      properties:
+        interval:
+          type: string
+          examples:
+            - 1m
+    Alerting_tags:
+      type: array
+      description: The tags for the rule.
+      items:
+        type: string
+      default: []
+    Alerting_params_property_apm_anomaly:
+      required:
+        - windowSize
+        - windowUnit
+        - environment
+        - anomalySeverityType
+      properties:
+        serviceName:
+          type: string
+          description: The service name from APM
+        transactionType:
+          type: string
+          description: The transaction type from APM
+        windowSize:
+          type: number
+          example: 6
+          description: The window size
+        windowUnit:
+          type: string
+          description: The window size unit
+          enum:
+            - m
+            - h
+            - d
+        environment:
+          type: string
+          description: The environment from APM
+        anomalySeverityType:
+          type: string
+          description: The anomaly threshold value
+          enum:
+            - critical
+            - major
+            - minor
+            - warning
+    Alerting_params_property_apm_error_count:
+      required:
+        - windowSize
+        - windowUnit
+        - threshold
+        - environment
+      properties:
+        serviceName:
+          type: string
+          description: The service name from APM
+        windowSize:
+          type: number
+          description: The window size
+          example: 6
+        windowUnit:
+          type: string
+          description: The window size unit
+          enum:
+            - m
+            - h
+            - d
+        environment:
+          type: string
+          description: The environment from APM
+        threshold:
+          type: number
+          description: The error count threshold value
+        groupBy:
+          type: array
+          default:
+            - service.name
+            - service.environment
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+              - service.name
+              - service.environment
+              - transaction.name
+              - error.grouping_key
+        errorGroupingKey:
+          type: string
+    Alerting_params_property_apm_transaction_duration:
+      required:
+        - windowSize
+        - windowUnit
+        - threshold
+        - environment
+        - aggregationType
+      properties:
+        serviceName:
+          type: string
+          description: The service name from APM
+        transactionType:
+          type: string
+          description: The transaction type from APM
+        transactionName:
+          type: string
+          description: The transaction name from APM
+        windowSize:
+          type: number
+          description: The window size
+          example: 6
+        windowUnit:
+          type: string
+          description: ç
+          enum:
+            - m
+            - h
+            - d
+        environment:
+          type: string
+        threshold:
+          type: number
+          description: The latency threshold value
+        groupBy:
+          type: array
+          default:
+            - service.name
+            - service.environment
+            - transaction.type
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+              - service.name
+              - service.environment
+              - transaction.type
+              - transaction.name
+        aggregationType:
+          type: string
+          enum:
+            - avg
+            - 95th
+            - 99th
+    Alerting_params_property_apm_transaction_error_rate:
+      required:
+        - windowSize
+        - windowUnit
+        - threshold
+        - environment
+      properties:
+        serviceName:
+          type: string
+          description: The service name from APM
+        transactionType:
+          type: string
+          description: The transaction type from APM
+        transactionName:
+          type: string
+          description: The transaction name from APM
+        windowSize:
+          type: number
+          description: The window size
+          example: 6
+        windowUnit:
+          type: string
+          description: The window size unit
+          enum:
+            - m
+            - h
+            - d
+        environment:
+          type: string
+          description: The environment from APM
+        threshold:
+          type: number
+          description: The error rate threshold value
+        groupBy:
+          type: array
+          default:
+            - service.name
+            - service.environment
+            - transaction.type
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+              - service.name
+              - service.environment
+              - transaction.type
+              - transaction.name
+    Alerting_aggfield:
+      description: >
+        The name of the numeric field that is used in the aggregation. This
+        property is required when `aggType` is `avg`, `max`, `min` or `sum`.
+      type: string
+    Alerting_aggtype:
+      description: The type of aggregation to perform.
+      type: string
+      enum:
+        - avg
+        - count
+        - max
+        - min
+        - sum
+      default: count
+    Alerting_excludehitsfrompreviousrun:
+      description: >
+        Indicates whether to exclude matches from previous runs. If `true`, you
+        can avoid alert duplication by excluding documents that have already
+        been detected by the previous rule run. This option is not available
+        when a grouping field is specified.
+      type: boolean
+    Alerting_groupby:
+      description: >
+        Indicates whether the aggregation is applied over all documents (`all`)
+        or split into groups (`top`) using a grouping field (`termField`). If
+        grouping is used, an alert will be created for each group when it
+        exceeds the threshold; only the top groups (up to `termSize` number of
+        groups) are checked.
+      type: string
+      enum:
+        - all
+        - top
+      default: all
+    Alerting_termsize:
+      description: >
+        This property is required when `groupBy` is `top`. It specifies the
+        number of groups to check against the threshold and therefore limits the
+        number of alerts on high cardinality fields.
+      type: integer
+    Alerting_timefield:
+      description: The field that is used to calculate the time window.
+      type: string
+    Alerting_timewindowsize:
+      description: >
+        The size of the time window (in `timeWindowUnit` units), which
+        determines how far back to search for documents. Generally it should be
+        a value higher than the rule check interval to avoid gaps in detection.
+      type: integer
+      examples:
+        - 5
+    Alerting_timewindowunit:
+      description: |
+        The type of units for the time window: seconds, minutes, hours, or days.
+      type: string
+      enum:
+        - s
+        - m
+        - h
+        - d
+      examples:
+        - m
+    Alerting_size:
+      description: >
+        The number of documents to pass to the configured actions when the
+        threshold condition is met.
+      type: integer
+    Alerting_termfield:
+      description: >
+        The names of up to four fields that are used for grouping the
+        aggregation. This property is required when `groupBy` is `top`.
+      oneOf:
+        - type: string
+        - type: array
+          items:
+            type: string
+          maxItems: 4
+    Alerting_threshold:
+      description: >
+        The threshold value that is used with the `thresholdComparator`. If the
+        `thresholdComparator` is `between` or `notBetween`, you must specify the
+        boundary values.
+      type: array
+      items:
+        type: integer
+        examples:
+          - 4000
+    Alerting_thresholdcomparator:
+      description: >-
+        The comparison function for the threshold. For example, "is above", "is
+        above or equals", "is below", "is below or equals", "is between", and
+        "is not between".
+      type: string
+      enum:
+        - '>'
+        - '>='
+        - <
+        - <=
+        - between
+        - notBetween
+      examples:
+        - '>'
+    Alerting_params_es_query_rule:
+      oneOf:
+        - type: object
+          x-technical-preview: true
+          description: >
+            The parameters for an Elasticsearch query rule that uses ES|QL to
+            define the query. This functionality is in technical pre view and
+            may be changed or removed in a future release. Elastic will work to
+            fix any issues, but features in technical preview are not subject to
+            the support SLA of official GA features.
+          required:
+            - esqlQuery
+            - searchType
+            - size
+            - threshold
+            - thresholdComparator
+            - timeWindowSize
+            - timeWindowUnit
+          properties:
+            aggField:
+              $ref: '#/components/schemas/Alerting_aggfield'
+            aggType:
+              $ref: '#/components/schemas/Alerting_aggtype'
+            esqlQuery:
+              type: object
+              required:
+                - esql
+              properties:
+                esql:
+                  description: >-
+                    The query definition, which uses Elasticsearch Query
+                    Language.
+                  type: string
+            excludeHitsFromPreviousRun:
+              $ref: '#/components/schemas/Alerting_excludehitsfrompreviousrun'
+            groupBy:
+              $ref: '#/components/schemas/Alerting_groupby'
+            searchType:
+              description: >-
+                The type of query, in this case a query that uses Elasticsearch
+                Query Language (ES|QL).
+              type: string
+              enum:
+                - esqlQuery
+              examples:
+                - esqlQuery
+            size:
+              type: integer
+              description: >
+                When `searchType` is `esqlQuery`, this property is required but
+                it does not affect the rule behavior.
+              examples:
+                - 0
+            termSize:
+              $ref: '#/components/schemas/Alerting_termsize'
+            threshold:
+              type: array
+              items:
+                type: integer
+                minimum: 0
+                maximum: 0
+              description: >
+                The threshold value that is used with the `thresholdComparator`.
+                When `searchType` is `esqlQuery`, this property is required and
+                must be set to zero.
+            thresholdComparator:
+              type: string
+              description: >
+                The comparison function for the threshold. When `searchType` is
+                `esqlQuery`, this property is required and must be set to ">".
+                Since the `threshold` value must be `0`, the result is that an
+                alert occurs whenever the query returns results.
+              enum:
+                - '>'
+              examples:
+                - '>'
+            timeField:
+              $ref: '#/components/schemas/Alerting_timefield'
+            timeWindowSize:
+              $ref: '#/components/schemas/Alerting_timewindowsize'
+            timeWindowUnit:
+              $ref: '#/components/schemas/Alerting_timewindowunit'
+        - type: object
+          description: >-
+            The parameters for an Elasticsearch query rule that uses KQL or
+            Lucene to define the query.
+          required:
+            - searchType
+            - size
+            - threshold
+            - thresholdComparator
+            - timeWindowSize
+            - timeWindowUnit
+          properties:
+            aggField:
+              $ref: '#/components/schemas/Alerting_aggfield'
+            aggType:
+              $ref: '#/components/schemas/Alerting_aggtype'
+            excludeHitsFromPreviousRun:
+              $ref: '#/components/schemas/Alerting_excludehitsfrompreviousrun'
+            groupBy:
+              $ref: '#/components/schemas/Alerting_groupby'
+            searchConfiguration:
+              description: >-
+                The query definition, which uses KQL or Lucene to fetch the
+                documents from Elasticsearch.
+              type: object
+              properties:
+                filter:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Alerting_filter'
+                index:
+                  description: The indices to query.
+                  oneOf:
+                    - type: string
+                    - type: array
+                      items:
+                        type: string
+                query:
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                      examples:
+                        - kuery
+                    query:
+                      type: string
+            searchType:
+              description: >-
+                The type of query, in this case a text-based query that uses KQL
+                or Lucene.
+              type: string
+              enum:
+                - searchSource
+              examples:
+                - searchSource
+            size:
+              $ref: '#/components/schemas/Alerting_size'
+            termField:
+              $ref: '#/components/schemas/Alerting_termfield'
+            termSize:
+              $ref: '#/components/schemas/Alerting_termsize'
+            threshold:
+              $ref: '#/components/schemas/Alerting_threshold'
+            thresholdComparator:
+              $ref: '#/components/schemas/Alerting_thresholdcomparator'
+            timeField:
+              $ref: '#/components/schemas/Alerting_timefield'
+            timeWindowSize:
+              $ref: '#/components/schemas/Alerting_timewindowsize'
+            timeWindowUnit:
+              $ref: '#/components/schemas/Alerting_timewindowunit'
+        - type: object
+          description: >-
+            The parameters for an Elasticsearch query rule that uses
+            Elasticsearch Query DSL to define the query.
+          required:
+            - esQuery
+            - index
+            - threshold
+            - thresholdComparator
+            - timeField
+            - timeWindowSize
+            - timeWindowUnit
+          properties:
+            aggField:
+              $ref: '#/components/schemas/Alerting_aggfield'
+            aggType:
+              $ref: '#/components/schemas/Alerting_aggtype'
+            esQuery:
+              description: The query definition, which uses Elasticsearch Query DSL.
+              type: string
+            excludeHitsFromPreviousRun:
+              $ref: '#/components/schemas/Alerting_excludehitsfrompreviousrun'
+            groupBy:
+              $ref: '#/components/schemas/Alerting_groupby'
+            index:
+              description: The indices to query.
+              oneOf:
+                - type: array
+                  items:
+                    type: string
+                - type: string
+            searchType:
+              description: >-
+                The type of query, in this case a query that uses Elasticsearch
+                Query DSL.
+              type: string
+              enum:
+                - esQuery
+              default: esQuery
+              examples:
+                - esQuery
+            size:
+              $ref: '#/components/schemas/Alerting_size'
+            termField:
+              $ref: '#/components/schemas/Alerting_termfield'
+            termSize:
+              $ref: '#/components/schemas/Alerting_termsize'
+            threshold:
+              $ref: '#/components/schemas/Alerting_threshold'
+            thresholdComparator:
+              $ref: '#/components/schemas/Alerting_thresholdcomparator'
+            timeField:
+              $ref: '#/components/schemas/Alerting_timefield'
+            timeWindowSize:
+              $ref: '#/components/schemas/Alerting_timewindowsize'
+            timeWindowUnit:
+              $ref: '#/components/schemas/Alerting_timewindowunit'
+    Alerting_params_index_threshold_rule:
+      type: object
+      description: The parameters for an index threshold rule.
+      required:
+        - index
+        - threshold
+        - thresholdComparator
+        - timeField
+        - timeWindowSize
+        - timeWindowUnit
+      properties:
+        aggField:
+          $ref: '#/components/schemas/Alerting_aggfield'
+        aggType:
+          $ref: '#/components/schemas/Alerting_aggtype'
+        filterKuery:
+          description: A KQL expression thats limits the scope of alerts.
+          type: string
+        groupBy:
+          $ref: '#/components/schemas/Alerting_groupby'
+        index:
+          description: The indices to query.
+          type: array
+          items:
+            type: string
+        termField:
+          $ref: '#/components/schemas/Alerting_termfield'
+        termSize:
+          $ref: '#/components/schemas/Alerting_termsize'
+        threshold:
+          $ref: '#/components/schemas/Alerting_threshold'
+        thresholdComparator:
+          $ref: '#/components/schemas/Alerting_thresholdcomparator'
+        timeField:
+          $ref: '#/components/schemas/Alerting_timefield'
+        timeWindowSize:
+          $ref: '#/components/schemas/Alerting_timewindowsize'
+        timeWindowUnit:
+          $ref: '#/components/schemas/Alerting_timewindowunit'
+    Alerting_params_property_infra_inventory:
+      properties:
+        criteria:
+          type: array
+          items:
+            type: object
+            properties:
+              metric:
+                type: string
+                enum:
+                  - count
+                  - cpu
+                  - diskLatency
+                  - load
+                  - memory
+                  - memoryTotal
+                  - tx
+                  - rx
+                  - logRate
+                  - diskIOReadBytes
+                  - diskIOWriteBytes
+                  - s3TotalRequests
+                  - s3NumberOfObjects
+                  - s3BucketSize
+                  - s3DownloadBytes
+                  - s3UploadBytes
+                  - rdsConnections
+                  - rdsQueriesExecuted
+                  - rdsActiveTransactions
+                  - rdsLatency
+                  - sqsMessagesVisible
+                  - sqsMessagesDelayed
+                  - sqsMessagesSent
+                  - sqsMessagesEmpty
+                  - sqsOldestMessage
+                  - custom
+              timeSize:
+                type: number
+              timeUnit:
+                type: string
+                enum:
+                  - s
+                  - m
+                  - h
+                  - d
+              sourceId:
+                type: string
+              threshold:
+                type: array
+                items:
+                  type: number
+              comparator:
+                type: string
+                enum:
+                  - <
+                  - <=
+                  - '>'
+                  - '>='
+                  - between
+                  - outside
+              customMetric:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                      - custom
+                  field:
+                    type: string
+                  aggregation:
+                    type: string
+                    enum:
+                      - avg
+                      - max
+                      - min
+                      - rate
+                  id:
+                    type: string
+                  label:
+                    type: string
+              warningThreshold:
+                type: array
+                items:
+                  type: number
+              warningComparator:
+                type: string
+                enum:
+                  - <
+                  - <=
+                  - '>'
+                  - '>='
+                  - between
+                  - outside
+        filterQuery:
+          type: string
+        filterQueryText:
+          type: string
+        nodeType:
+          type: string
+          enum:
+            - host
+            - pod
+            - container
+            - awsEC2
+            - awsS3
+            - awsSQS
+            - awsRDS
+        sourceId:
+          type: string
+        alertOnNoData:
+          type: boolean
+    Alerting_params_property_infra_metric_threshold:
+      properties:
+        criteria:
+          type: array
+          items:
+            oneOf:
+              - title: non count criterion
+                type: object
+                properties:
+                  threshold:
+                    type: array
+                    items:
+                      type: number
+                  comparator:
+                    type: string
+                    enum:
+                      - <
+                      - <=
+                      - '>'
+                      - '>='
+                      - between
+                      - outside
+                  timeUnit:
+                    type: string
+                  timeSize:
+                    type: number
+                  warningThreshold:
+                    type: array
+                    items:
+                      type: number
+                  warningComparator:
+                    type: string
+                    enum:
+                      - <
+                      - <=
+                      - '>'
+                      - '>='
+                      - between
+                      - outside
+                  metric:
+                    type: string
+                  aggType:
+                    type: string
+                    enum:
+                      - avg
+                      - max
+                      - min
+                      - cardinality
+                      - rate
+                      - count
+                      - sum
+                      - p95
+                      - p99
+                      - custom
+              - title: count criterion
+                type: object
+                properties:
+                  threshold:
+                    type: array
+                    items:
+                      type: number
+                  comparator:
+                    type: string
+                    enum:
+                      - <
+                      - <=
+                      - '>'
+                      - '>='
+                      - between
+                      - outside
+                  timeUnit:
+                    type: string
+                  timeSize:
+                    type: number
+                  warningThreshold:
+                    type: array
+                    items:
+                      type: number
+                  warningComparator:
+                    type: string
+                    enum:
+                      - <
+                      - <=
+                      - '>'
+                      - '>='
+                      - between
+                      - outside
+                  aggType:
+                    type: string
+                    enum:
+                      - count
+              - title: custom criterion
+                type: object
+                properties:
+                  threshold:
+                    type: array
+                    items:
+                      type: number
+                  comparator:
+                    type: string
+                    enum:
+                      - <
+                      - <=
+                      - '>'
+                      - '>='
+                      - between
+                      - outside
+                  timeUnit:
+                    type: string
+                  timeSize:
+                    type: number
+                  warningThreshold:
+                    type: array
+                    items:
+                      type: number
+                  warningComparator:
+                    type: string
+                    enum:
+                      - <
+                      - <=
+                      - '>'
+                      - '>='
+                      - between
+                      - outside
+                  aggType:
+                    type: string
+                    enum:
+                      - custom
+                  customMetric:
+                    type: array
+                    items:
+                      oneOf:
+                        - type: object
+                          properties:
+                            name:
+                              type: string
+                            aggType:
+                              type: string
+                              enum:
+                                - avg
+                                - sum
+                                - max
+                                - min
+                                - cardinality
+                            field:
+                              type: string
+                        - type: object
+                          properties:
+                            name:
+                              type: string
+                            aggType:
+                              type: string
+                              enum:
+                                - count
+                            filter:
+                              type: string
+                  equation:
+                    type: string
+                  label:
+                    type: string
+        groupBy:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        filterQuery:
+          type: string
+        sourceId:
+          type: string
+        alertOnNoData:
+          type: boolean
+        alertOnGroupDisappear:
+          type: boolean
+    Alerting_params_property_log_threshold:
+      oneOf:
+        - title: Count
+          type: object
+          required:
+            - count
+            - timeSize
+            - timeUnit
+            - logView
+          properties:
+            criteria:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    example: my.field
+                  comparator:
+                    type: string
+                    enum:
+                      - more than
+                      - more than or equals
+                      - less than
+                      - less than or equals
+                      - equals
+                      - does not equal
+                      - matches
+                      - does not match
+                      - matches phrase
+                      - does not match phrase
+                  value:
+                    oneOf:
+                      - type: number
+                        example: 42
+                      - type: string
+                        example: value
+            count:
+              type: object
+              properties:
+                comparator:
+                  type: string
+                  enum:
+                    - more than
+                    - more than or equals
+                    - less than
+                    - less than or equals
+                    - equals
+                    - does not equal
+                    - matches
+                    - does not match
+                    - matches phrase
+                    - does not match phrase
+                value:
+                  type: number
+                  example: 100
+            timeSize:
+              type: number
+              example: 6
+            timeUnit:
+              type: string
+              enum:
+                - s
+                - m
+                - h
+                - d
+            logView:
+              type: object
+              properties:
+                logViewId:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - log-view-reference
+                  example: log-view-reference
+            groupBy:
+              type: array
+              items:
+                type: string
+        - title: Ratio
+          type: object
+          required:
+            - count
+            - timeSize
+            - timeUnit
+            - logView
+          properties:
+            criteria:
+              type: array
+              items:
+                minItems: 2
+                maxItems: 2
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: my.field
+                    comparator:
+                      type: string
+                      enum:
+                        - more than
+                        - more than or equals
+                        - less than
+                        - less than or equals
+                        - equals
+                        - does not equal
+                        - matches
+                        - does not match
+                        - matches phrase
+                        - does not match phrase
+                    value:
+                      oneOf:
+                        - type: number
+                          example: 42
+                        - type: string
+                          example: value
+            count:
+              type: object
+              properties:
+                comparator:
+                  type: string
+                  enum:
+                    - more than
+                    - more than or equals
+                    - less than
+                    - less than or equals
+                    - equals
+                    - does not equal
+                    - matches
+                    - does not match
+                    - matches phrase
+                    - does not match phrase
+                value:
+                  type: number
+                  example: 100
+            timeSize:
+              type: number
+              example: 6
+            timeUnit:
+              type: string
+              enum:
+                - s
+                - m
+                - h
+                - d
+            logView:
+              type: object
+              properties:
+                logViewId:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - log-view-reference
+                  example: log-view-reference
+            groupBy:
+              type: array
+              items:
+                type: string
+    Alerting_params_property_slo_burn_rate:
+      properties:
+        sloId:
+          description: The SLO identifier used by the rule
+          type: string
+          example: 8853df00-ae2e-11ed-90af-09bb6422b258
+        burnRateThreshold:
+          description: The burn rate threshold used to trigger the alert
+          type: number
+          example: 14.4
+        maxBurnRateThreshold:
+          description: >-
+            The maximum burn rate threshold value defined by the SLO error
+            budget
+          type: number
+          example: 168
+        longWindow:
+          description: The duration of the long window used to compute the burn rate
+          type: object
+          properties:
+            value:
+              description: The duration value
+              type: number
+              example: 6
+            unit:
+              description: The duration unit
+              type: string
+              example: h
+        shortWindow:
+          description: The duration of the short window used to compute the burn rate
+          type: object
+          properties:
+            value:
+              description: The duration value
+              type: number
+              example: 30
+            unit:
+              description: The duration unit
+              type: string
+              example: m
+    Alerting_params_property_synthetics_uptime_tls:
+      properties:
+        search:
+          type: string
+        certExpirationThreshold:
+          type: number
+        certAgeThreshold:
+          type: number
     Alerting_params_property_synthetics_monitor_status:
       required:
         - numTimes
@@ -9293,43 +9417,6 @@ components:
           type: number
         isAutoGenerated:
           type: boolean
-    Alerting_create_uptime_monitor_status_rule_request:
-      title: Create uptime monitor status rule request
-      description: A rule that detects monitor errors and outages.
-      type: object
-      required:
-        - consumer
-        - name
-        - params
-        - rule_type_id
-        - schedule
-      properties:
-        actions:
-          $ref: '#/components/schemas/Alerting_actions'
-        consumer:
-          $ref: '#/components/schemas/Alerting_consumer'
-        enabled:
-          $ref: '#/components/schemas/Alerting_enabled_rule'
-        name:
-          $ref: '#/components/schemas/Alerting_name_rule'
-        notify_when:
-          $ref: '#/components/schemas/Alerting_notify_when'
-        params:
-          $ref: >-
-            #/components/schemas/Alerting_params_property_synthetics_monitor_status
-        rule_type_id:
-          type: string
-          description: >-
-            The ID of the rule type that you want to call when the rule is
-            scheduled to run.
-          enum:
-            - xpack.uptime.alerts.monitorStatus
-        schedule:
-          $ref: '#/components/schemas/Alerting_schedule'
-        tags:
-          $ref: '#/components/schemas/Alerting_tags'
-        throttle:
-          $ref: '#/components/schemas/Alerting_throttle'
     Alerting_create_rule_request:
       title: Create rule request body properties
       description: The properties vary depending on the rule type.
@@ -9403,6 +9490,74 @@ components:
             #/components/schemas/Alerting_create_uptime_monitor_status_rule_request
       discriminator:
         propertyName: rule_type_id
+        mapping:
+          xpack.ml.anomaly_detection_alert: >-
+            #/components/schemas/Alerting_create_anomaly_detection_alert_rule_request
+          xpack.ml.anomaly_detection_jobs_health: >-
+            #/components/schemas/Alerting_create_anomaly_detection_jobs_health_rule_request
+          apm.anomaly: '#/components/schemas/Alerting_create_apm_anomaly_rule_request'
+          apm.error_rate: '#/components/schemas/Alerting_create_apm_error_count_rule_request'
+          apm.transaction_duration: >-
+            #/components/schemas/Alerting_create_apm_transaction_duration_rule_request
+          apm.transaction_error_rate: >-
+            #/components/schemas/Alerting_create_apm_transaction_error_rate_rule_request
+          .es-query: '#/components/schemas/Alerting_create_es_query_rule_request'
+          .geo-containment: '#/components/schemas/Alerting_create_geo_containment_rule_request'
+          .index-threshold: '#/components/schemas/Alerting_create_index_threshold_rule_request'
+          metrics.alert.inventory.threshold: '#/components/schemas/Alerting_create_infra_inventory_rule_request'
+          metrics.alert.anomaly: >-
+            #/components/schemas/Alerting_create_infra_metric_anomaly_rule_request
+          metrics.alert.threshold: >-
+            #/components/schemas/Alerting_create_infra_metric_threshold_rule_request
+          monitoring_alert_jvm_memory_usage: >-
+            #/components/schemas/Alerting_create_monitoring_jvm_memory_usage_rule_request
+          logs.alert.document.count: '#/components/schemas/Alerting_create_log_threshold_rule_request'
+          monitoring_ccr_read_exceptions: >-
+            #/components/schemas/Alerting_create_monitoring_ccr_exceptions_rule_request
+          monitoring_alert_cluster_health: >-
+            #/components/schemas/Alerting_create_monitoring_cluster_health_rule_request
+          monitoring_alert_cpu_usage: >-
+            #/components/schemas/Alerting_create_monitoring_cpu_usage_rule_request
+          monitoring_alert_disk_usage: >-
+            #/components/schemas/Alerting_create_monitoring_disk_usage_rule_request
+          monitoring_alert_elasticsearch_version_mismatch: >-
+            #/components/schemas/Alerting_create_monitoring_elasticsearch_version_mismatch_rule_request
+          monitoring_alert_license_expiration: >-
+            #/components/schemas/Alerting_create_monitoring_license_expiration_rule_request
+          monitoring_alert_kibana_version_mismatch: >-
+            #/components/schemas/Alerting_create_monitoring_kibana_version_mismatch_rule_request
+          monitoring_alert_logstash_version_mismatch: >-
+            #/components/schemas/Alerting_create_monitoring_logstash_version_mismatch_rule_request
+          monitoring_alert_missing_monitoring_data: >-
+            #/components/schemas/Alerting_create_monitoring_missing_data_rule_request
+          monitoring_alert_nodes_changed: >-
+            #/components/schemas/Alerting_create_monitoring_nodes_changed_rule_request
+          monitoring_shard_size: >-
+            #/components/schemas/Alerting_create_monitoring_shard_size_rule_request
+          monitoring_alert_thread_pool_search_rejections: >-
+            #/components/schemas/Alerting_create_monitoring_thread_pool_search_rejections_rule_request
+          monitoring_alert_thread_pool_write_rejections: >-
+            #/components/schemas/Alerting_create_monitoring_thread_pool_write_rejections_rule_request
+          siem.eqlRule: '#/components/schemas/Alerting_create_siem_eql_rule_request'
+          siem.indicatorRule: '#/components/schemas/Alerting_create_siem_indicator_rule_request'
+          siem.mlRule: '#/components/schemas/Alerting_create_siem_ml_rule_request'
+          siem.newTermsRule: '#/components/schemas/Alerting_create_siem_new_terms_rule_request'
+          siem.notifications: '#/components/schemas/Alerting_create_siem_notifications_rule_request'
+          siem.queryRule: '#/components/schemas/Alerting_create_siem_query_rule_request'
+          siem.savedQueryRule: '#/components/schemas/Alerting_create_siem_saved_query_rule_request'
+          siem.thresholdRule: '#/components/schemas/Alerting_create_siem_threshold_rule_request'
+          slo.rules.burnRate: '#/components/schemas/Alerting_create_slo_burn_rate_rule_request'
+          xpack.synthetics.alerts.monitorStatus: >-
+            #/components/schemas/Alerting_create_synthetics_monitor_status_rule_request
+          xpack.uptime.alerts.durationAnomaly: >-
+            #/components/schemas/Alerting_create_synthetics_uptime_duration_anomaly_rule_request
+          xpack.uptime.alerts.tls: >-
+            #/components/schemas/Alerting_create_synthetics_uptime_tls_rule_request
+          xpack.uptime.alerts.tlsCertificate: >-
+            #/components/schemas/Alerting_create_synthetics_uptime_tls_certificate_rule_request
+          transform_health: '#/components/schemas/Alerting_create_transform_health_rule_request'
+          xpack.uptime.alerts.monitorStatus: >-
+            #/components/schemas/Alerting_create_uptime_monitor_status_rule_request
     Alerting_rule_response_properties:
       title: Rule response properties
       type: object
@@ -9661,6 +9816,57 @@ components:
           $ref: '#/components/schemas/Alerting_tags'
         throttle:
           $ref: '#/components/schemas/Alerting_throttle'
+    Alerting_fieldmap_properties:
+      title: Field map objects in the get rule types response
+      type: object
+      properties:
+        array:
+          type: boolean
+          description: Indicates whether the field is an array.
+        dynamic:
+          type: boolean
+          description: Indicates whether it is a dynamic field mapping.
+        format:
+          type: string
+          description: >
+            Indicates the format of the field. For example, if the `type` is
+            `date_range`, the `format` can be
+            `epoch_millis||strict_date_optional_time`.
+        ignore_above:
+          type: integer
+          description: >-
+            Specifies the maximum length of a string field. Longer strings are
+            not indexed or stored.
+        index:
+          type: boolean
+          description: Indicates whether field values are indexed.
+        path:
+          type: string
+          description: TBD
+        properties:
+          type: object
+          description: >
+            Details about the object properties. This property is applicable
+            when `type` is `object`.
+          additionalProperties:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The data type for each object property.
+        required:
+          type: boolean
+          description: Indicates whether the field is required.
+        scaling_factor:
+          type: integer
+          description: >
+            The scaling factor to use when encoding values. This property is
+            applicable when `type` is `scaled_float`. Values will be multiplied
+            by this factor at index time and rounded to the closest long value. 
+        type:
+          type: string
+          description: Specifies the data type for the field.
+          example: scaled_float
     Alerting_400_response:
       title: Bad request
       type: object
@@ -9893,6 +10099,34 @@ components:
             - my-connector
         secrets:
           $ref: '#/components/schemas/Connectors_secrets_properties_email'
+    Connectors_create_connector_request_genai:
+      title: Create OpenAI connector request
+      description: >
+        The OpenAI connector uses axios to send a POST request to either OpenAI
+        or Azure OpenAPI.
+      type: object
+      required:
+        - config
+        - connector_type_id
+        - name
+        - secrets
+      properties:
+        config:
+          $ref: '#/components/schemas/Connectors_config_properties_genai'
+        connector_type_id:
+          type: string
+          description: The type of connector.
+          enum:
+            - .gen-ai
+          examples:
+            - .gen-ai
+        name:
+          type: string
+          description: The display name for the connector.
+          examples:
+            - my-connector
+        secrets:
+          $ref: '#/components/schemas/Connectors_secrets_properties_genai'
     Connectors_create_connector_request_index:
       title: Create index connector request
       description: The index connector indexes a document into Elasticsearch.
@@ -10416,8 +10650,7 @@ components:
             URL. If you are using the `xpack.actions.allowedHosts setting`, add
             the hostname to the allowed hosts.
           examples:
-            - >-
-              https://testing-jira.atlassian.net/rest/api/2/issue/{{{external.system.id}}}/comment
+            - https://example.com/issue/{{{external.system.id}}}/comment
         createIncidentJson:
           type: string
           description: >
@@ -10451,7 +10684,7 @@ components:
         createIncidentResponseKey:
           type: string
           description: >-
-            The JSON key in the create case response that contains the external
+            The JSON key in the create external case response that contains the
             case ID.
         createIncidentUrl:
           type: string
@@ -10462,7 +10695,7 @@ components:
         getIncidentResponseExternalTitleKey:
           type: string
           description: >-
-            The JSON key in get case response that contains the external case
+            The JSON key in get external case response that contains the case
             title.
         getIncidentUrl:
           type: string
@@ -10478,8 +10711,7 @@ components:
             valid, disregarding the Mustache variables, so the later validation
             will pass.
           examples:
-            - >-
-              https://testing-jira.atlassian.net/rest/api/2/issue/{{{external.system.id}}}
+            - https://example.com/issue/{{{external.system.id}}}
         hasAuth:
           type: boolean
           description: >-
@@ -10529,8 +10761,7 @@ components:
             you are using the `xpack.actions.allowedHosts` setting, add the
             hostname to the allowed hosts.
           examples:
-            - >-
-              https://testing-jira.atlassian.net/rest/api/2/issue/{{{external.system.ID}}}
+            - https://example.com/issue/{{{external.system.ID}}}
         viewIncidentUrl:
           type: string
           description: >
@@ -10728,34 +10959,6 @@ components:
         apiKey:
           type: string
           description: The OpenAI API key.
-    Connectors_create_connector_request_genai:
-      title: Create OpenAI connector request
-      description: >
-        The OpenAI connector uses axios to send a POST request to either OpenAI
-        or Azure OpenAPI.
-      type: object
-      required:
-        - config
-        - connector_type_id
-        - name
-        - secrets
-      properties:
-        config:
-          $ref: '#/components/schemas/Connectors_config_properties_genai'
-        connector_type_id:
-          type: string
-          description: The type of connector.
-          enum:
-            - .gen-ai
-          examples:
-            - .gen-ai
-        name:
-          type: string
-          description: The display name for the connector.
-          examples:
-            - my-connector
-        secrets:
-          $ref: '#/components/schemas/Connectors_secrets_properties_genai'
     Connectors_config_properties_index:
       title: Connector request properties for an index connector
       required:
@@ -11445,6 +11648,7 @@ components:
             #/components/schemas/Connectors_create_connector_request_cases_webhook
           .d3security: '#/components/schemas/Connectors_create_connector_request_d3security'
           .email: '#/components/schemas/Connectors_create_connector_request_email'
+          .gen-ai: '#/components/schemas/Connectors_create_connector_request_genai'
           .index: '#/components/schemas/Connectors_create_connector_request_index'
           .jira: '#/components/schemas/Connectors_create_connector_request_jira'
           .opsgenie: '#/components/schemas/Connectors_create_connector_request_opsgenie'
@@ -11580,6 +11784,39 @@ components:
           description: The type of connector.
           enum:
             - .email
+        id:
+          type: string
+          description: The identifier for the connector.
+        is_deprecated:
+          $ref: '#/components/schemas/Connectors_is_deprecated'
+        is_missing_secrets:
+          $ref: '#/components/schemas/Connectors_is_missing_secrets'
+        is_preconfigured:
+          $ref: '#/components/schemas/Connectors_is_preconfigured'
+        is_system_action:
+          $ref: '#/components/schemas/Connectors_is_system_action'
+        name:
+          type: string
+          description: The display name for the connector.
+        referenced_by_count:
+          $ref: '#/components/schemas/Connectors_referenced_by_count'
+    Connectors_connector_response_properties_genai:
+      title: Connector response properties for an OpenAI connector
+      type: object
+      required:
+        - connector_type_id
+        - id
+        - is_deprecated
+        - is_preconfigured
+        - name
+      properties:
+        config:
+          $ref: '#/components/schemas/Connectors_config_properties_genai'
+        connector_type_id:
+          type: string
+          description: The type of connector.
+          enum:
+            - .gen-ai
         id:
           type: string
           description: The identifier for the connector.
@@ -12198,6 +12435,7 @@ components:
         - $ref: >-
             #/components/schemas/Connectors_connector_response_properties_d3security
         - $ref: '#/components/schemas/Connectors_connector_response_properties_email'
+        - $ref: '#/components/schemas/Connectors_connector_response_properties_genai'
         - $ref: '#/components/schemas/Connectors_connector_response_properties_index'
         - $ref: '#/components/schemas/Connectors_connector_response_properties_jira'
         - $ref: >-
@@ -12237,6 +12475,7 @@ components:
           .d3security: >-
             #/components/schemas/Connectors_connector_response_properties_d3security
           .email: '#/components/schemas/Connectors_connector_response_properties_email'
+          .gen-ai: '#/components/schemas/Connectors_connector_response_properties_genai'
           .index: '#/components/schemas/Connectors_connector_response_properties_index'
           .jira: '#/components/schemas/Connectors_connector_response_properties_jira'
           .opsgenie: >-
@@ -13112,7 +13351,7 @@ components:
         - subActionParams
       description: >-
         The `pushToService` subaction for Jira, ServiceNow ITSM, ServiceNow
-        SecOps, and Swimlane connectors.
+        SecOps, Swimlane, and Webhook - Case Management connectors.
       properties:
         subAction:
           type: string
@@ -13188,7 +13427,8 @@ components:
                   type: string
                   description: >-
                     The description of the incident for Jira, ServiceNow ITSM,
-                    ServiceNow SecOps, and Swimlane connectors.
+                    ServiceNow SecOps, Swimlane, and Webhook - Case Management
+                    connectors.
                 dest_ip:
                   description: >
                     A list of destination IP addresses related to the security
@@ -13205,6 +13445,11 @@ components:
                     The Jira, ServiceNow ITSM, or ServiceNow SecOps issue
                     identifier. If present, the incident is updated. Otherwise,
                     a new incident is created.
+                id:
+                  type: string
+                  description: >-
+                    The external case identifier for Webhook - Case Management
+                    connectors.
                 impact:
                   type: string
                   description: The impact of the incident for ServiceNow ITSM connectors.
@@ -13276,6 +13521,11 @@ components:
                     - type: array
                       items:
                         type: string
+                status:
+                  type: string
+                  description: >-
+                    The status of the incident for Webhook - Case Management
+                    connectors.
                 subcategory:
                   type: string
                   description: >-
@@ -13284,14 +13534,65 @@ components:
                 summary:
                   type: string
                   description: A summary of the incident for Jira connectors.
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  description: A list of tags for Webhook - Case Management connectors.
                 title:
                   type: string
                   description: >
-                    A title for the incident for Jira connectors. It is used for
-                    searching the contents of the knowledge base.
+                    A title for the incident for Jira and Webhook - Case
+                    Management connectors. It is used for searching the contents
+                    of the knowledge base.
                 urgency:
                   type: string
                   description: The urgency of the incident for ServiceNow ITSM connectors.
+    Connectors_run_connector_subaction_closeincident:
+      title: The closeIncident subaction
+      type: object
+      required:
+        - subAction
+        - subActionParams
+      description: The `closeIncident` subaction for ServiceNow ITSM connectors.
+      properties:
+        subAction:
+          type: string
+          description: The action to test.
+          enum:
+            - closeIncident
+        subActionParams:
+          type: object
+          required:
+            - incident
+          properties:
+            incident:
+              type: object
+              anyOf:
+                - required:
+                    - correlation_id
+                - required:
+                    - externalId
+              properties:
+                correlation_id:
+                  type:
+                    - 'null'
+                    - string
+                  description: >
+                    An identifier that is assigned to the incident when it is
+                    created by the connector. NOTE: If you use the default value
+                    and the rule generates multiple alerts that use the same
+                    alert IDs, the latest open incident for this correlation ID
+                    is closed unless you specify the external ID.
+                  maxLength: 100
+                  default: '{{rule.id}}:{{alert.id}}'
+                externalId:
+                  type:
+                    - 'null'
+                    - string
+                  description: >-
+                    The unique identifier (`incidentId`) for the incident in
+                    ServiceNow.
     Connectors_run_connector_request:
       title: Run connector request body properties
       description: The properties vary depending on the connector type.
@@ -13317,6 +13618,8 @@ components:
                     #/components/schemas/Connectors_run_connector_subaction_addevent
                 - $ref: >-
                     #/components/schemas/Connectors_run_connector_subaction_closealert
+                - $ref: >-
+                    #/components/schemas/Connectors_run_connector_subaction_closeincident
                 - $ref: >-
                     #/components/schemas/Connectors_run_connector_subaction_createalert
                 - $ref: >-
@@ -14102,6 +14405,57 @@ components:
           type: string
           examples:
             - WzMwNDgsMV0=
+    Cases_user_comment_response_properties:
+      title: Case response properties for user comments
+      type: object
+      required:
+        - type
+      properties:
+        comment:
+          type: string
+          examples:
+            - A new comment.
+        created_at:
+          type: string
+          format: date-time
+          examples:
+            - '2022-05-13T09:16:17.416Z'
+        created_by:
+          $ref: '#/components/schemas/Cases_case_response_created_by_properties'
+        id:
+          type: string
+          examples:
+            - 8af6ac20-74f6-11ea-b83a-553aecdb28b6
+        owner:
+          $ref: '#/components/schemas/Cases_owners'
+        pushed_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+          examples:
+            - null
+        pushed_by:
+          $ref: '#/components/schemas/Cases_case_response_pushed_by_properties'
+        type:
+          type: string
+          examples:
+            - user
+          enum:
+            - user
+        updated_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+          examples:
+            - null
+        updated_by:
+          $ref: '#/components/schemas/Cases_case_response_updated_by_properties'
+        version:
+          type: string
+          examples:
+            - WzIwNDMxLDFd
     Cases_case_response_created_by_properties:
       title: Case response properties for created_by
       type: object
@@ -14196,57 +14550,6 @@ components:
         - email
         - full_name
         - username
-    Cases_user_comment_response_properties:
-      title: Case response properties for user comments
-      type: object
-      required:
-        - type
-      properties:
-        comment:
-          type: string
-          examples:
-            - A new comment.
-        created_at:
-          type: string
-          format: date-time
-          examples:
-            - '2022-05-13T09:16:17.416Z'
-        created_by:
-          $ref: '#/components/schemas/Cases_case_response_created_by_properties'
-        id:
-          type: string
-          examples:
-            - 8af6ac20-74f6-11ea-b83a-553aecdb28b6
-        owner:
-          $ref: '#/components/schemas/Cases_owners'
-        pushed_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
-          examples:
-            - null
-        pushed_by:
-          $ref: '#/components/schemas/Cases_case_response_pushed_by_properties'
-        type:
-          type: string
-          examples:
-            - user
-          enum:
-            - user
-        updated_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
-          examples:
-            - null
-        updated_by:
-          $ref: '#/components/schemas/Cases_case_response_updated_by_properties'
-        version:
-          type: string
-          examples:
-            - WzIwNDMxLDFd
     Cases_external_service:
       type:
         - object
@@ -14345,15 +14648,16 @@ components:
           type: array
           maxItems: 10000
           items:
-            discriminator:
-              propertyName: type
             oneOf:
               - $ref: '#/components/schemas/Cases_alert_comment_response_properties'
               - $ref: '#/components/schemas/Cases_user_comment_response_properties'
+            discriminator:
+              propertyName: type
+              mapping:
+                alert: '#/components/schemas/Cases_alert_comment_response_properties'
+                user: '#/components/schemas/Cases_user_comment_response_properties'
         connector:
           title: Case response properties for connectors
-          discriminator:
-            propertyName: type
           oneOf:
             - $ref: '#/components/schemas/Cases_connector_properties_none'
             - $ref: '#/components/schemas/Cases_connector_properties_cases_webhook'
@@ -14362,6 +14666,16 @@ components:
             - $ref: '#/components/schemas/Cases_connector_properties_servicenow'
             - $ref: '#/components/schemas/Cases_connector_properties_servicenow_sir'
             - $ref: '#/components/schemas/Cases_connector_properties_swimlane'
+          discriminator:
+            propertyName: type
+            mapping:
+              .none: '#/components/schemas/Cases_connector_properties_none'
+              .cases-webhook: '#/components/schemas/Cases_connector_properties_cases_webhook'
+              .jira: '#/components/schemas/Cases_connector_properties_jira'
+              .resilient: '#/components/schemas/Cases_connector_properties_resilient'
+              .servicenow: '#/components/schemas/Cases_connector_properties_servicenow'
+              .servicenow-sir: '#/components/schemas/Cases_connector_properties_servicenow_sir'
+              .swimlane: '#/components/schemas/Cases_connector_properties_swimlane'
         created_at:
           type: string
           format: date-time
@@ -14805,6 +15119,56 @@ components:
         index:
           description: The alert index.
           type: string
+    Cases_add_alert_comment_request_properties:
+      title: Add case comment request properties for alerts
+      required:
+        - alertId
+        - index
+        - owner
+        - rule
+        - type
+      description: Defines properties for case comment requests when type is alert.
+      type: object
+      properties:
+        alertId:
+          $ref: '#/components/schemas/Cases_alert_identifiers'
+        index:
+          $ref: '#/components/schemas/Cases_alert_indices'
+        owner:
+          $ref: '#/components/schemas/Cases_owners'
+        rule:
+          $ref: '#/components/schemas/Cases_rule'
+        type:
+          description: The type of comment.
+          type: string
+          examples:
+            - alert
+          enum:
+            - alert
+    Cases_add_user_comment_request_properties:
+      title: Add case comment request properties for user comments
+      description: Defines properties for case comment requests when type is user.
+      type: object
+      properties:
+        comment:
+          description: The new comment. It is required only when `type` is `user`.
+          type: string
+          maxLength: 30000
+          examples:
+            - A new comment.
+        owner:
+          $ref: '#/components/schemas/Cases_owners'
+        type:
+          type: string
+          description: The type of comment.
+          examples:
+            - user
+          enum:
+            - user
+      required:
+        - comment
+        - owner
+        - type
     Cases_alert_identifiers:
       title: Alert identifiers
       description: >
@@ -14865,66 +15229,19 @@ components:
           type: string
           examples:
             - security_rule
-    Cases_add_alert_comment_request_properties:
-      title: Add case comment request properties for alerts
-      required:
-        - alertId
-        - index
-        - owner
-        - rule
-        - type
-      description: Defines properties for case comment requests when type is alert.
-      type: object
-      properties:
-        alertId:
-          $ref: '#/components/schemas/Cases_alert_identifiers'
-        index:
-          $ref: '#/components/schemas/Cases_alert_indices'
-        owner:
-          $ref: '#/components/schemas/Cases_owners'
-        rule:
-          $ref: '#/components/schemas/Cases_rule'
-        type:
-          description: The type of comment.
-          type: string
-          examples:
-            - alert
-          enum:
-            - alert
-    Cases_add_user_comment_request_properties:
-      title: Add case comment request properties for user comments
-      description: Defines properties for case comment requests when type is user.
-      type: object
-      properties:
-        comment:
-          description: The new comment. It is required only when `type` is `user`.
-          type: string
-          maxLength: 30000
-          examples:
-            - A new comment.
-        owner:
-          $ref: '#/components/schemas/Cases_owners'
-        type:
-          type: string
-          description: The type of comment.
-          examples:
-            - user
-          enum:
-            - user
-      required:
-        - comment
-        - owner
-        - type
     Cases_add_case_comment_request:
       title: Add case comment request
       description: >-
         The add comment to case API request body varies depending on whether you
         are adding an alert or a comment.
-      discriminator:
-        propertyName: type
       oneOf:
         - $ref: '#/components/schemas/Cases_add_alert_comment_request_properties'
         - $ref: '#/components/schemas/Cases_add_user_comment_request_properties'
+      discriminator:
+        propertyName: type
+        mapping:
+          alert: '#/components/schemas/Cases_add_alert_comment_request_properties'
+          user: '#/components/schemas/Cases_add_user_comment_request_properties'
     Cases_update_alert_comment_request_properties:
       title: Update case comment request properties for alerts
       description: Defines properties for case comment requests when type is alert.
@@ -15012,11 +15329,14 @@ components:
       description: >-
         The update case comment API request body varies depending on whether you
         are updating an alert or a comment.
-      discriminator:
-        propertyName: type
       oneOf:
         - $ref: '#/components/schemas/Cases_update_alert_comment_request_properties'
         - $ref: '#/components/schemas/Cases_update_user_comment_request_properties'
+      discriminator:
+        propertyName: type
+        mapping:
+          alert: '#/components/schemas/Cases_update_alert_comment_request_properties'
+          user: '#/components/schemas/Cases_update_user_comment_request_properties'
     Cases_actions:
       type: string
       enum:
@@ -16866,6 +17186,24 @@ components:
         name: updated-connector
         config:
           index: updated-index
+    Connectors_run_cases_webhook_connector_request:
+      summary: Run a Webhook - Case Management connector to create a case.
+      value:
+        params:
+          subAction: pushToService
+          subActionParams:
+            comments:
+              - commentId: 1
+                comment: A comment about the incident.
+            incident:
+              title: Case title
+              description: Description of the incident.
+              tags:
+                - tag1
+                - tag2
+              severity: low
+              status: open
+              id: caseID
     Connectors_run_email_connector_request:
       summary: Send an email message from an email connector.
       value:
@@ -16931,6 +17269,21 @@ components:
               caseId: '1000'
               caseName: Case name
               description: Description of the incident.
+    Connectors_run_cases_webhook_connector_response:
+      summary: >-
+        Response from a pushToService action for a Webhook - Case Management
+        connector.
+      value:
+        connector_id: 1824b5b8-c005-4dcc-adac-57f92db46459
+        data:
+          id: 100665
+          title: TEST-29034
+          url: https://example.com/browse/TEST-29034
+          pushedDate: '2023-12-05T19:43:36.360Z'
+          comments:
+            - commentId: 1
+              pushedDate: '2023-12-05T19:43:36.360Z'
+        status: ok
     Connectors_run_email_connector_response:
       summary: Response for sending a message from an email connector.
       value:

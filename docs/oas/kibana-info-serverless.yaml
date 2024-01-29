@@ -23,4 +23,25 @@ components:
       in: header
       name: Authorization
       description: 'e.g. Authorization: ApiKey base64AccessApiKey'
+# tags:
+#   - name: connectors
+#     description: Create and manage Kibana connectors
+#     externalDocs:
+#       description: More details about connectors
+#       url: https://www.elastic.co/guide/en/kibana/current/action-types.html
+#   - name: data views
+#     description: Create and manage data Kibana data views, formerly known as index patterns.
+#     externalDocs:
+#       description: More details about data views
+#       url: https://www.elastic.co/guide/en/kibana/current/managing-data-views.html
+#   - name: ml
+#     description: Synchonize machine learning saved objects
+#     externalDocs:
+#       description: More details about machine learning in Kibana
+#       url: https://www.elastic.co/guide/en/kibana/current/xpack-ml.html
+#   - name: saved objects
+#     description: Manage Kibana saved objects, including dashboards, visualizations, and more.
+#     externalDocs:
+#       description: More details about saved objects
+#       url: https://www.elastic.co/guide/en/kibana/current/managing-saved-objects.html
   
