@@ -17,18 +17,18 @@ tags:
     externalDocs:
       description: More details about alerting in Kibana
       url: https://www.elastic.co/guide/en/kibana/current/alerting-getting-started.html
-  - name: connectors
-    x-displayName: Connectors
-    description: Create and manage Kibana connectors
-    externalDocs:
-      description: More details about connectors
-      url: https://www.elastic.co/guide/en/kibana/current/action-types.html
   - name: cases
     x-displayName: Cases
     description: Open and track issues in Kibana cases
     externalDocs:
       description: More details about cases
       url: https://www.elastic.co/guide/en/kibana/current/cases.html
+  - name: connectors
+    x-displayName: Connectors
+    description: Create and manage Kibana connectors
+    externalDocs:
+      description: More details about connectors
+      url: https://www.elastic.co/guide/en/kibana/current/action-types.html
   - name: ml
     x-displayName: Machine learning
     description: Synchonize machine learning saved objects
