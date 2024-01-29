@@ -1,0 +1,47 @@
+openapi: 3.1.0
+info:
+  title: Kibana
+  description: OpenAPI schema for Kibana APIs
+  version: "1.0.2"
+  license:
+    name: Elastic License 2.0
+    url: https://www.elastic.co/licensing/elastic-license
+  contact: 
+    name: Kibana Team
+security:
+  - basicAuth: []
+  - apiKeyAuth: []
+servers:
+  - url: /
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'e.g. Authorization: ApiKey base64AccessApiKey'
+# tags:
+#   - name: alerting
+#     description: Create and manage rules and alerts in Kibana
+#     externalDocs:
+#       description: More details about alerting in Kibana
+#       url: https://www.elastic.co/guide/en/kibana/current/alerting-getting-started.html
+#   - name: cases
+#     description: Open and track issues in Kibana cases
+#     externalDocs:
+#       description: More details about cases
+#       url: https://www.elastic.co/guide/en/kibana/current/cases.html
+#   - name: connectors
+#     description: Create and manage Kibana connectors
+#     externalDocs:
+#       description: More details about connectors
+#       url: https://www.elastic.co/guide/en/kibana/current/action-types.html
+#   - name: ml
+#     description: Synchonize machine learning saved objects
+#     externalDocs:
+#       description: More details about machine learning in Kibana
+#       url: https://www.elastic.co/guide/en/kibana/current/xpack-ml.html
+  

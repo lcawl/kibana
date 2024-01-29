@@ -3541,20 +3541,6 @@ paths:
           schema:
             type: string
 components:
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-    Enrollment_API_Key:
-      name: Authorization
-      type: apiKey
-      in: header
-      description: 'e.g. Authorization: ApiKey base64EnrollmentApiKey'
-    Access_API_Key:
-      name: Authorization
-      type: apiKey
-      in: header
-      description: 'e.g. Authorization: ApiKey base64AccessApiKey'
   parameters:
     kbn_xsrf:
       schema:

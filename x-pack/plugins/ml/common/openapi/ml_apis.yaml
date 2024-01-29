@@ -8,7 +8,7 @@ info:
     url: https://www.elastic.co/licensing/elastic-license
 tags:
   - name: ml
-    description: Machine learning
+    description: Machine learning APIs enable you to synchronize saved objects for jobs and trained models.
 servers:
   - url: /
 paths:
@@ -84,14 +84,6 @@ components:
       type: boolean
       examples:
         - true
- securitySchemes:
-  basicAuth:
-    type: http
-    scheme: basic
-  apiKeyAuth:
-    type: apiKey
-    in: header
-    name: ApiKey
  schemas:
     mlSyncResponseSuccess:
       type: boolean

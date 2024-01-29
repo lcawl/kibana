@@ -48,11 +48,6 @@ components:
       type: boolean
       examples:
         - true
- securitySchemes:
-  apiKeyAuth:
-    type: apiKey
-    in: header
-    name: ApiKey
  schemas:
     mlSyncResponseSuccess:
       type: boolean
