@@ -26,7 +26,7 @@ get:
             $ref: '../components/schemas/400_response.yaml'
 post:
   summary: Set the default data view in the default space
-  operationId: setDefaultDatailViewDefault
+  operationId: setDefaultDataViewDefault
   description: >
     This functionality is in technical preview and may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
   tags:
