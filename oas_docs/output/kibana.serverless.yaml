@@ -96,6 +96,8 @@ tags:
   - name: slo
     description: SLO APIs enable you to define, manage and track service-level objectives
     x-displayName: slo
+  - name: api_other
+    x-displayName: other
   - name: system
     x-displayName: system
 paths:
@@ -1724,6 +1726,127 @@ paths:
                 $ref: '#/components/schemas/SLOs_403_response'
       servers:
         - url: https://localhost:5601
+  /api/observability_ai_assistant/chat/complete:
+    post:
+      summary: '[technical preview] Chat with the Elastic AI Assistant for Observability'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: object
+                  properties:
+                    messages:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          '@timestamp':
+                            type: string
+                          message:
+                            type: object
+                            properties:
+                              role:
+                                type: string
+                                enum:
+                                  - system
+                                  - assistant
+                                  - user
+                              content:
+                                type: string
+                              name:
+                                type: string
+                              event:
+                                type: string
+                              function_call:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  trigger:
+                                    type: string
+                                    enum:
+                                      - assistant
+                                      - user
+                                      - elastic
+                                  arguments:
+                                    type: object
+                                  data:
+                                    type: object
+                                required:
+                                  - name
+                                  - trigger
+                            required:
+                              - role
+                        required:
+                          - '@timestamp'
+                          - message
+                    connectorId:
+                      type: string
+                    persist:
+                      type: object
+                    conversationId:
+                      type: string
+                    title:
+                      type: string
+                    responseLanguage:
+                      type: string
+                    disableFunctions:
+                      type: object
+                    instructions:
+                      type: array
+                      items:
+                        anyOf:
+                          - type: string
+                          - type: object
+                            properties:
+                              doc_id:
+                                type: string
+                              text:
+                                type: string
+                            required:
+                              - doc_id
+                              - text
+                    actions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          description:
+                            type: string
+                          parameters:
+                            type: object
+                        required:
+                          - name
+                          - description
+                  required:
+                    - messages
+                    - connectorId
+                    - persist
+                query:
+                  type: object
+                  properties:
+                    format:
+                      type: string
+                      enum:
+                        - default
+                        - openai
+              required:
+                - body
+      responses:
+        '200':
+          description: Chat completion events
+          content:
+            application/octet-stream:
+              schema:
+                type: object
+      tags:
+        - api_other
   /api/status:
     get:
       operationId: /api/status#0
@@ -8673,6 +8796,9 @@ x-tagGroups:
   - name: SLOs
     tags:
       - slo
+  - name: Elastic AI Assistant for Observability
+    tags:
+      - api_other
   - name: Kibana HTTP APIs
     tags:
       - system
