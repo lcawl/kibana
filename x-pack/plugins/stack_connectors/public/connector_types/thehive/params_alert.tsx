@@ -11,7 +11,7 @@ import {
   TextAreaWithMessageVariables,
   ActionParamsProps,
 } from '@kbn/triggers-actions-ui-plugin/public';
-import { EuiFormRow, EuiSelect, EuiComboBox } from '@elastic/eui';
+import { EuiFormRow, EuiSelect, EuiComboBox, EuiText } from '@elastic/eui';
 import { ExecutorParams, ExecutorSubActionCreateAlertParams } from '../../../common/thehive/types';
 import { severityOptions, tlpOptions } from './constants';
 import * as translations from './translations';
@@ -149,7 +149,15 @@ export const TheHiveParamsAlertFields: React.FC<ActionParamsProps<ExecutorParams
         }}
         errors={errors['createAlertParam.sourceRef'] as string[]}
       />
-      <EuiFormRow fullWidth label={translations.SEVERITY_LABEL}>
+      <EuiFormRow
+        fullWidth
+        label={translations.SEVERITY_LABEL}
+        labelAppend={
+          <EuiText size="xs" color="subdued">
+            {translations.OPTIONAL_LABEL}
+          </EuiText>
+        }
+      >
         <EuiSelect
           fullWidth
           data-test-subj="severitySelectInput"
@@ -165,7 +173,15 @@ export const TheHiveParamsAlertFields: React.FC<ActionParamsProps<ExecutorParams
           }}
         />
       </EuiFormRow>
-      <EuiFormRow fullWidth label={translations.TLP_LABEL}>
+      <EuiFormRow
+        fullWidth
+        label={translations.TLP_LABEL}
+        labelAppend={
+          <EuiText size="xs" color="subdued">
+            {translations.OPTIONAL_LABEL}
+          </EuiText>
+        }
+      >
         <EuiSelect
           fullWidth
           data-test-subj="tlpSelectInput"
@@ -177,7 +193,15 @@ export const TheHiveParamsAlertFields: React.FC<ActionParamsProps<ExecutorParams
           }}
         />
       </EuiFormRow>
-      <EuiFormRow fullWidth label={translations.TAGS_LABEL}>
+      <EuiFormRow
+        fullWidth
+        label={translations.TAGS_LABEL}
+        labelAppend={
+          <EuiText size="xs" color="subdued">
+            {translations.OPTIONAL_LABEL}
+          </EuiText>
+        }
+      >
         <EuiComboBox
           data-test-subj="tagsInput"
           fullWidth
