@@ -39,7 +39,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       await rules.common.clickCreateAlertButton();
       await testSubjects.click(`.es-query-SelectOption`);
       await pageObjects.header.waitUntilLoadingHasFinished();
-      await testSubjects.setValue('ruleNameInput', ruleName);
+      await testSubjects.setValue('ruleDetailsNameInput', ruleName);
       await testSubjects.click('queryFormType_esQuery');
       const indexSelector = await testSubjects.find('selectIndexExpression');
       await indexSelector.click();
@@ -47,8 +47,8 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       await testSubjects.click('thresholdAlertTimeFieldSelect');
       await testSubjects.setValue('thresholdAlertTimeFieldSelect', '@timestamp');
       await testSubjects.click('closePopover');
-      await comboBox.set('ruleFormConsumerSelect', 'Stack Rules');
-      await testSubjects.scrollIntoView('ruleNameInput');
+      // await comboBox.set('ruleFormConsumerSelect', 'Stack Rules');
+      // await testSubjects.scrollIntoView('ruleNameInput');
       await commonScreenshots.takeScreenshot(
         'rule-types-es-query-conditions',
         screenshotDirectories,
@@ -69,7 +69,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       await testSubjects.setValue('timeWindowUnitSelect', 'day');
       await browser.pressKeys(browser.keys.ESCAPE);
       await testSubjects.click('testQuery');
-      await testSubjects.scrollIntoView('ruleNameInput');
+      // await testSubjects.scrollIntoView('ruleNameInput');
       await commonScreenshots.takeScreenshot(
         'rule-types-es-query-valid',
         screenshotDirectories,
@@ -77,21 +77,21 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         1500
       );
       // Create an email connector action
-      await testSubjects.click('.email-alerting-ActionTypeSelectOption');
-      await testSubjects.scrollIntoView('addAlertActionButton');
+      await testSubjects.click('ruleActionsAddActionButton');
+      // await testSubjects.scrollIntoView('addAlertActionButton');
       await commonScreenshots.takeScreenshot(
         'es-query-rule-action-query-matched',
         screenshotDirectories,
         1400,
         1024
       );
-      await testSubjects.click('messageAddVariableButton');
-      await commonScreenshots.takeScreenshot(
-        'es-query-rule-action-variables',
-        screenshotDirectories,
-        1400,
-        1024
-      );
+      // await testSubjects.click('messageAddVariableButton');
+      // await commonScreenshots.takeScreenshot(
+      //   'es-query-rule-action-variables',
+      //   screenshotDirectories,
+      //   1400,
+      //   1024
+      // );
       await browser.pressKeys(browser.keys.ESCAPE);
       await testSubjects.click('cancelSaveRuleButton');
     });
@@ -115,7 +115,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         1700
       );
       /* Reposition so that the details are visible for the first action */
-      await testSubjects.scrollIntoView('alertActionAccordion-0');
+      // await testSubjects.scrollIntoView('alertActionAccordion-0');
       await commonScreenshots.takeScreenshot(
         'es-query-rule-action-summary',
         screenshotDirectories,
@@ -123,7 +123,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         1024
       );
       /* Reposition so that the details are visible for the second action */
-      await testSubjects.scrollIntoView('alertActionAccordion-1');
+      // await testSubjects.scrollIntoView('alertActionAccordion-1');
       await commonScreenshots.takeScreenshot(
         'es-query-rule-recovery-action',
         screenshotDirectories,
@@ -132,8 +132,9 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       );
 
       /* Add a cases action */
-      await testSubjects.click('.cases-alerting-ActionTypeSelectOption');
-      await testSubjects.scrollIntoView('addAlertActionButton');
+      // await testSubjects.click('ruleActionAddActionButton');
+      // await testSubjects.click('ruleActionsConnectorsModalCard');
+      // await testSubjects.scrollIntoView('addAlertActionButton');
       await pageObjects.header.waitUntilLoadingHasFinished();
       await commonScreenshots.takeScreenshot('cases-action', screenshotDirectories, 1400, 1024);
 
