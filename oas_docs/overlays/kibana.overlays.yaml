@@ -34,7 +34,7 @@ actions:
 
             If you use the Kibana console to send API requests, it automatically adds the appropriate space identifier.
 
-            To learn more, check out [Spaces](https://www.elastic.co/guide/en/kibana/master/xpack-spaces.html).
+            To learn more, check out [Spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces).
 # Add some tag descriptions and displayNames
   - target: '$.tags[?(@.name=="alerting")]'
     description: Change tag description and displayName
@@ -45,7 +45,7 @@ actions:
         Actions typically involve the use of connectors to interact with Kibana services or third party integrations.
       externalDocs:
         description: Alerting documentation
-        url: https://www.elastic.co/guide/en/kibana/master/alerting-getting-started.html
+        url: https://www.elastic.co/docs/explore-analyze/alerts-cases
       x-displayName: "Alerting"
   - target: '$.tags[?(@.name=="streams")]'
     description: Change tag description and displayName
@@ -62,7 +62,7 @@ actions:
         You can also send cases to external incident management systems by configuring connectors.
       externalDocs:
         description: Cases documentation
-        url: https://www.elastic.co/guide/en/kibana/master/cases.html
+        url: https://www.elastic.co/docs/reference/search-connectors/use-cases
       x-displayName: "Cases"
   - target: '$.tags[?(@.name=="connectors")]'
     description: Change tag description and displayName
@@ -72,7 +72,7 @@ actions:
         Alerting rules can use connectors to run actions when rule conditions are met.
       externalDocs:
         description: Connector documentation
-        url: https://www.elastic.co/guide/en/kibana/current/action-types.html
+        url: https://www.elastic.co/docs/reference/kibana/connectors-kibana
       x-displayName: "Connectors"
   - target: '$.tags[?(@.name=="data views")]'
     description: Change displayName
@@ -89,7 +89,7 @@ actions:
       description: Manage the roles that grant Elasticsearch and Kibana privileges.
       externalDocs:
         description: Kibana role management
-        url: https://www.elastic.co/guide/en/kibana/master/kibana-role-management.html
+        url: https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/defining-roles
   - target: '$.tags[?(@.name=="slo")]'
     description: Change displayName
     update:
@@ -100,7 +100,7 @@ actions:
       x-displayName: "Spaces"
       description: Manage your Kibana spaces.
       externalDocs:
-        url: https://www.elastic.co/guide/en/kibana/master/xpack-spaces.html
+        url: https://www.elastic.co/docs/deploy-manage/manage-spaces
         description: Space overview
   - target: '$.tags[?(@.name=="system")]'
     description: Change displayName and description
