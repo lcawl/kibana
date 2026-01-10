@@ -26,10 +26,6 @@ rules:
  # Paths
   no-ambiguous-paths: warn
   no-identical-paths: error
-  path-excludes-patterns:
-    severity: error
-    patterns:
-      - ^\/internal
  # Responses
   operation-4xx-response: off
   operation-2xx-response: off
@@ -50,3 +46,13 @@ rules:
     assertions:
       maxLength: 45
       minLength: 5
+  rule/no-forbidden-paths:
+      # Target the 'paths' map in your OpenAPI definition
+      subject:
+        type: PathItem
+        # Define an assertion that the key (the path string) must not match any of the patterns
+      assertions:
+        # Disallow the word 'internal' (case-insensitive due to the `i` flag)
+        notPattern: '/internal/i'
+      severity: error
+      message: "Path {{property}} uses a forbidden (internal) pattern."
