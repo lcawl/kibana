@@ -1,0 +1,124 @@
+products:
+- product: cloud-serverless
+  target: 2025-01-13
+entries:
+- file:
+    name: 1768349442-[cases]-update-total-event-in-es-document-when-att.yaml
+    checksum: 7de189a93fab0f6927e1352140ccff3dd1067cf7
+- file:
+    name: 1768349431-[entity-analytics][privmon]-prepare-monitoring-ent.yaml
+    checksum: 20ae053a552defaae9ed16c987cfce314e8d7127
+- file:
+    name: 1768349435-[observabilitystreams][streamlang]-add-uppercase,-.yaml
+    checksum: 453defdf34c8af7877cacc6f201786a791bc2bd7
+- file:
+    name: 1768349461-[traces][discover]-fix-double-scroll-in-fullscreen.yaml
+    checksum: f301046673a06909ddc620e1c66256735e12423e
+- file:
+    name: 1768349438-display-the-api-key-tab-if-the-user-has-permission.yaml
+    checksum: 959e860e3c2f61c68fde953fb4ffcfbc8c713717
+- file:
+    name: 1768349434-[streams]-[streamlang]-expose-range-to-the-ui.yaml
+    checksum: 99b13c7ade284d6225986165fff2c77cba56f491
+- file:
+    name: 1768349441-[security-solution][attacks-alerts][attacks-page][.yaml
+    checksum: 4e60a780f67932eafdd97c4f6c20b0046946ffc9
+- file:
+    name: 1768349450-[security-solution][attack-discovery][bug]-attack-.yaml
+    checksum: 2cf5a79b9ca9ca59c734e145b1846e3036eebac9
+- file:
+    name: 1768349453-fix-api-key-visibility-toggle-accessibility-on-sea.yaml
+    checksum: 44e4544909ea13021577812d4dca92f61ccde605
+- file:
+    name: 1768349427-[controls-anywhere]-feature-branch.yaml
+    checksum: 5c60a7cd0cc3d728cbc3df5d47f28865ec27c1c2
+- file:
+    name: 1768349428-[fleet]-implement-agent-upgrade-rollback.yaml
+    checksum: 20b6095a1ce6ce0c24873387ed449ff81a336381
+- file:
+    name: 1768349462-[discover][traces]-prevent-nested-button-in-full-t.yaml
+    checksum: 08ab1dba068fbf6e120c9ea7ce52b861940b89e1
+- file:
+    name: 1768349440-[security-solution]-changes-placement-of-`migratio.yaml
+    checksum: 3fdce90cbb9ee9a967f517dcab2031aeedf239ce
+- file:
+    name: 1768349446-[synthetics]-only-update-relevant-monitors-where-m.yaml
+    checksum: 2b7ff7c368287fa3defc3ba6798a837bc46a7f0c
+- file:
+    name: 1768349433-[ml]-trained-models-adds-button-to-synchronize-sav.yaml
+    checksum: 8eae24e1d500abcf6ed7c3f2668587934759c912
+- file:
+    name: 1768349458-[discover]-fix-`toolbarselector`-when-clicking-on-.yaml
+    checksum: 2df6809e9675f09fdd3a928efdcb272c56d106cd
+- file:
+    name: 1768349460-[cases]-encode-search-term-in-cases-page.yaml
+    checksum: f420b4bc9acfb4e93b9eb99a1929529c88032a87
+- file:
+    name: 1768349436-[build]-set-heap-limit-to-min(75%,-4gb)-for-contai.yaml
+    checksum: 55fcda972d7aa1e451a9d7a4ed9afdc629b43461
+- file:
+    name: 1768349449-[security-solution]-fix-api-doesnt-use-an-associat.yaml
+    checksum: 75671f263de505281c1388224c5120420777225b
+- file:
+    name: 1768349447-[synthetics]-fix-validation-of-maintenance-windows.yaml
+    checksum: b519b2486b8936d363c5c1b23f01aaaef4fde476
+- file:
+    name: 1768349437-fix-the-inference-endpoints-pull-down-on-semantic-.yaml
+    checksum: a5246c46f7eaaa560d53f098b0c88b2abc56cdf7
+- file:
+    name: 1768349445-[obs-ai]-fix-product-documentation-not-available-c.yaml
+    checksum: a5546f40a8c4aaf3c23ca506a952f603c90ab3ee
+- file:
+    name: 1768349429-[es|ql]-mark-match_phrase-second-argument-as-const.yaml
+    checksum: 38ad4d1da14f1d5ab0285fda7c51309a41b24fb5
+- file:
+    name: 1768349439-[synthetics]-default-rule-creation.yaml
+    checksum: 256d8d15611f6134df75233999be6ebde5bcbe04
+- file:
+    name: 1768349459-[apm][discover]-fix-trace-links-calculating-date-r.yaml
+    checksum: 2b03b1e5b7bf67c281fab46c52be7cdbbbc2388e
+- file:
+    name: 1768349457-[lens][data-table]-fix-links-color-contrast.yaml
+    checksum: adf09687f1e12e0fa21aa47cedb0d0e18b22282f
+- file:
+    name: 1768349454-[bug]-[search-homepage]-disable-api-keys-on-insuff.yaml
+    checksum: 56d6bf0b361dc025c0b6995bffc81640e7c468b6
+- file:
+    name: 1768349448-[security-solution][detection-engine]-fixes-rule-s.yaml
+    checksum: ac09e8401319a049ffe6a33ac37dde49bbb6c1da
+- file:
+    name: 1768349441-[security-solution]-change-alert-suppression-icon.yaml
+    checksum: e15f7236eab16d1c646e41939b1685ab0cc93092
+- file:
+    name: 1768349429-feat(slo)-instance-selector-visible-when-current-i.yaml
+    checksum: ed9952bed23d9404eb24449aac3321f6c0da511e
+- file:
+    name: 1768349431-[attack-discovery]-improves-attack-discovery-hallu.yaml
+    checksum: 52b295ef8c95c5698b45161abfc27da7c75bad5e
+- file:
+    name: 1768349455-fix-openai-connector-header-focus-order.yaml
+    checksum: 96f511daadecd65b03feb6507b17c7f666719491
+- file:
+    name: 1768349448-[security-solution]-encode-url-components-for-enti.yaml
+    checksum: 3783cc825d004e677a32c2ce208a50b049b60880
+- file:
+    name: 1768349444-[lens]-increase-default-top-values-from-3-5-to-9-c.yaml
+    checksum: c87d30388d8177006b60b3a16ac89c19f9d2677a
+- file:
+    name: 1768349456-[search]-fix-only-run-ml-saved-object-check-if-sav.yaml
+    checksum: 19e4d3158f0bd4f15d2dc2040000f77d6805bff7
+- file:
+    name: 1768349451-[ml]-data-visualizer-fixes-display-of-map-view-for.yaml
+    checksum: 5a7247651a5693bc4048c6710454f293cf61c8fb
+- file:
+    name: 1768349443-[es|ql]-refetches-controls-options-when-the-timera.yaml
+    checksum: d56e109f57b01894e0494ef0c9ed1da707513757
+- file:
+    name: 1768349456-use-simplified-retriever,-and-log-requests-and-err.yaml
+    checksum: dc5c4a8da3032570dda6b8306a9bb0c5d6a80129
+- file:
+    name: 1768349452-[ml]-disable-es|ql-field-stats-for-ts-command.yaml
+    checksum: ce72d8f337281a1d3ea857770dcca37d8c58f927
+- file:
+    name: 1768349432-[ml]-inference-ai-connector-mark-429-errors-as-use.yaml
+    checksum: 4ded31a9784a1b06e2ef0f750844c0fb04e01270
