@@ -38965,7 +38965,7 @@ paths:
             type: string
         - in: path
           name: pkgVersion
-          required: false
+          required: true
           schema:
             type: string
         - in: query
@@ -39080,7 +39080,7 @@ paths:
             type: string
         - in: path
           name: pkgVersion
-          required: false
+          required: true
           schema:
             type: string
         - in: query
@@ -39709,7 +39709,7 @@ paths:
             type: string
         - in: path
           name: pkgVersion
-          required: false
+          required: true
           schema:
             type: string
         - in: query
@@ -39884,7 +39884,7 @@ paths:
             type: string
         - in: path
           name: pkgVersion
-          required: false
+          required: true
           schema:
             type: string
       requestBody:

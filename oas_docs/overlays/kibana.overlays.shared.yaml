@@ -234,3 +234,8 @@ actions:
             If you use the Kibana console to send API requests, it automatically adds the appropriate space identifier.
 
             To learn more, check out [Spaces](https://www.elastic.co/docs/deploy-manage/manage-spaces).
+# Fix some Fleet APIs with optional path parameters
+  - target: "$.paths['/api/fleet/epm/packages/{pkgName}/{pkgVersion}'][*].parameters[?(@.name=='pkgVersion')]"
+    description: Remove optional indicator from path parameters
+    update:
+      required: true
